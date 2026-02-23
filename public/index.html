@@ -651,6 +651,152 @@
     }
     .btn-download:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 
+    /* ─── PID Lookup ──────────────────────────────────────────── */
+    .pid-section {
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .pid-section-label {
+      font-size: .7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: var(--gray-400);
+      margin-bottom: 8px;
+    }
+    .pid-row {
+      display: flex; gap: 8px;
+    }
+    .pid-input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--r-sm);
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: .9rem;
+      color: var(--gray-900);
+      background: var(--white);
+      outline: none;
+      letter-spacing: 1.5px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .pid-input:focus {
+      border-color: var(--sage-400);
+      box-shadow: 0 0 0 3px rgba(78,165,120,.1);
+    }
+    .pid-input::placeholder { color: var(--gray-400); letter-spacing: .5px; font-family: 'Inter', sans-serif; font-size: .82rem; }
+    .btn-pid {
+      padding: 10px 20px;
+      background: var(--white);
+      color: var(--sage-800);
+      border: 1.5px solid var(--sage-200);
+      border-radius: var(--r-sm);
+      font-family: 'Inter', sans-serif;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .btn-pid:hover:not(:disabled) {
+      background: var(--sage-50);
+      border-color: var(--sage-400);
+      color: var(--sage-900);
+    }
+    .btn-pid:disabled { opacity: .5; cursor: not-allowed; }
+
+    .pid-result {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: var(--r-sm);
+      background: var(--sage-50);
+      border: 1px solid var(--sage-100);
+      display: none;
+    }
+    .pid-result.show { display: block; animation: fadeIn .25s ease; }
+    .pid-result.error {
+      background: var(--red-50);
+      border-color: #FECACA;
+    }
+    .pid-result-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .pid-result-title {
+      font-size: .82rem; font-weight: 600; color: var(--sage-800);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .pid-result.error .pid-result-title { color: var(--red-700); }
+    .pid-props {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
+    }
+    .pid-prop {
+      font-size: .78rem;
+    }
+    .pid-prop-label {
+      color: var(--gray-400);
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .pid-prop-value {
+      color: var(--gray-900);
+      font-weight: 500;
+    }
+    .btn-use-property {
+      margin-top: 12px;
+      padding: 8px 16px;
+      background: var(--sage-800);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-sm);
+      font-family: 'Inter', sans-serif;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-use-property:hover {
+      background: var(--sage-700);
+      transform: translateY(-1px);
+    }
+    .pid-error-msg {
+      font-size: .82rem;
+      color: var(--red-700);
+    }
+    .pid-spinner {
+      width: 14px; height: 14px;
+      border: 2px solid var(--sage-200);
+      border-top-color: var(--sage-600);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+    .btn-pid.loading .pid-spinner { display: block; }
+    .btn-pid.loading .btn-pid-label { display: none; }
+    .pid-dpa-list {
+      display: flex; flex-wrap: wrap; gap: 5px;
+    }
+    .pid-dpa-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      background: var(--teal-100);
+      border: 1px solid rgba(15,118,110,.15);
+      border-radius: 6px;
+      font-size: .7rem; font-weight: 500;
+      color: var(--teal-700);
+    }
+    .pid-dpa-none {
+      font-size: .72rem;
+      color: var(--gray-400);
+      font-style: italic;
+    }
+
     /* ─── Responsive ─────────────────────────────────────────── */
     @media (max-width: 600px) {
       .hero { padding: 44px 20px 120px; }
@@ -659,6 +805,8 @@
       .card-body { padding: 16px 18px; }
       .card-head { padding: 14px 18px; }
       .reset-row .btn { max-width: none; flex: 1 1 100%; }
+      .pid-row { flex-direction: column; }
+      .pid-props { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -690,6 +838,27 @@
 
   <!-- Query card -->
   <div class="query-card" id="queryCard">
+
+    <!-- PID Lookup -->
+    <div class="pid-section">
+      <p class="pid-section-label">Look up a property (optional)</p>
+      <div class="pid-row">
+        <input
+          type="text"
+          class="pid-input"
+          id="pidInput"
+          placeholder="Enter a PID, e.g. 009-123-456"
+          maxlength="11"
+          autocomplete="off"
+        />
+        <button class="btn-pid" id="pidBtn" onclick="lookupPID()">
+          <span class="btn-pid-label">Look up</span>
+          <div class="pid-spinner"></div>
+        </button>
+      </div>
+      <div class="pid-result" id="pidResult"></div>
+    </div>
+
     <p class="query-label">What are you planning to do?</p>
     <p class="query-hint">Be specific — mention your zone, lot size, intended use, and any relevant details.</p>
 
@@ -765,6 +934,169 @@
 let lastResultData = null;
 let lastAnalyzedSections = [];
 let lastQuery = '';
+let lastPIDData = null;
+
+/* ── PID Lookup ──────────────────────────────────────────────── */
+function formatPID(raw) {
+  const digits = raw.replace(/\D/g, '');
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return digits.slice(0,3) + '-' + digits.slice(3);
+  return digits.slice(0,3) + '-' + digits.slice(3,6) + '-' + digits.slice(6,9);
+}
+
+// Auto-format PID as user types
+document.addEventListener('DOMContentLoaded', () => {
+  const pidIn = document.getElementById('pidInput');
+  pidIn.addEventListener('input', () => {
+    const pos = pidIn.selectionStart;
+    const old = pidIn.value;
+    pidIn.value = formatPID(old);
+    // Adjust cursor position for inserted dashes
+    const diff = pidIn.value.length - old.length;
+    pidIn.setSelectionRange(pos + diff, pos + diff);
+  });
+  pidIn.addEventListener('keydown', e => {
+    if (e.key === 'Enter') lookupPID();
+  });
+});
+
+async function lookupPID() {
+  const pidIn = document.getElementById('pidInput');
+  const btn = document.getElementById('pidBtn');
+  const resultEl = document.getElementById('pidResult');
+  const pid = pidIn.value.trim();
+
+  if (!pid || pid.replace(/\D/g, '').length !== 9) {
+    resultEl.className = 'pid-result show error';
+    resultEl.innerHTML = `<div class="pid-result-title">❌ Invalid PID</div>
+      <p class="pid-error-msg">Please enter a 9-digit parcel identification number (e.g. 009-123-456)</p>`;
+    return;
+  }
+
+  btn.disabled = true;
+  btn.classList.add('loading');
+  resultEl.className = 'pid-result';
+  resultEl.innerHTML = '';
+
+  try {
+    const resp = await fetch('/api/pid-lookup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pid }),
+    });
+
+    const json = await resp.json();
+
+    if (!json.success) {
+      resultEl.className = 'pid-result show error';
+      resultEl.innerHTML = `<div class="pid-result-title">❌ ${esc(json.error)}</div>`;
+      lastPIDData = null;
+      return;
+    }
+
+    lastPIDData = json.data;
+    const d = json.data;
+
+    // Format area nicely
+    let areaStr = 'N/A';
+    if (d.area_sqm) {
+      areaStr = d.area_sqm >= 10000
+        ? (d.area_sqm / 10000).toFixed(2) + ' ha'
+        : d.area_sqm.toLocaleString() + ' m²';
+    }
+
+    // Build DPA badges
+    let dpaHtml = '';
+    if (d.dpas && d.dpas.length > 0) {
+      dpaHtml = d.dpas.map(dpa =>
+        `<span class="pid-dpa-badge">${esc(dpa)}</span>`
+      ).join('');
+    } else {
+      dpaHtml = '<span class="pid-dpa-none">No DPAs detected (verify with Islands Trust)</span>';
+    }
+
+    resultEl.className = 'pid-result show';
+    resultEl.innerHTML = `
+      <div class="pid-result-header">
+        <div class="pid-result-title">📍 Property Found</div>
+      </div>
+      <div class="pid-props">
+        <div class="pid-prop">
+          <div class="pid-prop-label">PID</div>
+          <div class="pid-prop-value">${esc(d.pid || pid)}</div>
+        </div>
+        <div class="pid-prop">
+          <div class="pid-prop-label">Zone</div>
+          <div class="pid-prop-value">${d.zone_code ? esc(d.zone_code) + ' — ' + esc(d.zone_desc || '') : '<em style="color:var(--gray-400)">Querying…</em>'}</div>
+        </div>
+        <div class="pid-prop">
+          <div class="pid-prop-label">Area</div>
+          <div class="pid-prop-value">${areaStr}</div>
+        </div>
+        <div class="pid-prop">
+          <div class="pid-prop-label">Plan Number</div>
+          <div class="pid-prop-value">${esc(d.plan_number || 'N/A')}</div>
+        </div>
+        <div class="pid-prop">
+          <div class="pid-prop-label">Owner Type</div>
+          <div class="pid-prop-value">${esc(d.owner_type || 'N/A')}</div>
+        </div>
+        <div class="pid-prop">
+          <div class="pid-prop-label">ALR Status</div>
+          <div class="pid-prop-value">${d.in_alr ? '🌾 In Agricultural Land Reserve' : 'Not in ALR'}</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;">
+        <div class="pid-prop-label" style="margin-bottom:6px;">Development Permit Areas</div>
+        <div class="pid-dpa-list">${dpaHtml}</div>
+      </div>
+      ${d.sensitive_ecosystem ? `<div style="margin-top:8px;font-size:.74rem;color:var(--sage-700);">🌿 Sensitive Ecosystem: ${esc(d.sensitive_ecosystem)}</div>` : ''}
+      <button class="btn-use-property" onclick="useProperty()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m5 12 7-7 7 7"/></svg>
+        Use this property in my query
+      </button>`;
+  } catch (err) {
+    resultEl.className = 'pid-result show error';
+    resultEl.innerHTML = `<div class="pid-result-title">❌ Connection Error</div>
+      <p class="pid-error-msg">Could not reach the property lookup service. Please try again.</p>`;
+    lastPIDData = null;
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  }
+}
+
+function useProperty() {
+  if (!lastPIDData) return;
+  const d = lastPIDData;
+  const textarea = document.getElementById('queryInput');
+
+  let areaStr = '';
+  if (d.area_sqm) {
+    areaStr = d.area_sqm >= 10000
+      ? (d.area_sqm / 10000).toFixed(2) + ' ha'
+      : d.area_sqm.toLocaleString() + ' m²';
+  }
+
+  const parts = [`My property on Salt Spring Island (PID: ${d.pid || ''})`];
+  if (d.zone_code) parts.push(`Zoned ${d.zone_code} (${d.zone_desc || ''})`);
+  if (areaStr) parts[0] += `, lot size approximately ${areaStr}`;
+  if (d.in_alr) parts.push('Property is in the Agricultural Land Reserve');
+  if (d.dpas && d.dpas.length > 0) parts.push(`Applicable DPAs: ${d.dpas.join('; ')}`);
+  if (d.plan_number) parts.push(`Plan: ${d.plan_number}`);
+
+  const existing = textarea.value.trim();
+  if (existing) {
+    textarea.value = parts.join('. ') + '. ' + existing;
+  } else {
+    textarea.value = parts.join('. ') + '. I want to ';
+  }
+
+  textarea.focus();
+  // Place cursor at end
+  textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+  textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
 
 /* ── Helpers ──────────────────────────────────────────────────── */
 function statusConfig(status) {
