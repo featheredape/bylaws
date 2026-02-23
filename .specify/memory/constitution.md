@@ -1,50 +1,50 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Salt Spring Island Bylaw Compliance Checker Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Bylaw Accuracy (NON-NEGOTIABLE)
+Every regulation extracted from official PDF sources (LUB 355, OCP 434) MUST be verified against the original document. Extracted numerical values (setbacks, heights, lot coverage, etc.) require spot-check tests comparing against manually confirmed PDF values. A minimum of 20 data points across 5+ zones must be verified before any release. Data integrity errors are treated as critical bugs.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Test-First Development
+All compliance logic is test-driven. For each compliance rule: write a failing test first, then implement the rule to make it pass. Red-Green-Refactor cycle enforced. Unit tests for the compliance engine, contract tests for API response shapes (Zod schemas), integration tests for full request-response flows, and bylaw verification tests for data accuracy.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Transparency & Traceability
+Every compliance check result MUST include: the requirement being checked, the provided value, the pass/fail result, severity level (error/warning/info), the exact bylaw reference (Part, Section, Schedule from LUB 355 or OCP 434), and a human-readable explanation. Users must always understand WHY a check passed or failed.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. User Safety & Disclaimers
+This tool is for informational purposes only. Every compliance response MUST include clear disclaimers stating that results should be verified with official bylaw documents and that users should consult with Salt Spring Island Planning Staff for definitive answers. The tool does not replace official review or building permit processes.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Hybrid Intelligence
+Deterministic rule-based checks for common, well-defined regulations (setbacks, heights, lot coverage, permitted uses). Claude API fallback for edge cases, ambiguous interpretations, and complex questions that cannot be answered by structured rules alone. AI-generated responses MUST include confidence levels and source citations.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### VI. Performance
+Rule-based API responses MUST complete in under 500ms. D1 database queries are indexed for efficient filtering. Frontend loads and is interactive within 2 seconds. Claude API fallback may take longer but must show loading state to user.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### VII. Simplicity & YAGNI
+Start with the minimum viable feature set. No premature abstractions. Single-file components where practical. Avoid over-engineering the data model beyond what the bylaws actually contain. Add complexity only when justified by a concrete requirement.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Technology Constraints
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- **Runtime**: Cloudflare Workers (TypeScript, serverless)
+- **Frontend**: React + Vite, served via Workers ASSETS binding
+- **Database**: Cloudflare D1 (SQLite) for structured bylaw data
+- **AI**: Anthropic SDK (`@anthropic-ai/sdk`) via Claude API
+- **Testing**: Vitest + `@cloudflare/vitest-pool-workers` + Miniflare
+- **Validation**: Zod for API request/response schemas
+- **Routing**: `itty-router` (Workers-native, lightweight)
+- **Deploy**: Wrangler CLI to Cloudflare
+
+## Development Workflow
+
+- All features follow SpecKit workflow: Constitution → Specify → Plan → Tasks → Implement
+- Each user story is independently testable and deliverable
+- Bylaw data extraction is treated as the highest-risk phase and gets extra verification
+- All API endpoints have contract tests validating response shapes
+- Compliance engine rules each have unit tests with known pass/fail cases
+- No deployment without all tests passing
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other development practices for this project. Amendments require explicit documentation and rationale. Bylaw accuracy principles are non-negotiable — no feature ships with unverified bylaw data.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-02-23 | **Last Amended**: 2026-02-23
