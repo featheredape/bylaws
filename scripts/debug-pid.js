@@ -136,7 +136,13 @@ async function main() {
   if (zoning && zoning.features) {
     console.log(`  Features returned: ${zoning.features.length}`);
     for (const f of zoning.features) {
-      console.log(`  ✅ Zone: ${f.attributes.ZoneCode} — ${f.attributes.ZoneDesc} (${f.attributes.ZoningArea})`);
+      const code = f.attributes.ZoneCode || "NULL";
+      const desc = f.attributes.ZoneDesc || "NULL";
+      const area = f.attributes.ZoningArea || "NULL";
+      console.log(`  ✅ CRD Zone Code: "${code}"`);
+      console.log(`     Description:   "${desc}"`);
+      console.log(`     Area:          "${area}"`);
+      console.log(`     Raw attributes: ${JSON.stringify(f.attributes)}`);
     }
   }
 
@@ -156,26 +162,29 @@ async function main() {
     console.log(`  ${label} vertex: ${count} features → ${zone}`);
   }
 
-  // ── Step 6: Probe BEYOND each extreme vertex ──────────────────
-  console.log("\nSTEP 5: Probe 50m BEYOND each boundary extreme");
+  // ── Step 6: Probe at MULTIPLE DISTANCES beyond each extreme vertex ──────────────
+  // Test at 50m, 100m, and 200m to handle cases where CRD zoning may extend further
+  console.log("\nSTEP 5: Probe at 50m, 100m, and 200m BEYOND each boundary extreme");
   for (const { label, pt } of extremes) {
-    const dLon = pt[0] - centroid.lon;
-    const dLat = pt[1] - centroid.lat;
-    const dxm = dLon * 73000;
-    const dym = dLat * 111000;
-    const lenm = Math.sqrt(dxm * dxm + dym * dym);
-    const scale = lenm > 0 ? 50 / lenm : 0;
-    const probe = {
-      lon: pt[0] + dLon * scale,
-      lat: pt[1] + dLat * scale,
-    };
+    console.log(`  ${label} vertex:`);
+    for (const dist of [50, 100, 200]) {
+      const dLon = pt[0] - centroid.lon;
+      const dLat = pt[1] - centroid.lat;
+      const dxm = dLon * 73000;
+      const dym = dLat * 111000;
+      const lenm = Math.sqrt(dxm * dxm + dym * dym);
+      const scale = lenm > 0 ? dist / lenm : 0;
+      const probe = {
+        lon: pt[0] + dLon * scale,
+        lat: pt[1] + dLat * scale,
+      };
 
-    const url = `https://mapservices.crd.bc.ca/arcgis/rest/services/Root/EaZoning/MapServer/0/query?geometry=${probe.lon},${probe.lat}&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=ZoneCode&returnGeometry=false&f=pjson`;
-    const result = await fetchJson(url, `Probe ${label}`);
-    const count = result?.features?.length || 0;
-    const zone = count > 0 ? result.features[0].attributes.ZoneCode : "NONE ← WATER!";
-    console.log(`  ${label} probe (${probe.lon.toFixed(6)}, ${probe.lat.toFixed(6)}): ${count} features → ${zone}`);
-    console.log(`    Map: https://www.google.com/maps?q=${probe.lat.toFixed(6)},${probe.lon.toFixed(6)}`);
+      const url = `https://mapservices.crd.bc.ca/arcgis/rest/services/Root/EaZoning/MapServer/0/query?geometry=${probe.lon},${probe.lat}&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=ZoneCode&returnGeometry=false&f=pjson`;
+      const result = await fetchJson(url, `Probe ${label} ${dist}m`);
+      const count = result?.features?.length || 0;
+      const zone = count > 0 ? result.features[0].attributes.ZoneCode : "NONE ← WATER!";
+      console.log(`    ${dist}m probe (${probe.lon.toFixed(6)}, ${probe.lat.toFixed(6)}): ${count} features → ${zone}`);
+    }
   }
 
   // ── Step 7: Check FWA streams/lakes near parcel ───────────────
@@ -201,8 +210,20 @@ async function main() {
     }
   }
 
-  // ── Step 8: CRD Sensitive Ecosystems at centroid ───────────────
-  console.log("\nSTEP 7: CRD Sensitive Ecosystems at centroid");
+  // ── Step 8: Check for coastlines near parcel ──────────────────
+  console.log("\nSTEP 7: BC Freshwater Atlas — coastlines near parcel");
+  const coastlineBbox = `${minLat - 0.001},${minLon - 0.001},${maxLat + 0.001},${maxLon + 0.001}`;
+  const coastlineUrl = `https://openmaps.gov.bc.ca/geo/pub/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=pub:WHSE_BASEMAPPING.FWA_COASTLINES_SP&outputFormat=json&BBOX=${coastlineBbox},urn:ogc:def:crs:EPSG::4326&count=5&propertyName=GNIS_NAME`;
+  const coastlines = await fetchJson(coastlineUrl, "FWA Coastlines");
+  if (coastlines && coastlines.features) {
+    console.log(`  Coastline features returned: ${coastlines.features.length}`);
+    if (coastlines.features.length > 0) {
+      console.log(`  ✓ MARINE BOUNDARY CONFIRMED — This is a shoreline property!`);
+    }
+  }
+
+  // ── Step 9: CRD Sensitive Ecosystems at centroid ───────────────
+  console.log("\nSTEP 8: CRD Sensitive Ecosystems at centroid");
   const ecoUrl = `https://mapservices.crd.bc.ca/arcgis/rest/services/Environmental/MapServer/6/query?geometry=${centroid.lon},${centroid.lat}&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=ECOSYSTEM1,ECOSYSTEM2&returnGeometry=false&f=pjson`;
   const eco = await fetchJson(ecoUrl, "Sensitive Ecosystems");
   if (eco && eco.features) {
