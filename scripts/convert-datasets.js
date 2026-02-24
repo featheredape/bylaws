@@ -94,12 +94,24 @@ function parseKmlCoords(coordStr) {
     .filter(([lon, lat]) => !isNaN(lon) && !isNaN(lat));
 }
 
-/** Extract all Placemarks from a KML file */
+/** Extract coordinates from a boundary element */
+function extractBoundaryCoords(boundaryBlock) {
+  const m = boundaryBlock.match(/<coordinates>\s*([\s\S]*?)\s*<\/coordinates>/);
+  return m ? parseKmlCoords(m[1]) : [];
+}
+
+/**
+ * Extract all Placemarks from a KML file.
+ *
+ * Each Placemark can contain one or more <Polygon> elements (inside <MultiGeometry>).
+ * Each Polygon has one <outerBoundaryIs> and zero or more <innerBoundaryIs> (holes).
+ *
+ * Returns: [{ attrs, polygons: [{ outer: [[lon,lat],...], holes: [[[lon,lat],...], ...] }] }]
+ */
 function parseKmlPlacemarks(kmlPath) {
   const kml = fs.readFileSync(kmlPath, "utf8");
   const placemarks = [];
 
-  // Split on <Placemark to get each feature
   const parts = kml.split(/<Placemark[\s>]/);
   for (let i = 1; i < parts.length; i++) {
     const block = parts[i].split("</Placemark>")[0];
@@ -108,16 +120,31 @@ function parseKmlPlacemarks(kmlPath) {
     const descMatch = block.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/);
     const attrs = descMatch ? parseKmlDescription(descMatch[1]) : {};
 
-    // Extract all polygon coordinate rings
-    const rings = [];
-    const coordMatches = block.matchAll(/<coordinates>\s*([\s\S]*?)\s*<\/coordinates>/g);
-    for (const cm of coordMatches) {
-      const ring = parseKmlCoords(cm[1]);
-      if (ring.length >= 3) rings.push(ring);
+    // Extract each <Polygon> with its outer boundary and holes
+    const polygons = [];
+    const polyParts = block.split(/<Polygon>/);
+    for (let p = 1; p < polyParts.length; p++) {
+      const polyBlock = polyParts[p].split("</Polygon>")[0];
+
+      // Outer boundary
+      const outerMatch = polyBlock.match(/<outerBoundaryIs>([\s\S]*?)<\/outerBoundaryIs>/);
+      if (!outerMatch) continue;
+      const outer = extractBoundaryCoords(outerMatch[1]);
+      if (outer.length < 3) continue;
+
+      // Inner boundaries (holes)
+      const holes = [];
+      const innerMatches = polyBlock.matchAll(/<innerBoundaryIs>([\s\S]*?)<\/innerBoundaryIs>/g);
+      for (const im of innerMatches) {
+        const hole = extractBoundaryCoords(im[1]);
+        if (hole.length >= 3) holes.push(hole);
+      }
+
+      polygons.push({ outer, holes });
     }
 
-    if (rings.length > 0) {
-      placemarks.push({ attrs, rings });
+    if (polygons.length > 0) {
+      placemarks.push({ attrs, polygons });
     }
   }
   return placemarks;
@@ -213,8 +240,12 @@ function convertParcels() {
     // Skip if already in PMBC data
     if (parcelMap.has(pidDigits)) continue;
 
-    const [cx, cy] = centroid(pm.rings[0]);
-    const simplifiedRings = pm.rings.map((r) =>
+    // CAD parcels are simple (no holes) — just use outer rings
+    const outerRings = pm.polygons.map((p) => p.outer);
+    if (outerRings.length === 0) continue;
+
+    const [cx, cy] = centroid(outerRings[0]);
+    const simplifiedRings = outerRings.map((r) =>
       simplifyRing(r, PARCEL_EPSILON).map(([lon, lat]) => [Math.round(lon * 1e6) / 1e6, Math.round(lat * 1e6) / 1e6])
     );
 
@@ -225,7 +256,7 @@ function convertParcels() {
       owner: null,
       area_sqm: null,
       centroid: [Math.round(cx * 1e6) / 1e6, Math.round(cy * 1e6) / 1e6],
-      bbox: bbox(pm.rings).map((v) => Math.round(v * 1e6) / 1e6),
+      bbox: bbox(outerRings).map((v) => Math.round(v * 1e6) / 1e6),
       rings: simplifiedRings,
     });
     cadAdded++;
@@ -255,6 +286,8 @@ function convertZoning() {
   const zones = [];
   const codeSet = new Set();
 
+  const ZONE_EPSILON = 0.00002; // ~2m, fine for zone lookup
+
   for (const pm of placemarks) {
     const code = pm.attrs.ZONE_CODE || "";
     const desc = pm.attrs.ZONE_DESC || "";
@@ -263,17 +296,19 @@ function convertZoning() {
     // Only include Salt Spring Island zones
     if (area && !area.includes("Salt Spring")) continue;
 
-    // Simplify zone polygons — ~0.00002° ≈ 2m, fine for zone lookup
-    const ZONE_EPSILON = 0.00002;
-    codeSet.add(code);
-    zones.push({
-      code,
-      desc,
-      bbox: bbox(pm.rings).map((v) => Math.round(v * 1e6) / 1e6),
-      rings: pm.rings.map((r) =>
-        simplifyRing(r, ZONE_EPSILON).map(([lon, lat]) => [Math.round(lon * 1e6) / 1e6, Math.round(lat * 1e6) / 1e6])
-      ),
-    });
+    // Each placemark may have multiple polygons, each with outer + holes
+    for (const poly of pm.polygons) {
+      const allRings = [poly.outer, ...poly.holes];
+      codeSet.add(code);
+      zones.push({
+        code,
+        desc,
+        bbox: bbox([poly.outer]).map((v) => Math.round(v * 1e6) / 1e6),
+        rings: allRings.map((r) =>
+          simplifyRing(r, ZONE_EPSILON).map(([lon, lat]) => [Math.round(lon * 1e6) / 1e6, Math.round(lat * 1e6) / 1e6])
+        ),
+      });
+    }
   }
 
   const out = {
@@ -301,6 +336,8 @@ function convertDPAs() {
   const dpas = [];
   const dpaStats = {};
 
+  const DPA_EPSILON = 0.00005; // ~5m, appropriate for DPA boundaries
+
   for (const pm of placemarks) {
     const num = parseInt(pm.attrs.DPA_NUM, 10);
     const desc = pm.attrs.DPA_DESC || "";
@@ -310,14 +347,24 @@ function convertDPAs() {
 
     dpaStats[num] = (dpaStats[num] || 0) + 1;
 
-    // Simplify DPA polygons — ~0.00005° ≈ 5m, appropriate for DPA boundaries
-    const DPA_EPSILON = 0.00005;
+    // Each placemark may have multiple polygons, each with outer + holes
+    // We emit one entry per placemark (not per sub-polygon) to keep DPA count correct.
+    // rings[0] = outer of first polygon, then holes of first, then outer of second, etc.
+    // The PIP function will use even-odd across all rings.
+    const allRings = [];
+    for (const poly of pm.polygons) {
+      allRings.push(poly.outer);
+      for (const hole of poly.holes) {
+        allRings.push(hole);
+      }
+    }
+
     dpas.push({
       num,
       desc,
       bylaw,
-      bbox: bbox(pm.rings).map((v) => Math.round(v * 1e6) / 1e6),
-      rings: pm.rings.map((r) =>
+      bbox: bbox([allRings[0]]).map((v) => Math.round(v * 1e6) / 1e6),
+      rings: allRings.map((r) =>
         simplifyRing(r, DPA_EPSILON).map(([lon, lat]) => [Math.round(lon * 1e6) / 1e6, Math.round(lat * 1e6) / 1e6])
       ),
     });

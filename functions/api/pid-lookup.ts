@@ -171,12 +171,14 @@ const DPA_NAMES: Record<number, string> = {
   7: "DPA 7 — Riparian Areas",
 };
 
-// ─── Ray-casting point-in-polygon ───────────────────────────────
+// ─── Ray-casting point-in-polygon (even-odd rule with holes) ────
+//
+// rings[0] is the outer boundary; rings[1..n] are holes (inner rings).
+// A point is "inside" if the total crossing count across ALL rings is odd.
+// This correctly handles polygons with holes (e.g., foreshore DPA wraps
+// around the island with holes cut for land mass).
 
-function pointInPolygon(lon: number, lat: number, rings: number[][][]): boolean {
-  const ring = rings[0];
-  if (!ring || ring.length < 3) return false;
-
+function pointInPolygonRing(lon: number, lat: number, ring: number[][]): boolean {
   let inside = false;
   for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
     const xi = ring[i][0], yi = ring[i][1];
@@ -184,6 +186,19 @@ function pointInPolygon(lon: number, lat: number, rings: number[][][]): boolean 
 
     if (((yi > lat) !== (yj > lat)) &&
         (lon < (xj - xi) * (lat - yi) / (yj - yi) + xi)) {
+      inside = !inside;
+    }
+  }
+  return inside;
+}
+
+function pointInPolygon(lon: number, lat: number, rings: number[][][]): boolean {
+  if (!rings[0] || rings[0].length < 3) return false;
+
+  // Even-odd rule: toggle for each ring the point is inside
+  let inside = false;
+  for (const ring of rings) {
+    if (pointInPolygonRing(lon, lat, ring)) {
       inside = !inside;
     }
   }
