@@ -780,21 +780,79 @@
     .btn-pid.loading .pid-spinner { display: block; }
     .btn-pid.loading .btn-pid-label { display: none; }
     .pid-dpa-list {
-      display: flex; flex-wrap: wrap; gap: 5px;
+      display: flex; flex-direction: column; gap: 5px;
     }
     .pid-dpa-badge {
-      display: inline-block;
-      padding: 3px 10px;
-      background: var(--teal-100);
-      border: 1px solid rgba(15,118,110,.15);
+      display: flex;
+      align-items: flex-start;
+      padding: 6px 10px;
       border-radius: 6px;
-      font-size: .7rem; font-weight: 500;
+      font-size: .72rem; font-weight: 500;
+      gap: 6px;
+    }
+    .pid-dpa-badge .dpa-name { font-weight: 600; white-space: nowrap; }
+    .pid-dpa-badge .dpa-reason { font-weight: 400; color: inherit; opacity: .8; }
+    .pid-dpa-badge.dpa-likely {
+      background: var(--teal-100);
+      border: 1px solid rgba(15,118,110,.2);
       color: var(--teal-700);
     }
+    .pid-dpa-badge.dpa-possible {
+      background: #FEF3C7;
+      border: 1px solid rgba(180,140,20,.15);
+      color: #92400E;
+    }
+    .pid-dpa-badge.dpa-check {
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      color: var(--gray-500);
+    }
+    .dpa-confidence-tag {
+      font-size: .6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .pid-dpa-badge.dpa-confirmed {
+      background: #D1FAE5;
+      border: 1px solid rgba(5,150,105,.25);
+      color: #065F46;
+    }
+    .dpa-confirmed .dpa-confidence-tag { background: rgba(5,150,105,.2); color: #064E3B; }
+    .dpa-likely .dpa-confidence-tag { background: rgba(15,118,110,.15); color: var(--teal-800); }
+    .dpa-possible .dpa-confidence-tag { background: rgba(180,140,20,.15); color: #78350F; }
+    .dpa-check .dpa-confidence-tag { background: var(--gray-200); color: var(--gray-500); }
     .pid-dpa-none {
       font-size: .72rem;
       color: var(--gray-400);
       font-style: italic;
+    }
+    .pid-zone-highlight {
+      background: var(--sage-50);
+      border: 1px solid var(--sage-200);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+    }
+    .pid-zone-code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--sage-800);
+    }
+    .pid-zone-name {
+      font-size: .78rem;
+      color: var(--sage-700);
+      margin-top: 2px;
+    }
+    .pid-zone-bylaw {
+      font-size: .65rem;
+      color: var(--gray-400);
+      margin-top: 2px;
     }
 
     /* ─── Responsive ─────────────────────────────────────────── */
@@ -1005,14 +1063,48 @@ async function lookupPID() {
         : d.area_sqm.toLocaleString() + ' m²';
     }
 
-    // Build DPA badges
+    // Build zone highlight
+    let zoneHtml = '';
+    if (d.lub_zone_code || d.zone_code) {
+      const zCode = esc(d.lub_zone_code || d.zone_code || '');
+      const zName = esc(d.lub_zone_name || d.zone_desc || '');
+      zoneHtml = `<div class="pid-zone-highlight">
+        <div class="pid-zone-code">${zCode}</div>
+        <div class="pid-zone-name">${zName}</div>
+        <div class="pid-zone-bylaw">Land Use Bylaw 355${d.crd_zone_code && d.crd_zone_code !== d.lub_zone_code ? ' (CRD code: ' + esc(d.crd_zone_code) + ')' : ''}</div>
+      </div>`;
+    }
+
+    // Build DPA list with confidence badges
     let dpaHtml = '';
     if (d.dpas && d.dpas.length > 0) {
-      dpaHtml = d.dpas.map(dpa =>
-        `<span class="pid-dpa-badge">${esc(dpa)}</span>`
-      ).join('');
+      const confirmed = d.dpas.filter(dpa => dpa.confidence === 'confirmed');
+      const likely = d.dpas.filter(dpa => dpa.confidence === 'likely');
+      const possible = d.dpas.filter(dpa => dpa.confidence === 'possible');
+      const check = d.dpas.filter(dpa => dpa.confidence === 'check');
+
+      const buildBadge = (dpa) => {
+        const cls = 'dpa-' + dpa.confidence;
+        const tags = { confirmed: 'Detected', likely: 'Likely', possible: 'Possible', check: 'Verify' };
+        const tag = tags[dpa.confidence] || 'Verify';
+        return `<div class="pid-dpa-badge ${cls}">
+          <span class="dpa-confidence-tag">${tag}</span>
+          <span><span class="dpa-name">${esc(dpa.name)}</span></span>
+        </div>`;
+      };
+
+      dpaHtml += confirmed.map(buildBadge).join('');
+      dpaHtml += likely.map(buildBadge).join('');
+      dpaHtml += possible.map(buildBadge).join('');
+
+      if (check.length > 0) {
+        dpaHtml += `<div style="font-size:.65rem;color:var(--gray-400);margin-top:4px;margin-bottom:2px;">
+          Other DPAs to verify with Islands Trust:
+        </div>`;
+        dpaHtml += check.map(buildBadge).join('');
+      }
     } else {
-      dpaHtml = '<span class="pid-dpa-none">No DPAs detected (verify with Islands Trust)</span>';
+      dpaHtml = '<span class="pid-dpa-none">Could not determine DPAs — verify with Islands Trust</span>';
     }
 
     resultEl.className = 'pid-result show';
@@ -1020,14 +1112,11 @@ async function lookupPID() {
       <div class="pid-result-header">
         <div class="pid-result-title">📍 Property Found</div>
       </div>
+      ${zoneHtml}
       <div class="pid-props">
         <div class="pid-prop">
           <div class="pid-prop-label">PID</div>
           <div class="pid-prop-value">${esc(d.pid || pid)}</div>
-        </div>
-        <div class="pid-prop">
-          <div class="pid-prop-label">Zone</div>
-          <div class="pid-prop-value">${d.zone_code ? esc(d.zone_code) + ' — ' + esc(d.zone_desc || '') : '<em style="color:var(--gray-400)">Querying…</em>'}</div>
         </div>
         <div class="pid-prop">
           <div class="pid-prop-label">Area</div>
@@ -1047,10 +1136,14 @@ async function lookupPID() {
         </div>
       </div>
       <div style="margin-top:12px;">
-        <div class="pid-prop-label" style="margin-bottom:6px;">Development Permit Areas</div>
+        <div class="pid-prop-label" style="margin-bottom:6px;">Development Permit Areas (OCP 434)</div>
         <div class="pid-dpa-list">${dpaHtml}</div>
       </div>
       ${d.sensitive_ecosystem ? `<div style="margin-top:8px;font-size:.74rem;color:var(--sage-700);">🌿 Sensitive Ecosystem: ${esc(d.sensitive_ecosystem)}</div>` : ''}
+      ${d.shoreline_adjacent ? `<div style="margin-top:4px;font-size:.74rem;color:var(--sage-700);">🌊 Shoreline property (water detected at boundary)</div>` : ''}
+      ${d.nearby_streams && d.nearby_streams.length > 0 ? `<div style="margin-top:4px;font-size:.74rem;color:var(--sage-700);">💧 Nearby streams: ${d.nearby_streams.map(s => esc(s.name)).join(', ')}</div>` : ''}
+      ${d.nearby_lakes && d.nearby_lakes.length > 0 ? `<div style="margin-top:4px;font-size:.74rem;color:var(--sage-700);">🏞 Nearby lakes: ${d.nearby_lakes.map(l => esc(l.name)).join(', ')}</div>` : ''}
+      ${d.debug_map_link ? `<div style="margin-top:8px;font-size:.65rem;"><a href="${d.debug_map_link}" target="_blank" rel="noopener" style="color:var(--gray-400);">📍 Verify location on Google Maps</a></div>` : ''}
       <button class="btn-use-property" onclick="useProperty()">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m5 12 7-7 7 7"/></svg>
         Use this property in my query
@@ -1078,22 +1171,63 @@ function useProperty() {
       : d.area_sqm.toLocaleString() + ' m²';
   }
 
-  const parts = [`My property on Salt Spring Island (PID: ${d.pid || ''})`];
-  if (d.zone_code) parts.push(`Zoned ${d.zone_code} (${d.zone_desc || ''})`);
-  if (areaStr) parts[0] += `, lot size approximately ${areaStr}`;
-  if (d.in_alr) parts.push('Property is in the Agricultural Land Reserve');
-  if (d.dpas && d.dpas.length > 0) parts.push(`Applicable DPAs: ${d.dpas.join('; ')}`);
-  if (d.plan_number) parts.push(`Plan: ${d.plan_number}`);
+  // Build structured property context for AI query
+  const lines = [];
 
+  // ── Property identification ──
+  lines.push(`PROPERTY: PID ${d.pid || ''}` + (areaStr ? `, ${areaStr}` : '') + (d.plan_number ? `, Plan ${d.plan_number}` : ''));
+
+  // ── Land Use Zone (LUB 355) ──
+  const zCode = d.lub_zone_code || d.zone_code;
+  const zName = d.lub_zone_name || d.zone_desc;
+  if (zCode) {
+    lines.push(`LUB 355 ZONE: ${zCode} — ${zName || 'Unknown'}`);
+  } else {
+    lines.push('LUB 355 ZONE: Could not be determined');
+  }
+
+  // ── ALR status ──
+  if (d.in_alr) {
+    lines.push('ALR STATUS: In the Agricultural Land Reserve');
+  }
+
+  // ── DPA zones (OCP 434) — separated by confidence ──
+  if (d.dpas && d.dpas.length > 0) {
+    const confirmed = d.dpas.filter(dpa => dpa.confidence === 'confirmed');
+    const likely = d.dpas.filter(dpa => dpa.confidence === 'likely');
+    const possible = d.dpas.filter(dpa => dpa.confidence === 'possible');
+
+    if (confirmed.length > 0) {
+      lines.push('DPAs (CONFIRMED): ' + confirmed.map(dpa => dpa.name).join('; '));
+    }
+    if (likely.length > 0) {
+      lines.push('DPAs (LIKELY): ' + likely.map(dpa => dpa.name).join('; '));
+    }
+    if (possible.length > 0) {
+      lines.push('DPAs (POSSIBLE): ' + possible.map(dpa => dpa.name).join('; '));
+    }
+    if (confirmed.length === 0 && likely.length === 0 && possible.length === 0) {
+      lines.push('DPAs: None determined with confidence — verify with Islands Trust');
+    }
+  } else {
+    lines.push('DPAs: Could not be determined — verify with Islands Trust');
+  }
+
+  // ── Sensitive ecosystem ──
+  if (d.sensitive_ecosystem) {
+    lines.push(`SENSITIVE ECOSYSTEM: ${d.sensitive_ecosystem}`);
+  }
+
+  // ── Separator and user prompt ──
+  const context = lines.join('\n');
   const existing = textarea.value.trim();
   if (existing) {
-    textarea.value = parts.join('. ') + '. ' + existing;
+    textarea.value = context + '\n\n' + existing;
   } else {
-    textarea.value = parts.join('. ') + '. I want to ';
+    textarea.value = context + '\n\nI want to ';
   }
 
   textarea.focus();
-  // Place cursor at end
   textarea.setSelectionRange(textarea.value.length, textarea.value.length);
   textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
