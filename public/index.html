@@ -1018,94 +1018,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ─── CRD zoning query (runs from browser, bypasses Cloudflare) ───
-// CRD ArcGIS blocks requests from cloud IPs (Cloudflare Workers),
-// but allows them from browsers. So we do this client-side.
-
-const ZONE_MAP = {
-  "R1": { code: "R1", name: "Residential 1", cat: "residential", village: true },
-  "R2": { code: "R2", name: "Residential 2", cat: "residential", village: true },
-  "R3": { code: "R3", name: "Residential 3 (Mobile Home Park)", cat: "residential", village: false },
-  "R4": { code: "R4", name: "Residential 4", cat: "residential", village: false },
-  "R5": { code: "R5", name: "Residential 5 (Multi-Unit)", cat: "residential", village: true },
-  "R6": { code: "R6", name: "Residential 6", cat: "residential", village: false },
-  "R7": { code: "R7", name: "Residential 7", cat: "residential", village: false },
-  "R8": { code: "R8", name: "Residential 8", cat: "residential", village: false },
-  "R9": { code: "R9", name: "Residential 9", cat: "residential", village: false },
-  "R10": { code: "R10", name: "Residential 10 (Conservation)", cat: "residential", village: false },
-  "R11": { code: "R11", name: "Residential 11 (Cluster)", cat: "residential", village: false },
-  "R12": { code: "R12", name: "Residential 12 (Compact)", cat: "residential", village: true },
-  "A1": { code: "A1", name: "Agricultural 1", cat: "agricultural", village: false },
-  "A2": { code: "A2", name: "Agricultural 2", cat: "agricultural", village: false },
-  "C1": { code: "C1", name: "Commercial 1", cat: "commercial", village: true },
-  "C2": { code: "C2", name: "Commercial 2", cat: "commercial", village: false },
-  "C3": { code: "C3", name: "Commercial 3", cat: "commercial", village: true },
-  "C4": { code: "C4", name: "Commercial 4", cat: "commercial", village: true },
-  "CA1": { code: "CA1", name: "Commercial Accommodation 1", cat: "accommodation", village: false },
-  "CA2": { code: "CA2", name: "Commercial Accommodation 2", cat: "accommodation", village: false },
-  "F1": { code: "F1", name: "Forestry 1", cat: "forestry", village: false },
-  "F2": { code: "F2", name: "Forestry 2", cat: "forestry", village: false },
-  "GE1": { code: "GE1", name: "General Employment 1", cat: "employment", village: false },
-  "GE2": { code: "GE2", name: "General Employment 2", cat: "employment", village: false },
-  "GE3": { code: "GE3", name: "General Employment 3 (Marine)", cat: "employment", village: false },
-  "PR1": { code: "PR1", name: "Parks & Reserves 1 (Active)", cat: "parks", village: false },
-  "PR2": { code: "PR2", name: "Parks & Reserves 2 (Nature)", cat: "parks", village: false },
-  "P": { code: "P", name: "Park", cat: "parks", village: false },
-  "RU1": { code: "RU1", name: "Rural 1", cat: "rural", village: false },
-  "RR1": { code: "RU1", name: "Rural 1", cat: "rural", village: false },
-  "U1": { code: "U1", name: "Upland 1", cat: "upland", village: false },
-  "UP1": { code: "U1", name: "Upland 1", cat: "upland", village: false },
-  "W1": { code: "W1", name: "Watershed 1", cat: "watershed", village: false },
-  "RW1": { code: "W1", name: "Watershed 1 (Rural Watershed)", cat: "watershed", village: false },
-  "W2": { code: "W2", name: "Watershed 2", cat: "watershed", village: false },
-  "RW2": { code: "W2", name: "Watershed 2 (Rural Watershed)", cat: "watershed", village: false },
-  "S1": { code: "S1", name: "Shoreline 1", cat: "shoreline", village: false },
-  "S2": { code: "S2", name: "Shoreline 2", cat: "shoreline", village: false },
-  "S3": { code: "S3", name: "Shoreline 3", cat: "shoreline", village: false },
-};
-
-// Normalize CRD zone codes (CRD often uses variants like "RU" vs "RU1")
-function normalizeZone(raw) {
-  if (!raw) return null;
-  const u = raw.toUpperCase().trim();
-  if (ZONE_MAP[u]) return ZONE_MAP[u];
-  // Strip qualifiers: "R1 (Residential)" → "R1"
-  const base = u.replace(/[\s\(].*$/, '').trim();
-  if (ZONE_MAP[base]) return { ...ZONE_MAP[base], code: u };
-  // Common variants
-  const variants = { RR: "RU1", RR1: "RU1", RU: "RU1", W: "W1", U: "U1", UP: "U1", P: "PR1" };
-  if (variants[u] && ZONE_MAP[variants[u]]) return { ...ZONE_MAP[variants[u]], code: u };
-  // Prefix match
-  for (const [k, v] of Object.entries(ZONE_MAP)) {
-    if (u.startsWith(k)) return { ...v, code: u };
-  }
-  // Return raw code as fallback
-  return { code: u, name: `Zone ${u}`, cat: "other", village: false };
-}
-
-async function queryCrdZoning(lon, lat) {
-  try {
-    const url = `https://mapservices.crd.bc.ca/arcgis/rest/services/Root/EaZoning/MapServer/0/query?` +
-      `geometry=${lon},${lat}&geometryType=esriGeometryPoint&inSR=4326` +
-      `&spatialRel=esriSpatialRelIntersects&outFields=ZoneCode,ZoneDesc,ZoningArea` +
-      `&returnGeometry=false&f=json`;
-    const resp = await fetch(url, { signal: AbortSignal.timeout(8000) });
-    if (!resp.ok) return null;
-    const data = await resp.json();
-    if (data.features && data.features.length > 0) {
-      const a = data.features[0].attributes;
-      return {
-        zone_code: a.ZoneCode || null,
-        zone_desc: a.ZoneDesc || null,
-        zoning_area: a.ZoningArea || null,
-      };
-    }
-    return { zone_code: null, zone_desc: null, zoning_area: null };
-  } catch (e) {
-    console.log('CRD zoning query failed (browser):', e);
-    return null;
-  }
-}
+// ─── PID Lookup v2 — All data from authoritative local datasets ───
 
 async function lookupPID() {
   const pidIn = document.getElementById('pidInput');
@@ -1115,7 +1028,7 @@ async function lookupPID() {
 
   if (!pid || pid.replace(/\D/g, '').length !== 9) {
     resultEl.className = 'pid-result show error';
-    resultEl.innerHTML = `<div class="pid-result-title">❌ Invalid PID</div>
+    resultEl.innerHTML = `<div class="pid-result-title">Invalid PID</div>
       <p class="pid-error-msg">Please enter a 9-digit parcel identification number (e.g. 009-123-456)</p>`;
     return;
   }
@@ -1136,7 +1049,7 @@ async function lookupPID() {
 
     if (!json.success) {
       resultEl.className = 'pid-result show error';
-      resultEl.innerHTML = `<div class="pid-result-title">❌ ${esc(json.error)}</div>`;
+      resultEl.innerHTML = `<div class="pid-result-title">${esc(json.error)}</div>`;
       lastPIDData = null;
       return;
     }
@@ -1144,101 +1057,49 @@ async function lookupPID() {
     lastPIDData = json.data;
     const d = json.data;
 
-    // ── Query CRD zoning from browser (CRD blocks Cloudflare) ──
-    let crdZoning = null;
-    let zoneInfo = null;
-    if (d.centroid) {
-      crdZoning = await queryCrdZoning(d.centroid.lon, d.centroid.lat);
-      if (crdZoning && crdZoning.zone_code) {
-        zoneInfo = normalizeZone(crdZoning.zone_code);
-        // Attach to data for useProperty()
-        d.lub_zone_code = zoneInfo.code;
-        d.lub_zone_name = zoneInfo.name;
-        d.crd_zone_code = crdZoning.zone_code;
-        d.crd_zone_desc = crdZoning.zone_desc;
-        d.zone_category = zoneInfo.cat;
-
-        // Update DPAs based on zone info
-        if (zoneInfo.cat === 'shoreline' && !d.dpas?.some(x => x.number === 3)) {
-          d.dpas = d.dpas || [];
-          d.dpas.unshift({ name: 'DPA 3 — Shoreline', number: 3, confidence: 'confirmed', reason: `Zoned ${zoneInfo.code} (${zoneInfo.name})` });
-        }
-        if (zoneInfo.village && (zoneInfo.cat === 'commercial' || zoneInfo.cat === 'employment' || zoneInfo.cat === 'residential')) {
-          d.dpas = d.dpas || [];
-          if (!d.dpas.some(x => x.number === 1)) {
-            d.dpas.unshift({ name: 'DPA 1 — Island Villages', number: 1, confidence: 'likely', reason: `Zone ${zoneInfo.code} is within a village designation` });
-          }
-        }
-        if (!zoneInfo.village && (zoneInfo.cat === 'commercial' || zoneInfo.cat === 'employment' || zoneInfo.cat === 'accommodation')) {
-          d.dpas = d.dpas || [];
-          if (!d.dpas.some(x => x.number === 2)) {
-            d.dpas.unshift({ name: 'DPA 2 — Non-Village Commercial & Industrial', number: 2, confidence: 'likely', reason: `Zone ${zoneInfo.code} outside village areas` });
-          }
-        }
-      }
-    }
-
     // Format area nicely
     let areaStr = 'N/A';
     if (d.area_sqm) {
       areaStr = d.area_sqm >= 10000
         ? (d.area_sqm / 10000).toFixed(2) + ' ha'
-        : d.area_sqm.toLocaleString() + ' m²';
+        : d.area_sqm.toLocaleString() + ' m\u00B2';
     }
 
     // Build zone highlight
     let zoneHtml = '';
-    if (d.lub_zone_code || d.zone_code) {
-      const zCode = esc(d.lub_zone_code || d.zone_code || '');
+    if (d.zone_code) {
+      const zCode = esc(d.lub_zone_code || d.zone_code);
       const zName = esc(d.lub_zone_name || d.zone_desc || '');
       zoneHtml = `<div class="pid-zone-highlight">
         <div class="pid-zone-code">${zCode}</div>
         <div class="pid-zone-name">${zName}</div>
-        <div class="pid-zone-bylaw">Land Use Bylaw 355${d.crd_zone_code && d.crd_zone_code !== d.lub_zone_code ? ' (CRD code: ' + esc(d.crd_zone_code) + ')' : ''}</div>
+        <div class="pid-zone-bylaw">Land Use Bylaw 355 &middot; Islands Trust</div>
       </div>`;
     } else {
       zoneHtml = `<div class="pid-zone-highlight" style="border-color:var(--gray-300);">
-        <div class="pid-zone-code" style="color:var(--gray-400);">Zone Unavailable</div>
-        <div class="pid-zone-name">CRD zoning service did not respond</div>
+        <div class="pid-zone-code" style="color:var(--gray-400);">Zone Not Found</div>
+        <div class="pid-zone-name">Parcel may be outside zoned area</div>
       </div>`;
     }
 
-    // Build DPA list with confidence badges
+    // Build DPA list — all from authoritative Islands Trust data
     let dpaHtml = '';
     if (d.dpas && d.dpas.length > 0) {
-      const confirmed = d.dpas.filter(dpa => dpa.confidence === 'confirmed');
-      const likely = d.dpas.filter(dpa => dpa.confidence === 'likely');
-      const possible = d.dpas.filter(dpa => dpa.confidence === 'possible');
-      const check = d.dpas.filter(dpa => dpa.confidence === 'check');
-
       const buildBadge = (dpa) => {
-        const cls = 'dpa-' + dpa.confidence;
-        const tags = { confirmed: 'Detected', likely: 'Likely', possible: 'Possible', check: 'Verify' };
-        const tag = tags[dpa.confidence] || 'Verify';
-        return `<div class="pid-dpa-badge ${cls}">
-          <span class="dpa-confidence-tag">${tag}</span>
+        return `<div class="pid-dpa-badge dpa-confirmed">
+          <span class="dpa-confidence-tag">Confirmed</span>
           <span><span class="dpa-name">${esc(dpa.name)}</span></span>
         </div>`;
       };
-
-      dpaHtml += confirmed.map(buildBadge).join('');
-      dpaHtml += likely.map(buildBadge).join('');
-      dpaHtml += possible.map(buildBadge).join('');
-
-      if (check.length > 0) {
-        dpaHtml += `<div style="font-size:.65rem;color:var(--gray-400);margin-top:4px;margin-bottom:2px;">
-          Other DPAs to verify with Islands Trust:
-        </div>`;
-        dpaHtml += check.map(buildBadge).join('');
-      }
+      dpaHtml = d.dpas.map(buildBadge).join('');
     } else {
-      dpaHtml = '<span class="pid-dpa-none">Could not determine DPAs — verify with Islands Trust</span>';
+      dpaHtml = '<span class="pid-dpa-none">No Development Permit Areas apply to this parcel</span>';
     }
 
     resultEl.className = 'pid-result show';
     resultEl.innerHTML = `
       <div class="pid-result-header">
-        <div class="pid-result-title">📍 Property Found</div>
+        <div class="pid-result-title">Property Found</div>
       </div>
       ${zoneHtml}
       <div class="pid-props">
@@ -1258,28 +1119,20 @@ async function lookupPID() {
           <div class="pid-prop-label">Owner Type</div>
           <div class="pid-prop-value">${esc(d.owner_type || 'N/A')}</div>
         </div>
-        <div class="pid-prop">
-          <div class="pid-prop-label">ALR Status</div>
-          <div class="pid-prop-value">${d.in_alr ? '🌾 In Agricultural Land Reserve' : 'Not in ALR'}</div>
-        </div>
       </div>
       <div style="margin-top:12px;">
         <div class="pid-prop-label" style="margin-bottom:6px;">Development Permit Areas (OCP 434)</div>
         <div class="pid-dpa-list">${dpaHtml}</div>
       </div>
-      ${d.sensitive_ecosystem ? `<div style="margin-top:8px;font-size:.74rem;color:var(--sage-700);">🌿 Sensitive Ecosystem: ${esc(d.sensitive_ecosystem)}</div>` : ''}
-      ${d.shoreline_adjacent ? `<div style="margin-top:4px;font-size:.74rem;color:var(--sage-700);">🌊 Shoreline property (water detected at boundary)</div>` : ''}
-      ${d.nearby_streams && d.nearby_streams.length > 0 ? `<div style="margin-top:4px;font-size:.74rem;color:var(--sage-700);">💧 Nearby streams: ${d.nearby_streams.map(s => esc(s.name)).join(', ')}</div>` : ''}
-      ${d.nearby_lakes && d.nearby_lakes.length > 0 ? `<div style="margin-top:4px;font-size:.74rem;color:var(--sage-700);">🏞 Nearby lakes: ${d.nearby_lakes.map(l => esc(l.name)).join(', ')}</div>` : ''}
-      ${d.debug_map_link ? `<div style="margin-top:8px;font-size:.65rem;"><a href="${d.debug_map_link}" target="_blank" rel="noopener" style="color:var(--gray-400);">📍 Verify location on Google Maps</a></div>` : ''}
-      ${d._debug ? `<details style="margin-top:10px;font-size:.62rem;color:var(--gray-400);"><summary style="cursor:pointer;">🔧 Debug Data (click to expand)</summary><pre style="white-space:pre-wrap;word-break:break-all;background:rgba(0,0,0,0.05);padding:8px;border-radius:4px;margin-top:4px;max-height:300px;overflow:auto;">${esc(JSON.stringify(d._debug, null, 2))}</pre></details>` : ''}
+      ${d.debug_map_link ? `<div style="margin-top:8px;font-size:.65rem;"><a href="${d.debug_map_link}" target="_blank" rel="noopener" style="color:var(--gray-400);">Verify location on Google Maps</a></div>` : ''}
+      ${d._debug ? `<details style="margin-top:10px;font-size:.62rem;color:var(--gray-400);"><summary style="cursor:pointer;">Debug Data (click to expand)</summary><pre style="white-space:pre-wrap;word-break:break-all;background:rgba(0,0,0,0.05);padding:8px;border-radius:4px;margin-top:4px;max-height:300px;overflow:auto;">${esc(JSON.stringify(d._debug, null, 2))}</pre></details>` : ''}
       <button class="btn-use-property" onclick="useProperty()">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m5 12 7-7 7 7"/></svg>
         Use this property in my query
       </button>`;
   } catch (err) {
     resultEl.className = 'pid-result show error';
-    resultEl.innerHTML = `<div class="pid-result-title">❌ Connection Error</div>
+    resultEl.innerHTML = `<div class="pid-result-title">Connection Error</div>
       <p class="pid-error-msg">Could not reach the property lookup service. Please try again.</p>`;
     lastPIDData = null;
   } finally {
@@ -1297,7 +1150,7 @@ function useProperty() {
   if (d.area_sqm) {
     areaStr = d.area_sqm >= 10000
       ? (d.area_sqm / 10000).toFixed(2) + ' ha'
-      : d.area_sqm.toLocaleString() + ' m²';
+      : d.area_sqm.toLocaleString() + ' m\u00B2';
   }
 
   // Build structured property context for AI query
@@ -1315,36 +1168,11 @@ function useProperty() {
     lines.push('LUB 355 ZONE: Could not be determined');
   }
 
-  // ── ALR status ──
-  if (d.in_alr) {
-    lines.push('ALR STATUS: In the Agricultural Land Reserve');
-  }
-
-  // ── DPA zones (OCP 434) — separated by confidence ──
+  // ── DPA zones (OCP 434) — all from authoritative data ──
   if (d.dpas && d.dpas.length > 0) {
-    const confirmed = d.dpas.filter(dpa => dpa.confidence === 'confirmed');
-    const likely = d.dpas.filter(dpa => dpa.confidence === 'likely');
-    const possible = d.dpas.filter(dpa => dpa.confidence === 'possible');
-
-    if (confirmed.length > 0) {
-      lines.push('DPAs (CONFIRMED): ' + confirmed.map(dpa => dpa.name).join('; '));
-    }
-    if (likely.length > 0) {
-      lines.push('DPAs (LIKELY): ' + likely.map(dpa => dpa.name).join('; '));
-    }
-    if (possible.length > 0) {
-      lines.push('DPAs (POSSIBLE): ' + possible.map(dpa => dpa.name).join('; '));
-    }
-    if (confirmed.length === 0 && likely.length === 0 && possible.length === 0) {
-      lines.push('DPAs: None determined with confidence — verify with Islands Trust');
-    }
+    lines.push('DPAs: ' + d.dpas.map(dpa => dpa.name).join('; '));
   } else {
-    lines.push('DPAs: Could not be determined — verify with Islands Trust');
-  }
-
-  // ── Sensitive ecosystem ──
-  if (d.sensitive_ecosystem) {
-    lines.push(`SENSITIVE ECOSYSTEM: ${d.sensitive_ecosystem}`);
+    lines.push('DPAs: None apply to this parcel');
   }
 
   // ── Separator and user prompt ──
