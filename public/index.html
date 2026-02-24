@@ -1,1103 +1,1633 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Salt Spring Island — Bylaw Compliance Checker</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* ─── Reset ─────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #F7F8F6;
-      color: #1a1f1c;
-      min-height: 100vh;
-      line-height: 1.6;
-    }
-
-    /* ─── Design tokens ──────────────────────────────────────── */
-    :root {
-      --sage-900:    #1a3a2a;
-      --sage-800:    #234d38;
-      --sage-700:    #2e6b4a;
-      --sage-600:    #3d8b63;
-      --sage-500:    #4ea578;
-      --sage-400:    #7bc4a0;
-      --sage-300:    #a3d9be;
-      --sage-200:    #ceeade;
-      --sage-100:    #e8f5ee;
-      --sage-50:     #f3faf6;
-      --teal-700:    #0f766e;
-      --teal-500:    #14b8a6;
-      --teal-100:    #ccfbf1;
-      --cream:       #FAFAF7;
-      --ocean:       #1B4F72;
-      --white:       #FFFFFF;
-      --gray-50:     #FAFAFA;
-      --gray-100:    #F4F4F5;
-      --gray-200:    #E4E4E7;
-      --gray-300:    #D4D4D8;
-      --gray-400:    #A1A1AA;
-      --gray-500:    #71717A;
-      --gray-600:    #52525B;
-      --gray-700:    #3F3F46;
-      --gray-900:    #18181B;
-      --amber-50:    #FFFBEB;
-      --amber-100:   #FEF3C7;
-      --amber-400:   #FBBF24;
-      --amber-500:   #F59E0B;
-      --amber-600:   #D97706;
-      --amber-700:   #92400E;
-      --red-50:      #FEF2F2;
-      --red-100:     #FEE2E2;
-      --red-500:     #EF4444;
-      --red-700:     #B91C1C;
-      --blue-50:     #EFF6FF;
-      --blue-100:    #DBEAFE;
-      --blue-500:    #3B82F6;
-      --blue-700:    #1D4ED8;
-
-      --shadow-xs:  0 1px 2px rgba(0,0,0,.04);
-      --shadow-sm:  0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-      --shadow-md:  0 4px 6px rgba(0,0,0,.04), 0 2px 4px rgba(0,0,0,.03);
-      --shadow-lg:  0 10px 20px rgba(0,0,0,.06), 0 2px 6px rgba(0,0,0,.03);
-      --shadow-xl:  0 20px 40px rgba(0,0,0,.08);
-      --shadow-glass: 0 8px 32px rgba(0,0,0,.06);
-
-      --r-sm: 10px;
-      --r-md: 14px;
-      --r-lg: 20px;
-      --r-xl: 24px;
-      --r-2xl: 32px;
-      --transition: 0.2s cubic-bezier(.4,0,.2,1);
-    }
-
-    /* ─── Hero ───────────────────────────────────────────────── */
-    .hero {
-      position: relative;
-      background: linear-gradient(165deg, #1a3a2a 0%, #234d38 35%, #2e6b4a 65%, #3d8b63 100%);
-      padding: 56px 24px 140px;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    /* Topographic contour lines pattern */
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background-image:
-        url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 100 Q60 60 100 80 T180 70' fill='none' stroke='rgba(160,220,180,.07)' stroke-width='1'/%3E%3Cpath d='M10 140 Q50 110 100 120 T190 100' fill='none' stroke='rgba(160,220,180,.05)' stroke-width='1'/%3E%3Cpath d='M0 60 Q40 30 90 50 T200 40' fill='none' stroke='rgba(160,220,180,.06)' stroke-width='1'/%3E%3C/svg%3E");
-      background-size: 200px 200px;
-      animation: drift 60s linear infinite;
-      opacity: .8;
-    }
-
-    /* Soft radial glow */
-    .hero::after {
-      content: '';
-      position: absolute;
-      width: 700px; height: 500px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(78,165,120,.18), transparent 70%);
-      top: -100px; left: 50%; transform: translateX(-50%);
-      pointer-events: none;
-    }
-
-    @keyframes drift {
-      from { background-position: 0 0; }
-      to   { background-position: 200px 200px; }
-    }
-
-    .hero-inner { position: relative; z-index: 2; max-width: 640px; margin: 0 auto; }
-
-    .hero-pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255,255,255,.08);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 100px;
-      padding: 6px 18px;
-      font-size: 10.5px; font-weight: 600;
-      letter-spacing: 1px; text-transform: uppercase;
-      color: rgba(255,255,255,.75);
-      margin-bottom: 24px;
-    }
-
-    .hero-pill-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--sage-400);
-      box-shadow: 0 0 0 3px rgba(123,196,160,.2);
-      animation: pulse 3s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity: 1; }
-      50%     { opacity: .5; }
-    }
-
-    .hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.9rem, 4.5vw, 3rem);
-      font-weight: 700;
-      color: #fff;
-      line-height: 1.2;
-      margin-bottom: 16px;
-      letter-spacing: -.3px;
-    }
-
-    .hero h1 em {
-      font-style: italic;
-      color: var(--sage-300);
-    }
-
-    .hero-sub {
-      font-size: .98rem;
-      color: rgba(255,255,255,.55);
-      font-weight: 300;
-      max-width: 480px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    /* Soft curved separator */
-    .hero-wave {
-      position: absolute; bottom: -1px; left: 0; width: 100%;
-      line-height: 0;
-    }
-
-    /* ─── Layout ─────────────────────────────────────────────── */
-    .page {
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 0 20px 80px;
-    }
-
-    /* ─── Query card ─────────────────────────────────────────── */
-    .query-card {
-      background: rgba(255,255,255,.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,.6);
-      border-radius: var(--r-2xl);
-      box-shadow: var(--shadow-glass), 0 0 0 1px rgba(0,0,0,.03);
-      padding: 36px 38px;
-      margin-top: -90px;
-      position: relative; z-index: 10;
-      margin-bottom: 32px;
-    }
-
-    .query-label {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.25rem;
-      color: var(--gray-900);
-      margin-bottom: 4px;
-    }
-    .query-hint {
-      font-size: .84rem;
-      color: var(--gray-500);
-      margin-bottom: 20px;
-    }
-
-    textarea {
-      width: 100%;
-      min-height: 140px;
-      padding: 16px 18px;
-      border: 1.5px solid var(--gray-200);
-      border-radius: var(--r-md);
-      font-family: 'Inter', sans-serif;
-      font-size: .92rem;
-      color: var(--gray-900);
-      background: var(--white);
-      resize: vertical;
-      transition: border-color var(--transition), box-shadow var(--transition);
-      outline: none;
-      line-height: 1.65;
-    }
-    textarea:focus {
-      border-color: var(--sage-400);
-      box-shadow: 0 0 0 3px rgba(78,165,120,.1);
-    }
-    textarea::placeholder { color: var(--gray-400); }
-
-    /* Covers row */
-    .covers-row {
-      display: flex; gap: 8px; flex-wrap: wrap;
-      margin: 16px 0 22px;
-    }
-    .cover-tag {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 12px;
-      border: 1px solid var(--gray-200);
-      border-radius: 100px;
-      font-size: .73rem; font-weight: 500;
-      color: var(--gray-500);
-      background: var(--gray-50);
-    }
-    .cover-tag-dot {
-      width: 5px; height: 5px; border-radius: 50%;
-      background: var(--sage-500); flex-shrink: 0;
-    }
-
-    /* Example prompts */
-    .examples-label {
-      font-size: .7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .8px;
-      color: var(--gray-400);
-      margin-bottom: 10px;
-    }
-    .examples {
-      display: flex; flex-wrap: wrap; gap: 7px;
-      margin-bottom: 24px;
-    }
-    .example-chip {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 6px 13px;
-      background: var(--sage-50);
-      border: 1px solid var(--sage-100);
-      border-radius: 100px;
-      font-size: .76rem; font-weight: 500;
-      color: var(--sage-700);
-      cursor: pointer;
-      transition: all var(--transition);
-      white-space: nowrap;
-    }
-    .example-chip:hover {
-      background: var(--sage-100);
-      border-color: var(--sage-300);
-      color: var(--sage-900);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
-    }
-    .example-chip-icon { font-size: .82rem; }
-
-    /* Submit button */
-    .btn {
-      display: flex; align-items: center; justify-content: center; gap: 9px;
-      width: 100%;
-      padding: 14px 28px;
-      border: none; border-radius: var(--r-md);
-      font-family: 'Inter', sans-serif;
-      font-size: .9rem; font-weight: 600;
-      cursor: pointer;
-      transition: all var(--transition);
-      letter-spacing: .2px;
-    }
-    .btn-primary {
-      background: var(--sage-800);
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(26,58,42,.2);
-    }
-    .btn-primary:hover:not(:disabled) {
-      background: var(--sage-700);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(26,58,42,.25);
-    }
-    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-    .btn-secondary {
-      background: var(--white);
-      color: var(--gray-600);
-      border: 1.5px solid var(--gray-200);
-      font-weight: 500;
-    }
-    .btn-secondary:hover { background: var(--gray-50); border-color: var(--gray-300); }
-
-    /* ─── Loading ────────────────────────────────────────────── */
-    .loading {
-      display: none;
-      text-align: center;
-      padding: 48px 20px;
-      background: var(--white);
-      border: 1px solid var(--gray-200);
-      border-radius: var(--r-xl);
-      box-shadow: var(--shadow-md);
-      margin-bottom: 32px;
-    }
-    .loading.show { display: block; }
-
-    .spinner-wrap {
-      position: relative;
-      width: 56px; height: 56px;
-      margin: 0 auto 20px;
-    }
-    .spinner-ring {
-      position: absolute; inset: 0;
-      border: 2px solid var(--sage-100);
-      border-top-color: var(--sage-500);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    .spinner-ring-2 {
-      position: absolute; inset: 8px;
-      border: 1.5px solid var(--sage-50);
-      border-bottom-color: var(--sage-400);
-      border-radius: 50%;
-      animation: spin 1.6s linear infinite reverse;
-    }
-    .spinner-emoji {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .loading-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.05rem; color: var(--gray-900);
-      margin-bottom: 4px;
-    }
-    .loading-sub { font-size: .82rem; color: var(--gray-400); margin-bottom: 24px; }
-
-    .loading-steps {
-      display: inline-flex; flex-direction: column; gap: 8px;
-      text-align: left;
-    }
-    .loading-step {
-      display: flex; align-items: center; gap: 10px;
-      font-size: .8rem; color: var(--gray-400);
-      transition: color var(--transition);
-    }
-    .loading-step.active { color: var(--sage-700); font-weight: 500; }
-    .loading-step .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: currentColor; flex-shrink: 0;
-      transition: background var(--transition);
-    }
-    .loading-step.active .dot {
-      background: var(--sage-500);
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-
-    @keyframes breathe {
-      0%,100% { box-shadow: 0 0 0 3px rgba(123,196,160,.2); }
-      50%     { box-shadow: 0 0 0 6px rgba(123,196,160,.06); }
-    }
-
-    /* ─── Results ────────────────────────────────────────────── */
-    #results { display: none; }
-    #results.show {
-      display: block;
-      animation: rise .4s cubic-bezier(.4,0,.2,1);
-    }
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Status banner */
-    .banner {
-      border-radius: var(--r-xl);
-      padding: 28px 32px;
-      margin-bottom: 16px;
-      display: flex; align-items: flex-start; gap: 18px;
-      border: 1px solid transparent;
-      position: relative;
-      overflow: hidden;
-    }
-    .banner::before {
-      content: '';
-      position: absolute; left: 0; top: 0; bottom: 0;
-      width: 4px;
-    }
-    .banner.compliant     { background: var(--sage-50); border-color: var(--sage-200); }
-    .banner.compliant::before { background: var(--sage-500); }
-    .banner.non-compliant { background: var(--red-50); border-color: #FECACA; }
-    .banner.non-compliant::before { background: var(--red-500); }
-    .banner.review        { background: var(--amber-50); border-color: #FDE68A; }
-    .banner.review::before { background: var(--amber-500); }
-    .banner.info          { background: var(--blue-50); border-color: #BFDBFE; }
-    .banner.info::before { background: var(--blue-500); }
-
-    .banner-icon { font-size: 2.2rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
-    .banner-body h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.25rem; margin-bottom: 6px;
-    }
-    .banner.compliant     .banner-body h2 { color: var(--sage-900); }
-    .banner.non-compliant .banner-body h2 { color: var(--red-700); }
-    .banner.review        .banner-body h2 { color: var(--amber-700); }
-    .banner.info          .banner-body h2 { color: var(--blue-700); }
-    .banner-body p { font-size: .9rem; line-height: 1.7; }
-    .banner.compliant     .banner-body p { color: var(--sage-700); }
-    .banner.non-compliant .banner-body p { color: var(--red-700); }
-    .banner.review        .banner-body p { color: var(--amber-600); }
-    .banner.info          .banner-body p { color: var(--blue-700); }
-
-    /* Section cards */
-    .card {
-      background: var(--white);
-      border: 1px solid var(--gray-200);
-      border-radius: var(--r-lg);
-      box-shadow: var(--shadow-xs);
-      margin-bottom: 16px;
-      overflow: hidden;
-      transition: box-shadow var(--transition);
-    }
-    .card:hover { box-shadow: var(--shadow-sm); }
-
-    .card-head {
-      display: flex; align-items: center; gap: 12px;
-      padding: 16px 24px;
-      border-bottom: 1px solid var(--gray-100);
-    }
-    .card-icon {
-      width: 32px; height: 32px;
-      border-radius: var(--r-sm);
-      display: flex; align-items: center; justify-content: center;
-      font-size: .95rem; flex-shrink: 0;
-    }
-    .ci-green  { background: var(--sage-100); }
-    .ci-amber  { background: var(--amber-100); }
-    .ci-blue   { background: var(--blue-100); }
-    .ci-red    { background: var(--red-100); }
-
-    .card-head h3 { font-size: .9rem; font-weight: 600; color: var(--gray-900); }
-
-    .card-body { padding: 20px 24px; }
-
-    /* Accordion bylaw items */
-    .bylaw-item {
-      border: 1px solid var(--gray-200);
-      border-radius: var(--r-sm);
-      overflow: hidden;
-      margin-bottom: 8px;
-      transition: box-shadow var(--transition), border-color var(--transition);
-    }
-    .bylaw-item:last-child { margin-bottom: 0; }
-    .bylaw-item:hover { border-color: var(--gray-300); box-shadow: var(--shadow-xs); }
-
-    .bylaw-trigger {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 14px;
-      cursor: pointer; user-select: none;
-      background: var(--gray-50);
-      transition: background var(--transition);
-    }
-    .bylaw-trigger:hover { background: var(--sage-50); }
-    .bylaw-left { display: flex; align-items: center; gap: 10px; }
-
-    .bylaw-badge {
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: .64rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .3px;
-      background: var(--sage-800); color: var(--white);
-      white-space: nowrap;
-    }
-    .bylaw-name { font-size: .85rem; font-weight: 600; color: var(--gray-900); }
-    .bylaw-sec {
-      font-size: .73rem; color: var(--gray-400);
-      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-      font-style: italic; margin-top: 2px;
-    }
-    .bylaw-chevron {
-      font-size: .7rem; color: var(--gray-400);
-      transition: transform var(--transition);
-      flex-shrink: 0;
-    }
-    .bylaw-item.open .bylaw-chevron { transform: rotate(180deg); }
-
-    .bylaw-panel {
-      display: none;
-      padding: 12px 14px;
-      border-top: 1px solid var(--gray-100);
-      background: var(--white);
-    }
-    .bylaw-item.open .bylaw-panel {
-      display: block;
-      animation: fadeIn .2s ease;
-    }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    .bylaw-desc { font-size: .84rem; color: var(--gray-600); line-height: 1.65; }
-
-    /* Recommendations & list items */
-    .pill-list { display: flex; flex-direction: column; gap: 8px; }
-
-    .rec-pill {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px 14px;
-      background: var(--gray-50);
-      border-radius: var(--r-sm);
-      font-size: .84rem; color: var(--gray-700); line-height: 1.6;
-      border: 1px solid transparent;
-      transition: border-color var(--transition);
-    }
-    .rec-pill:hover { border-color: var(--gray-200); }
-    .rec-arrow { color: var(--sage-500); font-size: .85rem; flex-shrink: 0; margin-top: 2px; }
-
-    /* Steps (numbered) */
-    .step-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
-    .step-item:last-child { margin-bottom: 0; }
-    .step-num {
-      flex-shrink: 0;
-      font-family: 'Playfair Display', serif;
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--sage-400);
-      line-height: 1;
-      min-width: 20px;
-      margin-top: 0;
-    }
-    .step-text { font-size: .84rem; color: var(--gray-700); line-height: 1.65; }
-
-    /* Warnings */
-    .warn-item {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 12px 14px;
-      background: var(--amber-50);
-      border: 1px solid #FDE68A;
-      border-left: 3px solid var(--amber-400);
-      border-radius: var(--r-sm);
-      font-size: .84rem; color: var(--amber-700);
-      line-height: 1.6;
-      margin-bottom: 8px;
-    }
-    .warn-item:last-child { margin-bottom: 0; }
-
-    /* Disclaimer */
-    .disclaimer {
-      background: var(--gray-50);
-      border: 1px solid var(--gray-200);
-      border-radius: var(--r-md);
-      padding: 14px 18px;
-      display: flex; align-items: flex-start; gap: 10px;
-      font-size: .76rem; color: var(--gray-500);
-      line-height: 1.65;
-      margin-bottom: 20px;
-    }
-    .disclaimer a { color: var(--sage-600); text-decoration: none; font-weight: 500; }
-    .disclaimer a:hover { text-decoration: underline; }
-
-    /* Reset button row */
-    .reset-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-    .reset-row .btn { max-width: 260px; width: auto; flex: 1 1 200px; }
-
-    /* Error card */
-    .error-card {
-      background: var(--red-50);
-      border: 1px solid #FECACA;
-      border-radius: var(--r-md);
-      padding: 16px 20px;
-      display: flex; align-items: flex-start; gap: 10px;
-      font-size: .86rem; color: var(--red-700);
-    }
-
-    /* ─── Footer ─────────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--gray-200);
-      background: var(--white);
-      color: var(--gray-400);
-      padding: 36px 24px;
-      text-align: center;
-      font-size: .78rem;
-    }
-    footer a { color: var(--sage-600); text-decoration: none; font-weight: 500; }
-    footer a:hover { text-decoration: underline; color: var(--sage-800); }
-    .footer-links {
-      display: flex; justify-content: center; gap: 24px;
-      flex-wrap: wrap; margin-bottom: 14px;
-    }
-
-    /* ─── Analyzed sections badges ────────────────────────────── */
-    .analyzed-bar {
-      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-    .analyzed-label {
-      font-size: .7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .6px;
-      color: var(--gray-400);
-      white-space: nowrap;
-    }
-    .analyzed-badges {
-      display: flex; flex-wrap: wrap; gap: 5px;
-    }
-    .analyzed-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 10px;
-      background: var(--sage-50);
-      border: 1px solid var(--sage-100);
-      border-radius: 6px;
-      font-size: .7rem; font-weight: 500;
-      color: var(--sage-700);
-      white-space: nowrap;
-    }
-    .analyzed-badge.lub {
-      background: var(--sage-100);
-      border-color: var(--sage-200);
-      font-weight: 600;
-    }
-    .analyzed-badge-icon { font-size: .75rem; }
-
-    /* ─── Download PDF button ────────────────────────────────── */
-    .btn-download {
-      background: var(--gray-900);
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,.15);
-    }
-    .btn-download:hover:not(:disabled) {
-      background: var(--gray-700);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(0,0,0,.2);
-    }
-    .btn-download:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-
-    /* ─── PID Lookup ──────────────────────────────────────────── */
-    .pid-section {
-      margin-bottom: 24px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid var(--gray-200);
-    }
-    .pid-section-label {
-      font-size: .7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .8px;
-      color: var(--gray-400);
-      margin-bottom: 8px;
-    }
-    .pid-row {
-      display: flex; gap: 8px;
-    }
-    .pid-input {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1.5px solid var(--gray-200);
-      border-radius: var(--r-sm);
-      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-      font-size: .9rem;
-      color: var(--gray-900);
-      background: var(--white);
-      outline: none;
-      letter-spacing: 1.5px;
-      transition: border-color var(--transition), box-shadow var(--transition);
-    }
-    .pid-input:focus {
-      border-color: var(--sage-400);
-      box-shadow: 0 0 0 3px rgba(78,165,120,.1);
-    }
-    .pid-input::placeholder { color: var(--gray-400); letter-spacing: .5px; font-family: 'Inter', sans-serif; font-size: .82rem; }
-    .btn-pid {
-      padding: 10px 20px;
-      background: var(--white);
-      color: var(--sage-800);
-      border: 1.5px solid var(--sage-200);
-      border-radius: var(--r-sm);
-      font-family: 'Inter', sans-serif;
-      font-size: .82rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--transition);
-      white-space: nowrap;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .btn-pid:hover:not(:disabled) {
-      background: var(--sage-50);
-      border-color: var(--sage-400);
-      color: var(--sage-900);
-    }
-    .btn-pid:disabled { opacity: .5; cursor: not-allowed; }
-
-    .pid-result {
-      margin-top: 12px;
-      padding: 14px 16px;
-      border-radius: var(--r-sm);
-      background: var(--sage-50);
-      border: 1px solid var(--sage-100);
-      display: none;
-    }
-    .pid-result.show { display: block; animation: fadeIn .25s ease; }
-    .pid-result.error {
-      background: var(--red-50);
-      border-color: #FECACA;
-    }
-    .pid-result-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    .pid-result-title {
-      font-size: .82rem; font-weight: 600; color: var(--sage-800);
-      display: flex; align-items: center; gap: 6px;
-    }
-    .pid-result.error .pid-result-title { color: var(--red-700); }
-    .pid-props {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 8px;
-    }
-    .pid-prop {
-      font-size: .78rem;
-    }
-    .pid-prop-label {
-      color: var(--gray-400);
-      font-size: .68rem;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
-    .pid-prop-value {
-      color: var(--gray-900);
-      font-weight: 500;
-    }
-    .btn-use-property {
-      margin-top: 12px;
-      padding: 8px 16px;
-      background: var(--sage-800);
-      color: #fff;
-      border: none;
-      border-radius: var(--r-sm);
-      font-family: 'Inter', sans-serif;
-      font-size: .78rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--transition);
-      display: inline-flex; align-items: center; gap: 6px;
-    }
-    .btn-use-property:hover {
-      background: var(--sage-700);
-      transform: translateY(-1px);
-    }
-    .pid-error-msg {
-      font-size: .82rem;
-      color: var(--red-700);
-    }
-    .pid-spinner {
-      width: 14px; height: 14px;
-      border: 2px solid var(--sage-200);
-      border-top-color: var(--sage-600);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-      display: none;
-    }
-    .btn-pid.loading .pid-spinner { display: block; }
-    .btn-pid.loading .btn-pid-label { display: none; }
-    .pid-dpa-list {
-      display: flex; flex-direction: column; gap: 5px;
-    }
-    .pid-dpa-badge {
-      display: flex;
-      align-items: flex-start;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: .72rem; font-weight: 500;
-      gap: 6px;
-    }
-    .pid-dpa-badge .dpa-name { font-weight: 600; white-space: nowrap; }
-    .pid-dpa-badge .dpa-reason { font-weight: 400; color: inherit; opacity: .8; }
-    .pid-dpa-badge.dpa-likely {
-      background: var(--teal-100);
-      border: 1px solid rgba(15,118,110,.2);
-      color: var(--teal-700);
-    }
-    .pid-dpa-badge.dpa-possible {
-      background: #FEF3C7;
-      border: 1px solid rgba(180,140,20,.15);
-      color: #92400E;
-    }
-    .pid-dpa-badge.dpa-check {
-      background: var(--gray-100);
-      border: 1px solid var(--gray-200);
-      color: var(--gray-500);
-    }
-    .dpa-confidence-tag {
-      font-size: .6rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      padding: 1px 5px;
-      border-radius: 3px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .pid-dpa-badge.dpa-confirmed {
-      background: #D1FAE5;
-      border: 1px solid rgba(5,150,105,.25);
-      color: #065F46;
-    }
-    .dpa-confirmed .dpa-confidence-tag { background: rgba(5,150,105,.2); color: #064E3B; }
-    .dpa-likely .dpa-confidence-tag { background: rgba(15,118,110,.15); color: var(--teal-800); }
-    .dpa-possible .dpa-confidence-tag { background: rgba(180,140,20,.15); color: #78350F; }
-    .dpa-check .dpa-confidence-tag { background: var(--gray-200); color: var(--gray-500); }
-    .pid-dpa-none {
-      font-size: .72rem;
-      color: var(--gray-400);
-      font-style: italic;
-    }
-    .pid-zone-highlight {
-      background: var(--sage-50);
-      border: 1px solid var(--sage-200);
-      border-radius: 6px;
-      padding: 8px 12px;
-      margin-bottom: 8px;
-    }
-    .pid-zone-code {
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: .9rem;
-      font-weight: 700;
-      color: var(--sage-800);
-    }
-    .pid-zone-name {
-      font-size: .78rem;
-      color: var(--sage-700);
-      margin-top: 2px;
-    }
-    .pid-zone-bylaw {
-      font-size: .65rem;
-      color: var(--gray-400);
-      margin-top: 2px;
-    }
-
-    /* ─── Responsive ─────────────────────────────────────────── */
-    @media (max-width: 600px) {
-      .hero { padding: 44px 20px 120px; }
-      .query-card { padding: 24px 20px; border-radius: var(--r-xl); margin-top: -70px; }
-      .banner { flex-direction: column; padding: 22px 20px; gap: 12px; }
-      .card-body { padding: 16px 18px; }
-      .card-head { padding: 14px 18px; }
-      .reset-row .btn { max-width: none; flex: 1 1 100%; }
-      .pid-row { flex-direction: column; }
-      .pid-props { grid-template-columns: 1fr 1fr; }
-    }
-  </style>
-</head>
-<body>
-
-<!-- ─── Hero ──────────────────────────────────────────────────── -->
-<header class="hero">
-  <div class="hero-inner">
-    
-
-    <h1>Does Your Project<br>Comply With the<br><em>Salt Spring Island Bylaws?</em></h1>
-
-    <p class="hero-sub">
-      AI-powered compliance analysis against
-      Land Use Bylaw No.&nbsp;355 and OCP&nbsp;434 — with section references, recommendations, and next steps.
-    </p>
-  </div>
-
-  <!-- Soft curved separator -->
-  <div class="hero-wave">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 60" preserveAspectRatio="none" style="display:block;width:100%;height:60px;">
-      <path fill="#F7F8F6" d="M0,30 C360,60 720,0 1080,30 C1260,45 1380,20 1440,30 L1440,60 L0,60 Z"/>
-    </svg>
-  </div>
-</header>
-
-<!-- ─── Main ──────────────────────────────────────────────────── -->
-<main class="page">
-
-  <!-- Query card -->
-  <div class="query-card" id="queryCard">
-
-    <!-- PID Lookup -->
-    <div class="pid-section">
-      <p class="pid-section-label">Look up a property (optional)</p>
-      <div class="pid-row">
-        <input
-          type="text"
-          class="pid-input"
-          id="pidInput"
-          placeholder="Enter a PID, e.g. 009-123-456"
-          maxlength="11"
-          autocomplete="off"
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Salt Spring Island — Bylaw Compliance Checker</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
         />
-        <button class="btn-pid" id="pidBtn" onclick="lookupPID()">
-          <span class="btn-pid-label">Look up</span>
-          <div class="pid-spinner"></div>
-        </button>
-      </div>
-      <div class="pid-result" id="pidResult"></div>
-    </div>
+        <style>
+            /* ─── Reset ─────────────────────────────────────────────── */
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            html {
+                scroll-behavior: smooth;
+            }
+            body {
+                font-family: "Inter", sans-serif;
+                background: #f7f8f6;
+                color: #1a1f1c;
+                min-height: 100vh;
+                line-height: 1.6;
+            }
 
-    <p class="query-label">What are you planning to do?</p>
-    <p class="query-hint">Be specific — mention your zone, lot size, intended use, and any relevant details.</p>
+            /* ─── Design tokens ──────────────────────────────────────── */
+            :root {
+                --sage-900: #1a3a2a;
+                --sage-800: #234d38;
+                --sage-700: #2e6b4a;
+                --sage-600: #3d8b63;
+                --sage-500: #4ea578;
+                --sage-400: #7bc4a0;
+                --sage-300: #a3d9be;
+                --sage-200: #ceeade;
+                --sage-100: #e8f5ee;
+                --sage-50: #f3faf6;
+                --teal-700: #0f766e;
+                --teal-500: #14b8a6;
+                --teal-100: #ccfbf1;
+                --cream: #fafaf7;
+                --ocean: #1b4f72;
+                --white: #ffffff;
+                --gray-50: #fafafa;
+                --gray-100: #f4f4f5;
+                --gray-200: #e4e4e7;
+                --gray-300: #d4d4d8;
+                --gray-400: #a1a1aa;
+                --gray-500: #71717a;
+                --gray-600: #52525b;
+                --gray-700: #3f3f46;
+                --gray-900: #18181b;
+                --amber-50: #fffbeb;
+                --amber-100: #fef3c7;
+                --amber-400: #fbbf24;
+                --amber-500: #f59e0b;
+                --amber-600: #d97706;
+                --amber-700: #92400e;
+                --red-50: #fef2f2;
+                --red-100: #fee2e2;
+                --red-500: #ef4444;
+                --red-700: #b91c1c;
+                --blue-50: #eff6ff;
+                --blue-100: #dbeafe;
+                --blue-500: #3b82f6;
+                --blue-700: #1d4ed8;
 
-    <textarea
-      id="queryInput"
-      placeholder="e.g. I want to add a secondary suite to my single-family home in an R1 zone on a 0.4 ha lot on Salt Spring Island. The suite would be in the basement with a separate entrance, approximately 75 sq m…"
-    ></textarea>
+                --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+                --shadow-sm:
+                    0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+                --shadow-md:
+                    0 4px 6px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.03);
+                --shadow-lg:
+                    0 10px 20px rgba(0, 0, 0, 0.06),
+                    0 2px 6px rgba(0, 0, 0, 0.03);
+                --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.08);
+                --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.06);
 
-    <!-- Covers row: always-included sources -->
-    <div class="covers-row">
-      <span class="cover-tag"><span class="cover-tag-dot"></span> LUB No. 355 — always included</span>
-      <span class="cover-tag"><span class="cover-tag-dot"></span> OCP No. 434 — auto-detected sections</span>
-    </div>
+                --r-sm: 10px;
+                --r-md: 14px;
+                --r-lg: 20px;
+                --r-xl: 24px;
+                --r-2xl: 32px;
+                --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            }
 
-    <p class="examples-label">Try an example</p>
-    <div class="examples">
-      <span class="example-chip" data-q="I want to build a two-storey house on my R1 residential lot with a secondary suite"><span class="example-chip-icon">🏠</span> House + suite in R1</span>
-      <span class="example-chip" data-q="Can I open a small coffee shop on my C1 commercial property?"><span class="example-chip-icon">☕</span> Coffee shop in C1</span>
-      <span class="example-chip" data-q="I want to build an accessory dwelling unit on my 5 acre rural property in RU1"><span class="example-chip-icon">🏡</span> ADU on rural land</span>
-      <span class="example-chip" data-q="Can I operate a bed and breakfast from my residential property?"><span class="example-chip-icon">🛏️</span> B&amp;B in residential</span>
-      <span class="example-chip" data-q="I want to build a workshop and storage building on my GE1 industrial lot"><span class="example-chip-icon">🔧</span> Workshop in GE1</span>
-    </div>
+            /* ─── Hero ───────────────────────────────────────────────── */
+            .hero {
+                position: relative;
+                background: linear-gradient(
+                    165deg,
+                    #1a3a2a 0%,
+                    #234d38 35%,
+                    #2e6b4a 65%,
+                    #3d8b63 100%
+                );
+                padding: 56px 24px 140px;
+                text-align: center;
+                overflow: hidden;
+            }
 
-    <button class="btn btn-primary" id="checkBtn" onclick="checkCompliance()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      Check Compliance
-    </button>
+            /* Topographic contour lines pattern */
+            .hero::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 100 Q60 60 100 80 T180 70' fill='none' stroke='rgba(160,220,180,.07)' stroke-width='1'/%3E%3Cpath d='M10 140 Q50 110 100 120 T190 100' fill='none' stroke='rgba(160,220,180,.05)' stroke-width='1'/%3E%3Cpath d='M0 60 Q40 30 90 50 T200 40' fill='none' stroke='rgba(160,220,180,.06)' stroke-width='1'/%3E%3C/svg%3E");
+                background-size: 200px 200px;
+                animation: drift 60s linear infinite;
+                opacity: 0.8;
+            }
 
-    <p style="font-size:.72rem;color:var(--gray-400);text-align:center;margin-top:12px;">
-      Press <kbd style="background:var(--gray-100);border:1px solid var(--gray-200);border-radius:4px;padding:1px 5px;font-size:.7rem;">Ctrl</kbd> +
-      <kbd style="background:var(--gray-100);border:1px solid var(--gray-200);border-radius:4px;padding:1px 5px;font-size:.7rem;">Enter</kbd> to submit
-    </p>
-  </div>
+            /* Soft radial glow */
+            .hero::after {
+                content: "";
+                position: absolute;
+                width: 700px;
+                height: 500px;
+                border-radius: 50%;
+                background: radial-gradient(
+                    ellipse,
+                    rgba(78, 165, 120, 0.18),
+                    transparent 70%
+                );
+                top: -100px;
+                left: 50%;
+                transform: translateX(-50%);
+                pointer-events: none;
+            }
 
-  <!-- Loading -->
-  <div class="loading" id="loading">
-    <div class="spinner-wrap">
-      <div class="spinner-ring"></div>
-      <div class="spinner-ring-2"></div>
-      <div class="spinner-emoji">📋</div>
-    </div>
-    <p class="loading-title">Analysing your query…</p>
-    <p class="loading-sub">Reviewing the actual bylaw text — this usually takes 10–20 seconds</p>
-    <div class="loading-steps">
-      <div class="loading-step" id="ls1"><span class="dot"></span> Reading Land Use Bylaw No. 355</div>
-      <div class="loading-step" id="ls2"><span class="dot"></span> Identifying applicable zones &amp; sections</div>
-      <div class="loading-step" id="ls3"><span class="dot"></span> Checking OCP policies &amp; DPA requirements</div>
-      <div class="loading-step" id="ls4"><span class="dot"></span> Reviewing setback &amp; coverage regulations</div>
-      <div class="loading-step" id="ls5"><span class="dot"></span> Preparing your compliance report</div>
-    </div>
-  </div>
+            @keyframes drift {
+                from {
+                    background-position: 0 0;
+                }
+                to {
+                    background-position: 200px 200px;
+                }
+            }
 
-  <!-- Results -->
-  <div id="results"></div>
+            .hero-inner {
+                position: relative;
+                z-index: 2;
+                max-width: 640px;
+                margin: 0 auto;
+            }
 
-</main>
+            .hero-pill {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(255, 255, 255, 0.08);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                border-radius: 100px;
+                padding: 6px 18px;
+                font-size: 10.5px;
+                font-weight: 600;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, 0.75);
+                margin-bottom: 24px;
+            }
 
-<!-- ─── Footer ───────────────────────────────────────────────── -->
-<footer>
-  <div class="footer-links">
-    <a href="https://islandstrust.bc.ca/island-planning/salt-spring/bylaws/" target="_blank" rel="noopener">Official Bylaws</a>
-    <a href="https://islandstrust.bc.ca" target="_blank" rel="noopener">Islands Trust</a>
-    <a href="https://www.islandstrust.bc.ca/island-planning/salt-spring/contact/" target="_blank" rel="noopener">Contact Planning Staff</a>
-    <a href="https://www.alc.gov.bc.ca" target="_blank" rel="noopener">Agricultural Land Commission</a>
-  </div>
-  <p>For informational purposes only · Not legal or planning advice · Always verify with Islands Trust staff</p>
-  <p style="margin-top:8px;color:var(--gray-300);font-size:.72rem;">Salt Spring Island Bylaw Compliance Checker</p>
-</footer>
+            .hero-pill-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: var(--sage-400);
+                box-shadow: 0 0 0 3px rgba(123, 196, 160, 0.2);
+                animation: pulse 3s ease-in-out infinite;
+            }
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.5;
+                }
+            }
 
-<script src="/jspdf.umd.min.js"></script>
-<script>
-/* ── Global state for PDF export ─────────────────────────────── */
-let lastResultData = null;
-let lastAnalyzedSections = [];
-let lastQuery = '';
-let lastPIDData = null;
+            .hero h1 {
+                font-family: "Playfair Display", serif;
+                font-size: clamp(1.9rem, 4.5vw, 3rem);
+                font-weight: 700;
+                color: #fff;
+                line-height: 1.2;
+                margin-bottom: 16px;
+                letter-spacing: -0.3px;
+            }
 
-/* ── PID Lookup ──────────────────────────────────────────────── */
-function formatPID(raw) {
-  const digits = raw.replace(/\D/g, '');
-  if (digits.length <= 3) return digits;
-  if (digits.length <= 6) return digits.slice(0,3) + '-' + digits.slice(3);
-  return digits.slice(0,3) + '-' + digits.slice(3,6) + '-' + digits.slice(6,9);
-}
+            .hero h1 em {
+                font-style: italic;
+                color: var(--sage-300);
+            }
 
-// Auto-format PID as user types
-document.addEventListener('DOMContentLoaded', () => {
-  const pidIn = document.getElementById('pidInput');
-  pidIn.addEventListener('input', () => {
-    const pos = pidIn.selectionStart;
-    const old = pidIn.value;
-    pidIn.value = formatPID(old);
-    // Adjust cursor position for inserted dashes
-    const diff = pidIn.value.length - old.length;
-    pidIn.setSelectionRange(pos + diff, pos + diff);
-  });
-  pidIn.addEventListener('keydown', e => {
-    if (e.key === 'Enter') lookupPID();
-  });
-});
+            .hero-sub {
+                font-size: 0.98rem;
+                color: rgba(255, 255, 255, 0.55);
+                font-weight: 300;
+                max-width: 480px;
+                margin: 0 auto;
+                line-height: 1.7;
+            }
 
-// ─── PID Lookup v2 — All data from authoritative local datasets ───
+            /* Soft curved separator */
+            .hero-wave {
+                position: absolute;
+                bottom: -1px;
+                left: 0;
+                width: 100%;
+                line-height: 0;
+            }
 
-async function lookupPID() {
-  const pidIn = document.getElementById('pidInput');
-  const btn = document.getElementById('pidBtn');
-  const resultEl = document.getElementById('pidResult');
-  const pid = pidIn.value.trim();
+            /* ─── Layout ─────────────────────────────────────────────── */
+            .page {
+                max-width: 820px;
+                margin: 0 auto;
+                padding: 0 20px 80px;
+            }
 
-  if (!pid || pid.replace(/\D/g, '').length !== 9) {
-    resultEl.className = 'pid-result show error';
-    resultEl.innerHTML = `<div class="pid-result-title">Invalid PID</div>
+            /* ─── Query card ─────────────────────────────────────────── */
+            .query-card {
+                background: rgba(255, 255, 255, 0.85);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.6);
+                border-radius: var(--r-2xl);
+                box-shadow:
+                    var(--shadow-glass),
+                    0 0 0 1px rgba(0, 0, 0, 0.03);
+                padding: 36px 38px;
+                margin-top: -90px;
+                position: relative;
+                z-index: 10;
+                margin-bottom: 32px;
+            }
+
+            .query-label {
+                font-family: "Playfair Display", serif;
+                font-size: 1.25rem;
+                color: var(--gray-900);
+                margin-bottom: 4px;
+            }
+            .query-hint {
+                font-size: 0.84rem;
+                color: var(--gray-500);
+                margin-bottom: 20px;
+            }
+
+            textarea {
+                width: 100%;
+                min-height: 140px;
+                padding: 16px 18px;
+                border: 1.5px solid var(--gray-200);
+                border-radius: var(--r-md);
+                font-family: "Inter", sans-serif;
+                font-size: 0.92rem;
+                color: var(--gray-900);
+                background: var(--white);
+                resize: vertical;
+                transition:
+                    border-color var(--transition),
+                    box-shadow var(--transition);
+                outline: none;
+                line-height: 1.65;
+            }
+            textarea:focus {
+                border-color: var(--sage-400);
+                box-shadow: 0 0 0 3px rgba(78, 165, 120, 0.1);
+            }
+            textarea::placeholder {
+                color: var(--gray-400);
+            }
+
+            /* Covers row */
+            .covers-row {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+                margin: 16px 0 22px;
+            }
+            .cover-tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 4px 12px;
+                border: 1px solid var(--gray-200);
+                border-radius: 100px;
+                font-size: 0.73rem;
+                font-weight: 500;
+                color: var(--gray-500);
+                background: var(--gray-50);
+            }
+            .cover-tag-dot {
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background: var(--sage-500);
+                flex-shrink: 0;
+            }
+
+            /* Example prompts */
+            .examples-label {
+                font-size: 0.7rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                color: var(--gray-400);
+                margin-bottom: 10px;
+            }
+            .examples {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 7px;
+                margin-bottom: 24px;
+            }
+            .example-chip {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                padding: 6px 13px;
+                background: var(--sage-50);
+                border: 1px solid var(--sage-100);
+                border-radius: 100px;
+                font-size: 0.76rem;
+                font-weight: 500;
+                color: var(--sage-700);
+                cursor: pointer;
+                transition: all var(--transition);
+                white-space: nowrap;
+            }
+            .example-chip:hover {
+                background: var(--sage-100);
+                border-color: var(--sage-300);
+                color: var(--sage-900);
+                transform: translateY(-1px);
+                box-shadow: var(--shadow-sm);
+            }
+            .example-chip-icon {
+                font-size: 0.82rem;
+            }
+
+            /* Submit button */
+            .btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 9px;
+                width: 100%;
+                padding: 14px 28px;
+                border: none;
+                border-radius: var(--r-md);
+                font-family: "Inter", sans-serif;
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all var(--transition);
+                letter-spacing: 0.2px;
+            }
+            .btn-primary {
+                background: var(--sage-800);
+                color: #fff;
+                box-shadow: 0 2px 8px rgba(26, 58, 42, 0.2);
+            }
+            .btn-primary:hover:not(:disabled) {
+                background: var(--sage-700);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 16px rgba(26, 58, 42, 0.25);
+            }
+            .btn-primary:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                transform: none;
+            }
+            .btn-secondary {
+                background: var(--white);
+                color: var(--gray-600);
+                border: 1.5px solid var(--gray-200);
+                font-weight: 500;
+            }
+            .btn-secondary:hover {
+                background: var(--gray-50);
+                border-color: var(--gray-300);
+            }
+
+            /* ─── Loading ────────────────────────────────────────────── */
+            .loading {
+                display: none;
+                text-align: center;
+                padding: 48px 20px;
+                background: var(--white);
+                border: 1px solid var(--gray-200);
+                border-radius: var(--r-xl);
+                box-shadow: var(--shadow-md);
+                margin-bottom: 32px;
+            }
+            .loading.show {
+                display: block;
+            }
+
+            .spinner-wrap {
+                position: relative;
+                width: 56px;
+                height: 56px;
+                margin: 0 auto 20px;
+            }
+            .spinner-ring {
+                position: absolute;
+                inset: 0;
+                border: 2px solid var(--sage-100);
+                border-top-color: var(--sage-500);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+            .spinner-ring-2 {
+                position: absolute;
+                inset: 8px;
+                border: 1.5px solid var(--sage-50);
+                border-bottom-color: var(--sage-400);
+                border-radius: 50%;
+                animation: spin 1.6s linear infinite reverse;
+            }
+            .spinner-emoji {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.1rem;
+            }
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .loading-title {
+                font-family: "Playfair Display", serif;
+                font-size: 1.05rem;
+                color: var(--gray-900);
+                margin-bottom: 4px;
+            }
+            .loading-sub {
+                font-size: 0.82rem;
+                color: var(--gray-400);
+                margin-bottom: 24px;
+            }
+
+            .loading-steps {
+                display: inline-flex;
+                flex-direction: column;
+                gap: 8px;
+                text-align: left;
+            }
+            .loading-step {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 0.8rem;
+                color: var(--gray-400);
+                transition: color var(--transition);
+            }
+            .loading-step.active {
+                color: var(--sage-700);
+                font-weight: 500;
+            }
+            .loading-step .dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: currentColor;
+                flex-shrink: 0;
+                transition: background var(--transition);
+            }
+            .loading-step.active .dot {
+                background: var(--sage-500);
+                animation: pulse 1.5s ease-in-out infinite;
+            }
+
+            @keyframes breathe {
+                0%,
+                100% {
+                    box-shadow: 0 0 0 3px rgba(123, 196, 160, 0.2);
+                }
+                50% {
+                    box-shadow: 0 0 0 6px rgba(123, 196, 160, 0.06);
+                }
+            }
+
+            /* ─── Results ────────────────────────────────────────────── */
+            #results {
+                display: none;
+            }
+            #results.show {
+                display: block;
+                animation: rise 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            @keyframes rise {
+                from {
+                    opacity: 0;
+                    transform: translateY(14px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Status banner */
+            .banner {
+                border-radius: var(--r-xl);
+                padding: 28px 32px;
+                margin-bottom: 16px;
+                display: flex;
+                align-items: flex-start;
+                gap: 18px;
+                border: 1px solid transparent;
+                position: relative;
+                overflow: hidden;
+            }
+            .banner::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 4px;
+            }
+            .banner.compliant {
+                background: var(--sage-50);
+                border-color: var(--sage-200);
+            }
+            .banner.compliant::before {
+                background: var(--sage-500);
+            }
+            .banner.non-compliant {
+                background: var(--red-50);
+                border-color: #fecaca;
+            }
+            .banner.non-compliant::before {
+                background: var(--red-500);
+            }
+            .banner.review {
+                background: var(--amber-50);
+                border-color: #fde68a;
+            }
+            .banner.review::before {
+                background: var(--amber-500);
+            }
+            .banner.info {
+                background: var(--blue-50);
+                border-color: #bfdbfe;
+            }
+            .banner.info::before {
+                background: var(--blue-500);
+            }
+
+            .banner-icon {
+                font-size: 2.2rem;
+                line-height: 1;
+                flex-shrink: 0;
+                margin-top: 2px;
+            }
+            .banner-body h2 {
+                font-family: "Playfair Display", serif;
+                font-size: 1.25rem;
+                margin-bottom: 6px;
+            }
+            .banner.compliant .banner-body h2 {
+                color: var(--sage-900);
+            }
+            .banner.non-compliant .banner-body h2 {
+                color: var(--red-700);
+            }
+            .banner.review .banner-body h2 {
+                color: var(--amber-700);
+            }
+            .banner.info .banner-body h2 {
+                color: var(--blue-700);
+            }
+            .banner-body p {
+                font-size: 0.9rem;
+                line-height: 1.7;
+            }
+            .banner.compliant .banner-body p {
+                color: var(--sage-700);
+            }
+            .banner.non-compliant .banner-body p {
+                color: var(--red-700);
+            }
+            .banner.review .banner-body p {
+                color: var(--amber-600);
+            }
+            .banner.info .banner-body p {
+                color: var(--blue-700);
+            }
+
+            /* Section cards */
+            .card {
+                background: var(--white);
+                border: 1px solid var(--gray-200);
+                border-radius: var(--r-lg);
+                box-shadow: var(--shadow-xs);
+                margin-bottom: 16px;
+                overflow: hidden;
+                transition: box-shadow var(--transition);
+            }
+            .card:hover {
+                box-shadow: var(--shadow-sm);
+            }
+
+            .card-head {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 16px 24px;
+                border-bottom: 1px solid var(--gray-100);
+            }
+            .card-icon {
+                width: 32px;
+                height: 32px;
+                border-radius: var(--r-sm);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.95rem;
+                flex-shrink: 0;
+            }
+            .ci-green {
+                background: var(--sage-100);
+            }
+            .ci-amber {
+                background: var(--amber-100);
+            }
+            .ci-blue {
+                background: var(--blue-100);
+            }
+            .ci-red {
+                background: var(--red-100);
+            }
+
+            .card-head h3 {
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: var(--gray-900);
+            }
+
+            .card-body {
+                padding: 20px 24px;
+            }
+
+            /* Accordion bylaw items */
+            .bylaw-item {
+                border: 1px solid var(--gray-200);
+                border-radius: var(--r-sm);
+                overflow: hidden;
+                margin-bottom: 8px;
+                transition:
+                    box-shadow var(--transition),
+                    border-color var(--transition);
+            }
+            .bylaw-item:last-child {
+                margin-bottom: 0;
+            }
+            .bylaw-item:hover {
+                border-color: var(--gray-300);
+                box-shadow: var(--shadow-xs);
+            }
+
+            .bylaw-trigger {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 14px;
+                cursor: pointer;
+                user-select: none;
+                background: var(--gray-50);
+                transition: background var(--transition);
+            }
+            .bylaw-trigger:hover {
+                background: var(--sage-50);
+            }
+            .bylaw-left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .bylaw-badge {
+                padding: 2px 8px;
+                border-radius: 6px;
+                font-size: 0.64rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+                background: var(--sage-800);
+                color: var(--white);
+                white-space: nowrap;
+            }
+            .bylaw-name {
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: var(--gray-900);
+            }
+            .bylaw-sec {
+                font-size: 0.73rem;
+                color: var(--gray-400);
+                font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+                font-style: italic;
+                margin-top: 2px;
+            }
+            .bylaw-chevron {
+                font-size: 0.7rem;
+                color: var(--gray-400);
+                transition: transform var(--transition);
+                flex-shrink: 0;
+            }
+            .bylaw-item.open .bylaw-chevron {
+                transform: rotate(180deg);
+            }
+
+            .bylaw-panel {
+                display: none;
+                padding: 12px 14px;
+                border-top: 1px solid var(--gray-100);
+                background: var(--white);
+            }
+            .bylaw-item.open .bylaw-panel {
+                display: block;
+                animation: fadeIn 0.2s ease;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .bylaw-desc {
+                font-size: 0.84rem;
+                color: var(--gray-600);
+                line-height: 1.65;
+            }
+
+            /* Recommendations & list items */
+            .pill-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .rec-pill {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 10px 14px;
+                background: var(--gray-50);
+                border-radius: var(--r-sm);
+                font-size: 0.84rem;
+                color: var(--gray-700);
+                line-height: 1.6;
+                border: 1px solid transparent;
+                transition: border-color var(--transition);
+            }
+            .rec-pill:hover {
+                border-color: var(--gray-200);
+            }
+            .rec-arrow {
+                color: var(--sage-500);
+                font-size: 0.85rem;
+                flex-shrink: 0;
+                margin-top: 2px;
+            }
+
+            /* Steps (numbered) */
+            .step-item {
+                display: flex;
+                align-items: flex-start;
+                gap: 14px;
+                margin-bottom: 16px;
+            }
+            .step-item:last-child {
+                margin-bottom: 0;
+            }
+            .step-num {
+                flex-shrink: 0;
+                font-family: "Playfair Display", serif;
+                font-size: 1.4rem;
+                font-weight: 700;
+                color: var(--sage-400);
+                line-height: 1;
+                min-width: 20px;
+                margin-top: 0;
+            }
+            .step-text {
+                font-size: 0.84rem;
+                color: var(--gray-700);
+                line-height: 1.65;
+            }
+
+            /* Warnings */
+            .warn-item {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 12px 14px;
+                background: var(--amber-50);
+                border: 1px solid #fde68a;
+                border-left: 3px solid var(--amber-400);
+                border-radius: var(--r-sm);
+                font-size: 0.84rem;
+                color: var(--amber-700);
+                line-height: 1.6;
+                margin-bottom: 8px;
+            }
+            .warn-item:last-child {
+                margin-bottom: 0;
+            }
+
+            /* Disclaimer */
+            .disclaimer {
+                background: var(--gray-50);
+                border: 1px solid var(--gray-200);
+                border-radius: var(--r-md);
+                padding: 14px 18px;
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                font-size: 0.76rem;
+                color: var(--gray-500);
+                line-height: 1.65;
+                margin-bottom: 20px;
+            }
+            .disclaimer a {
+                color: var(--sage-600);
+                text-decoration: none;
+                font-weight: 500;
+            }
+            .disclaimer a:hover {
+                text-decoration: underline;
+            }
+
+            /* Reset button row */
+            .reset-row {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .reset-row .btn {
+                max-width: 260px;
+                width: auto;
+                flex: 1 1 200px;
+            }
+
+            /* Error card */
+            .error-card {
+                background: var(--red-50);
+                border: 1px solid #fecaca;
+                border-radius: var(--r-md);
+                padding: 16px 20px;
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                font-size: 0.86rem;
+                color: var(--red-700);
+            }
+
+            /* ─── Footer ─────────────────────────────────────────────── */
+            footer {
+                border-top: 1px solid var(--gray-200);
+                background: var(--white);
+                color: var(--gray-400);
+                padding: 36px 24px;
+                text-align: center;
+                font-size: 0.78rem;
+            }
+            footer a {
+                color: var(--sage-600);
+                text-decoration: none;
+                font-weight: 500;
+            }
+            footer a:hover {
+                text-decoration: underline;
+                color: var(--sage-800);
+            }
+            .footer-links {
+                display: flex;
+                justify-content: center;
+                gap: 24px;
+                flex-wrap: wrap;
+                margin-bottom: 14px;
+            }
+
+            /* ─── Analyzed sections badges ────────────────────────────── */
+            .analyzed-bar {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-bottom: 16px;
+            }
+            .analyzed-label {
+                font-size: 0.7rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.6px;
+                color: var(--gray-400);
+                white-space: nowrap;
+            }
+            .analyzed-badges {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .analyzed-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                padding: 3px 10px;
+                background: var(--sage-50);
+                border: 1px solid var(--sage-100);
+                border-radius: 6px;
+                font-size: 0.7rem;
+                font-weight: 500;
+                color: var(--sage-700);
+                white-space: nowrap;
+            }
+            .analyzed-badge.lub {
+                background: var(--sage-100);
+                border-color: var(--sage-200);
+                font-weight: 600;
+            }
+            .analyzed-badge-icon {
+                font-size: 0.75rem;
+            }
+
+            /* ─── Download PDF button ────────────────────────────────── */
+            .btn-download {
+                background: var(--gray-900);
+                color: #fff;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            }
+            .btn-download:hover:not(:disabled) {
+                background: var(--gray-700);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            }
+            .btn-download:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+            /* ─── PID Lookup ──────────────────────────────────────────── */
+            .pid-section {
+                margin-bottom: 24px;
+                padding-bottom: 24px;
+                border-bottom: 1px solid var(--gray-200);
+            }
+            .pid-section-label {
+                font-size: 0.7rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                color: var(--gray-400);
+                margin-bottom: 8px;
+            }
+            .pid-row {
+                display: flex;
+                gap: 8px;
+            }
+            .pid-input {
+                flex: 1;
+                padding: 10px 14px;
+                border: 1.5px solid var(--gray-200);
+                border-radius: var(--r-sm);
+                font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+                font-size: 0.9rem;
+                color: var(--gray-900);
+                background: var(--white);
+                outline: none;
+                letter-spacing: 1.5px;
+                transition:
+                    border-color var(--transition),
+                    box-shadow var(--transition);
+            }
+            .pid-input:focus {
+                border-color: var(--sage-400);
+                box-shadow: 0 0 0 3px rgba(78, 165, 120, 0.1);
+            }
+            .pid-input::placeholder {
+                color: var(--gray-400);
+                letter-spacing: 0.5px;
+                font-family: "Inter", sans-serif;
+                font-size: 0.82rem;
+            }
+            .btn-pid {
+                padding: 10px 20px;
+                background: var(--white);
+                color: var(--sage-800);
+                border: 1.5px solid var(--sage-200);
+                border-radius: var(--r-sm);
+                font-family: "Inter", sans-serif;
+                font-size: 0.82rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all var(--transition);
+                white-space: nowrap;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .btn-pid:hover:not(:disabled) {
+                background: var(--sage-50);
+                border-color: var(--sage-400);
+                color: var(--sage-900);
+            }
+            .btn-pid:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            .pid-result {
+                margin-top: 12px;
+                padding: 14px 16px;
+                border-radius: var(--r-sm);
+                background: var(--sage-50);
+                border: 1px solid var(--sage-100);
+                display: none;
+            }
+            .pid-result.show {
+                display: block;
+                animation: fadeIn 0.25s ease;
+            }
+            .pid-result.error {
+                background: var(--red-50);
+                border-color: #fecaca;
+            }
+            .pid-result-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 10px;
+            }
+            .pid-result-title {
+                font-size: 0.82rem;
+                font-weight: 600;
+                color: var(--sage-800);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .pid-result.error .pid-result-title {
+                color: var(--red-700);
+            }
+            .pid-props {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 8px;
+            }
+            .pid-prop {
+                font-size: 0.78rem;
+            }
+            .pid-prop-label {
+                color: var(--gray-400);
+                font-size: 0.68rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .pid-prop-value {
+                color: var(--gray-900);
+                font-weight: 500;
+            }
+            .btn-use-property {
+                margin-top: 12px;
+                padding: 8px 16px;
+                background: var(--sage-800);
+                color: #fff;
+                border: none;
+                border-radius: var(--r-sm);
+                font-family: "Inter", sans-serif;
+                font-size: 0.78rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all var(--transition);
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .btn-use-property:hover {
+                background: var(--sage-700);
+                transform: translateY(-1px);
+            }
+            .pid-error-msg {
+                font-size: 0.82rem;
+                color: var(--red-700);
+            }
+            .pid-spinner {
+                width: 14px;
+                height: 14px;
+                border: 2px solid var(--sage-200);
+                border-top-color: var(--sage-600);
+                border-radius: 50%;
+                animation: spin 0.7s linear infinite;
+                display: none;
+            }
+            .btn-pid.loading .pid-spinner {
+                display: block;
+            }
+            .btn-pid.loading .btn-pid-label {
+                display: none;
+            }
+            .pid-dpa-list {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+            .pid-dpa-badge {
+                display: flex;
+                align-items: flex-start;
+                padding: 6px 10px;
+                border-radius: 6px;
+                font-size: 0.72rem;
+                font-weight: 500;
+                gap: 6px;
+            }
+            .pid-dpa-badge .dpa-name {
+                font-weight: 600;
+                white-space: nowrap;
+            }
+            .pid-dpa-badge .dpa-reason {
+                font-weight: 400;
+                color: inherit;
+                opacity: 0.8;
+            }
+            .pid-dpa-badge.dpa-likely {
+                background: var(--teal-100);
+                border: 1px solid rgba(15, 118, 110, 0.2);
+                color: var(--teal-700);
+            }
+            .pid-dpa-badge.dpa-possible {
+                background: #fef3c7;
+                border: 1px solid rgba(180, 140, 20, 0.15);
+                color: #92400e;
+            }
+            .pid-dpa-badge.dpa-check {
+                background: var(--gray-100);
+                border: 1px solid var(--gray-200);
+                color: var(--gray-500);
+            }
+            .dpa-confidence-tag {
+                font-size: 0.6rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 1px 5px;
+                border-radius: 3px;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            .pid-dpa-badge.dpa-confirmed {
+                background: #d1fae5;
+                border: 1px solid rgba(5, 150, 105, 0.25);
+                color: #065f46;
+            }
+            .dpa-confirmed .dpa-confidence-tag {
+                background: rgba(5, 150, 105, 0.2);
+                color: #064e3b;
+            }
+            .dpa-likely .dpa-confidence-tag {
+                background: rgba(15, 118, 110, 0.15);
+                color: var(--teal-800);
+            }
+            .dpa-possible .dpa-confidence-tag {
+                background: rgba(180, 140, 20, 0.15);
+                color: #78350f;
+            }
+            .dpa-check .dpa-confidence-tag {
+                background: var(--gray-200);
+                color: var(--gray-500);
+            }
+            .pid-dpa-none {
+                font-size: 0.72rem;
+                color: var(--gray-400);
+                font-style: italic;
+            }
+            .pid-zone-highlight {
+                background: var(--sage-50);
+                border: 1px solid var(--sage-200);
+                border-radius: 6px;
+                padding: 8px 12px;
+                margin-bottom: 8px;
+            }
+            .pid-zone-code {
+                font-family: "SF Mono", "Fira Code", monospace;
+                font-size: 0.9rem;
+                font-weight: 700;
+                color: var(--sage-800);
+            }
+            .pid-zone-name {
+                font-size: 0.78rem;
+                color: var(--sage-700);
+                margin-top: 2px;
+            }
+            .pid-zone-bylaw {
+                font-size: 0.65rem;
+                color: var(--gray-400);
+                margin-top: 2px;
+            }
+
+            /* ─── Responsive ─────────────────────────────────────────── */
+            @media (max-width: 600px) {
+                .hero {
+                    padding: 44px 20px 120px;
+                }
+                .query-card {
+                    padding: 24px 20px;
+                    border-radius: var(--r-xl);
+                    margin-top: -70px;
+                }
+                .banner {
+                    flex-direction: column;
+                    padding: 22px 20px;
+                    gap: 12px;
+                }
+                .card-body {
+                    padding: 16px 18px;
+                }
+                .card-head {
+                    padding: 14px 18px;
+                }
+                .reset-row .btn {
+                    max-width: none;
+                    flex: 1 1 100%;
+                }
+                .pid-row {
+                    flex-direction: column;
+                }
+                .pid-props {
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- ─── Hero ──────────────────────────────────────────────────── -->
+        <header class="hero">
+            <div class="hero-inner">
+                <h1>
+                    Does Your Project<br />Comply With the<br /><em
+                        >Salt Spring Island Bylaws?</em
+                    >
+                </h1>
+
+                <p class="hero-sub">
+                    AI-powered compliance analysis against Land Use Bylaw
+                    No.&nbsp;355 and OCP&nbsp;434 — with section references,
+                    recommendations, and next steps.
+                </p>
+            </div>
+
+            <!-- Soft curved separator -->
+            <div class="hero-wave">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 1440 60"
+                    preserveAspectRatio="none"
+                    style="display: block; width: 100%; height: 60px"
+                >
+                    <path
+                        fill="#F7F8F6"
+                        d="M0,30 C360,60 720,0 1080,30 C1260,45 1380,20 1440,30 L1440,60 L0,60 Z"
+                    />
+                </svg>
+            </div>
+        </header>
+
+        <!-- ─── Main ──────────────────────────────────────────────────── -->
+        <main class="page">
+            <!-- Query card -->
+            <div class="query-card" id="queryCard">
+                <!-- PID Lookup -->
+                <div class="pid-section">
+                    <p class="pid-section-label">
+                        Look up a property (optional)
+                    </p>
+                    <div class="pid-row">
+                        <input
+                            type="text"
+                            class="pid-input"
+                            id="pidInput"
+                            placeholder="Enter a PID, e.g. 009-123-456"
+                            maxlength="11"
+                            autocomplete="off"
+                        />
+                        <button
+                            class="btn-pid"
+                            id="pidBtn"
+                            onclick="lookupPID()"
+                        >
+                            <span class="btn-pid-label">Look up</span>
+                            <div class="pid-spinner"></div>
+                        </button>
+                    </div>
+                    <div class="pid-result" id="pidResult"></div>
+                </div>
+
+                <p class="query-label">What are you planning to do?</p>
+                <p class="query-hint">
+                    Tell us what you want to do on your property. If you didn't
+                    enter your PID information, provide as much information as
+                    you can in your request; relevant land-use zoning and DPA
+                    zone information will help yield better results
+                </p>
+
+                <textarea
+                    id="queryInput"
+                    placeholder="e.g. I want to add a secondary suite to my single-family home in an R1 zone on a 0.4 ha lot on Salt Spring Island. The suite would be in the basement with a separate entrance, approximately 75 sq m…"
+                ></textarea>
+
+                <!-- Covers row: always-included sources -->
+                <div class="covers-row">
+                    <span class="cover-tag"
+                        ><span class="cover-tag-dot"></span> LUB No. 355 —
+                        always included</span
+                    >
+                    <span class="cover-tag"
+                        ><span class="cover-tag-dot"></span> OCP No. 434 —
+                        auto-detected sections</span
+                    >
+                </div>
+
+                <p class="examples-label">Try an example</p>
+                <div class="examples">
+                    <span
+                        class="example-chip"
+                        data-q="I want to build a two-storey house on my R1 residential lot with a secondary suite"
+                        ><span class="example-chip-icon">🏠</span> House + suite
+                        in R1</span
+                    >
+                    <span
+                        class="example-chip"
+                        data-q="Can I open a small coffee shop on my C1 commercial property?"
+                        ><span class="example-chip-icon">☕</span> Coffee shop
+                        in C1</span
+                    >
+                    <span
+                        class="example-chip"
+                        data-q="I want to build an accessory dwelling unit on my 5 acre rural property in RU1"
+                        ><span class="example-chip-icon">🏡</span> ADU on rural
+                        land</span
+                    >
+                    <span
+                        class="example-chip"
+                        data-q="Can I operate a bed and breakfast from my residential property?"
+                        ><span class="example-chip-icon">🛏️</span> B&amp;B in
+                        residential</span
+                    >
+                    <span
+                        class="example-chip"
+                        data-q="I want to build a workshop and storage building on my GE1 industrial lot"
+                        ><span class="example-chip-icon">🔧</span> Workshop in
+                        GE1</span
+                    >
+                </div>
+
+                <button
+                    class="btn btn-primary"
+                    id="checkBtn"
+                    onclick="checkCompliance()"
+                >
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
+                    Check Compliance
+                </button>
+
+                <p
+                    style="
+                        font-size: 0.72rem;
+                        color: var(--gray-400);
+                        text-align: center;
+                        margin-top: 12px;
+                    "
+                >
+                    Press
+                    <kbd
+                        style="
+                            background: var(--gray-100);
+                            border: 1px solid var(--gray-200);
+                            border-radius: 4px;
+                            padding: 1px 5px;
+                            font-size: 0.7rem;
+                        "
+                        >Ctrl</kbd
+                    >
+                    +
+                    <kbd
+                        style="
+                            background: var(--gray-100);
+                            border: 1px solid var(--gray-200);
+                            border-radius: 4px;
+                            padding: 1px 5px;
+                            font-size: 0.7rem;
+                        "
+                        >Enter</kbd
+                    >
+                    to submit
+                </p>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading" id="loading">
+                <div class="spinner-wrap">
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring-2"></div>
+                    <div class="spinner-emoji">📋</div>
+                </div>
+                <p class="loading-title">Analysing your query…</p>
+                <p class="loading-sub">
+                    Reviewing the actual bylaw text — this usually takes 10–20
+                    seconds
+                </p>
+                <div class="loading-steps">
+                    <div class="loading-step" id="ls1">
+                        <span class="dot"></span> Reading Land Use Bylaw No. 355
+                    </div>
+                    <div class="loading-step" id="ls2">
+                        <span class="dot"></span> Identifying applicable zones
+                        &amp; sections
+                    </div>
+                    <div class="loading-step" id="ls3">
+                        <span class="dot"></span> Checking OCP policies &amp;
+                        DPA requirements
+                    </div>
+                    <div class="loading-step" id="ls4">
+                        <span class="dot"></span> Reviewing setback &amp;
+                        coverage regulations
+                    </div>
+                    <div class="loading-step" id="ls5">
+                        <span class="dot"></span> Preparing your compliance
+                        report
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="results"></div>
+        </main>
+
+        <!-- ─── Footer ───────────────────────────────────────────────── -->
+        <footer>
+            <div class="footer-links">
+                <a
+                    href="https://islandstrust.bc.ca/island-planning/salt-spring/bylaws/"
+                    target="_blank"
+                    rel="noopener"
+                    >Official Bylaws</a
+                >
+                <a
+                    href="https://islandstrust.bc.ca"
+                    target="_blank"
+                    rel="noopener"
+                    >Islands Trust</a
+                >
+                <a
+                    href="https://www.islandstrust.bc.ca/island-planning/salt-spring/contact/"
+                    target="_blank"
+                    rel="noopener"
+                    >Contact Planning Staff</a
+                >
+                <a
+                    href="https://www.alc.gov.bc.ca"
+                    target="_blank"
+                    rel="noopener"
+                    >Agricultural Land Commission</a
+                >
+            </div>
+            <p>
+                For informational purposes only · Not legal or planning advice ·
+                Always verify with Islands Trust staff
+            </p>
+            <p
+                style="
+                    margin-top: 8px;
+                    color: var(--gray-300);
+                    font-size: 0.72rem;
+                "
+            >
+                Salt Spring Island Bylaw Compliance Checker
+            </p>
+        </footer>
+
+        <script src="/jspdf.umd.min.js"></script>
+        <script>
+            /* ── Global state for PDF export ─────────────────────────────── */
+            let lastResultData = null;
+            let lastAnalyzedSections = [];
+            let lastQuery = "";
+            let lastPIDData = null;
+
+            /* ── PID Lookup ──────────────────────────────────────────────── */
+            function formatPID(raw) {
+                const digits = raw.replace(/\D/g, "");
+                if (digits.length <= 3) return digits;
+                if (digits.length <= 6)
+                    return digits.slice(0, 3) + "-" + digits.slice(3);
+                return (
+                    digits.slice(0, 3) +
+                    "-" +
+                    digits.slice(3, 6) +
+                    "-" +
+                    digits.slice(6, 9)
+                );
+            }
+
+            // Auto-format PID as user types
+            document.addEventListener("DOMContentLoaded", () => {
+                const pidIn = document.getElementById("pidInput");
+                pidIn.addEventListener("input", () => {
+                    const pos = pidIn.selectionStart;
+                    const old = pidIn.value;
+                    pidIn.value = formatPID(old);
+                    // Adjust cursor position for inserted dashes
+                    const diff = pidIn.value.length - old.length;
+                    pidIn.setSelectionRange(pos + diff, pos + diff);
+                });
+                pidIn.addEventListener("keydown", (e) => {
+                    if (e.key === "Enter") lookupPID();
+                });
+            });
+
+            // ─── PID Lookup v2 — All data from authoritative local datasets ───
+
+            async function lookupPID() {
+                const pidIn = document.getElementById("pidInput");
+                const btn = document.getElementById("pidBtn");
+                const resultEl = document.getElementById("pidResult");
+                const pid = pidIn.value.trim();
+
+                if (!pid || pid.replace(/\D/g, "").length !== 9) {
+                    resultEl.className = "pid-result show error";
+                    resultEl.innerHTML = `<div class="pid-result-title">Invalid PID</div>
       <p class="pid-error-msg">Please enter a 9-digit parcel identification number (e.g. 009-123-456)</p>`;
-    return;
-  }
+                    return;
+                }
 
-  btn.disabled = true;
-  btn.classList.add('loading');
-  resultEl.className = 'pid-result';
-  resultEl.innerHTML = '';
+                btn.disabled = true;
+                btn.classList.add("loading");
+                resultEl.className = "pid-result";
+                resultEl.innerHTML = "";
 
-  try {
-    const resp = await fetch('/api/pid-lookup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pid }),
-    });
+                try {
+                    const resp = await fetch("/api/pid-lookup", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ pid }),
+                    });
 
-    const json = await resp.json();
+                    const json = await resp.json();
 
-    if (!json.success) {
-      resultEl.className = 'pid-result show error';
-      resultEl.innerHTML = `<div class="pid-result-title">${esc(json.error)}</div>`;
-      lastPIDData = null;
-      return;
-    }
+                    if (!json.success) {
+                        resultEl.className = "pid-result show error";
+                        resultEl.innerHTML = `<div class="pid-result-title">${esc(json.error)}</div>`;
+                        lastPIDData = null;
+                        return;
+                    }
 
-    lastPIDData = json.data;
-    const d = json.data;
+                    lastPIDData = json.data;
+                    const d = json.data;
 
-    // Format area nicely
-    let areaStr = 'N/A';
-    if (d.area_sqm) {
-      areaStr = d.area_sqm >= 10000
-        ? (d.area_sqm / 10000).toFixed(2) + ' ha'
-        : d.area_sqm.toLocaleString() + ' m\u00B2';
-    }
-
-    // Build zone highlight
-    let zoneHtml = '';
-    if (d.zone_code) {
-      const zCode = esc(d.lub_zone_code || d.zone_code);
-      const zName = esc(d.lub_zone_name || d.zone_desc || '');
-      zoneHtml = `<div class="pid-zone-highlight">
+                    // Build zone highlight
+                    let zoneHtml = "";
+                    if (d.zone_code) {
+                        const zCode = esc(d.lub_zone_code || d.zone_code);
+                        const zName = esc(d.lub_zone_name || d.zone_desc || "");
+                        zoneHtml = `<div class="pid-zone-highlight">
         <div class="pid-zone-code">${zCode}</div>
         <div class="pid-zone-name">${zName}</div>
         <div class="pid-zone-bylaw">Land Use Bylaw 355 &middot; Islands Trust</div>
       </div>`;
-    } else {
-      zoneHtml = `<div class="pid-zone-highlight" style="border-color:var(--gray-300);">
+                    } else {
+                        zoneHtml = `<div class="pid-zone-highlight" style="border-color:var(--gray-300);">
         <div class="pid-zone-code" style="color:var(--gray-400);">Zone Not Found</div>
         <div class="pid-zone-name">Parcel may be outside zoned area</div>
       </div>`;
-    }
+                    }
 
-    // Build DPA list — all from authoritative Islands Trust data
-    let dpaHtml = '';
-    if (d.dpas && d.dpas.length > 0) {
-      const buildBadge = (dpa) => {
-        return `<div class="pid-dpa-badge dpa-confirmed">
+                    // Build DPA list — all from authoritative Islands Trust data
+                    let dpaHtml = "";
+                    if (d.dpas && d.dpas.length > 0) {
+                        const buildBadge = (dpa) => {
+                            return `<div class="pid-dpa-badge dpa-confirmed">
           <span class="dpa-confidence-tag">Confirmed</span>
           <span><span class="dpa-name">${esc(dpa.name)}</span></span>
         </div>`;
-      };
-      dpaHtml = d.dpas.map(buildBadge).join('');
-    } else {
-      dpaHtml = '<span class="pid-dpa-none">No Development Permit Areas apply to this parcel</span>';
-    }
+                        };
+                        dpaHtml = d.dpas.map(buildBadge).join("");
+                    } else {
+                        dpaHtml =
+                            '<span class="pid-dpa-none">No Development Permit Areas apply to this parcel</span>';
+                    }
 
-    resultEl.className = 'pid-result show';
-    resultEl.innerHTML = `
+                    // Auto-incorporate property into query
+                    useProperty();
+
+                    resultEl.className = "pid-result show";
+                    resultEl.innerHTML = `
       <div class="pid-result-header">
         <div class="pid-result-title">Property Found</div>
       </div>
@@ -1107,141 +1637,154 @@ async function lookupPID() {
           <div class="pid-prop-label">PID</div>
           <div class="pid-prop-value">${esc(d.pid || pid)}</div>
         </div>
-        <div class="pid-prop">
-          <div class="pid-prop-label">Area</div>
-          <div class="pid-prop-value">${areaStr}</div>
-        </div>
-        <div class="pid-prop">
-          <div class="pid-prop-label">Plan Number</div>
-          <div class="pid-prop-value">${esc(d.plan_number || 'N/A')}</div>
-        </div>
-        <div class="pid-prop">
-          <div class="pid-prop-label">Owner Type</div>
-          <div class="pid-prop-value">${esc(d.owner_type || 'N/A')}</div>
-        </div>
       </div>
       <div style="margin-top:12px;">
         <div class="pid-prop-label" style="margin-bottom:6px;">Development Permit Areas (OCP 434)</div>
         <div class="pid-dpa-list">${dpaHtml}</div>
       </div>
-      ${d.debug_map_link ? `<div style="margin-top:8px;font-size:.65rem;"><a href="${d.debug_map_link}" target="_blank" rel="noopener" style="color:var(--gray-400);">Verify location on Google Maps</a></div>` : ''}
-      ${d._debug ? `<details style="margin-top:10px;font-size:.62rem;color:var(--gray-400);"><summary style="cursor:pointer;">Debug Data (click to expand)</summary><pre style="white-space:pre-wrap;word-break:break-all;background:rgba(0,0,0,0.05);padding:8px;border-radius:4px;margin-top:4px;max-height:300px;overflow:auto;">${esc(JSON.stringify(d._debug, null, 2))}</pre></details>` : ''}
-      <button class="btn-use-property" onclick="useProperty()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m5 12 7-7 7 7"/></svg>
-        Use this property in my query
-      </button>`;
-  } catch (err) {
-    resultEl.className = 'pid-result show error';
-    resultEl.innerHTML = `<div class="pid-result-title">Connection Error</div>
+      ${d.debug_map_link ? `<div style="margin-top:10px;"><a href="${d.debug_map_link}" target="_blank" rel="noopener" style="font-size:.78rem;color:var(--sage-600);text-decoration:underline;text-underline-offset:2px;">Verify location on Google Maps &rarr;</a></div>` : ""}
+      <div style="margin-top:14px;padding:10px 0 0 0;font-size:.85rem;font-weight:400;color:var(--sage-800);border-top:1px solid var(--sage-200);">
+        This property information will be incorporated into your request.
+      </div>
+      `;
+                } catch (err) {
+                    resultEl.className = "pid-result show error";
+                    resultEl.innerHTML = `<div class="pid-result-title">Connection Error</div>
       <p class="pid-error-msg">Could not reach the property lookup service. Please try again.</p>`;
-    lastPIDData = null;
-  } finally {
-    btn.disabled = false;
-    btn.classList.remove('loading');
-  }
-}
+                    lastPIDData = null;
+                } finally {
+                    btn.disabled = false;
+                    btn.classList.remove("loading");
+                }
+            }
 
-function useProperty() {
-  if (!lastPIDData) return;
-  const d = lastPIDData;
-  const textarea = document.getElementById('queryInput');
+            function useProperty() {
+                if (!lastPIDData) return;
+                const d = lastPIDData;
+                const textarea = document.getElementById("queryInput");
 
-  let areaStr = '';
-  if (d.area_sqm) {
-    areaStr = d.area_sqm >= 10000
-      ? (d.area_sqm / 10000).toFixed(2) + ' ha'
-      : d.area_sqm.toLocaleString() + ' m\u00B2';
-  }
+                // Build structured property context for AI query
+                const lines = [];
 
-  // Build structured property context for AI query
-  const lines = [];
+                // ── Land Use Zone ──
+                const zCode = d.lub_zone_code || d.zone_code;
+                const zName = d.lub_zone_name || d.zone_desc;
+                if (zCode) {
+                    lines.push(`ZONE: ${zCode} — ${zName || "Unknown"}`);
+                } else {
+                    lines.push("ZONE: Could not be determined");
+                }
 
-  // ── Property identification ──
-  lines.push(`PROPERTY: PID ${d.pid || ''}` + (areaStr ? `, ${areaStr}` : '') + (d.plan_number ? `, Plan ${d.plan_number}` : ''));
+                // ── DPA zones (OCP 434) — all from authoritative data ──
+                if (d.dpas && d.dpas.length > 0) {
+                    lines.push(
+                        "DPAs: " + d.dpas.map((dpa) => dpa.name).join("; "),
+                    );
+                } else {
+                    lines.push("DPAs: None apply to this parcel");
+                }
 
-  // ── Land Use Zone (LUB 355) ──
-  const zCode = d.lub_zone_code || d.zone_code;
-  const zName = d.lub_zone_name || d.zone_desc;
-  if (zCode) {
-    lines.push(`LUB 355 ZONE: ${zCode} — ${zName || 'Unknown'}`);
-  } else {
-    lines.push('LUB 355 ZONE: Could not be determined');
-  }
+                // ── Separator and user prompt ──
+                const context = lines.join("\n");
+                const existing = textarea.value.trim();
+                if (existing) {
+                    textarea.value = context + "\n\n" + existing;
+                } else {
+                    textarea.value = context + "\n\nI want to ";
+                }
 
-  // ── DPA zones (OCP 434) — all from authoritative data ──
-  if (d.dpas && d.dpas.length > 0) {
-    lines.push('DPAs: ' + d.dpas.map(dpa => dpa.name).join('; '));
-  } else {
-    lines.push('DPAs: None apply to this parcel');
-  }
+                textarea.focus();
+                textarea.setSelectionRange(
+                    textarea.value.length,
+                    textarea.value.length,
+                );
+                textarea.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                });
+            }
 
-  // ── Separator and user prompt ──
-  const context = lines.join('\n');
-  const existing = textarea.value.trim();
-  if (existing) {
-    textarea.value = context + '\n\n' + existing;
-  } else {
-    textarea.value = context + '\n\nI want to ';
-  }
+            /* ── Helpers ──────────────────────────────────────────────────── */
+            function statusConfig(status) {
+                const map = {
+                    likely_compliant: {
+                        icon: "✅",
+                        label: "Likely Compliant",
+                        cls: "compliant",
+                    },
+                    likely_non_compliant: {
+                        icon: "❌",
+                        label: "Likely Non-Compliant",
+                        cls: "non-compliant",
+                    },
+                    needs_review: {
+                        icon: "⚠️",
+                        label: "Needs Further Review",
+                        cls: "review",
+                    },
+                    insufficient_info: {
+                        icon: "🔍",
+                        label: "More Information Needed",
+                        cls: "info",
+                    },
+                };
+                return map[status] || map.needs_review;
+            }
 
-  textarea.focus();
-  textarea.setSelectionRange(textarea.value.length, textarea.value.length);
-  textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
+            function badgeFor(ref) {
+                if (!ref) return "Bylaw";
+                const m = ref.match(/(?:No\.?\s*)?(\d+)/i);
+                return m ? `No. ${m[1]}` : "Bylaw";
+            }
 
-/* ── Helpers ──────────────────────────────────────────────────── */
-function statusConfig(status) {
-  const map = {
-    likely_compliant:     { icon: '✅', label: 'Likely Compliant',            cls: 'compliant' },
-    likely_non_compliant: { icon: '❌', label: 'Likely Non-Compliant',        cls: 'non-compliant' },
-    needs_review:         { icon: '⚠️', label: 'Needs Further Review',       cls: 'review' },
-    insufficient_info:    { icon: '🔍', label: 'More Information Needed',     cls: 'info' },
-  };
-  return map[status] || map.needs_review;
-}
+            /* ── Loading animation ────────────────────────────────────────── */
+            let loadingTimer;
+            function startLoading() {
+                const steps = ["ls1", "ls2", "ls3", "ls4", "ls5"];
+                steps.forEach((id) =>
+                    document.getElementById(id).classList.remove("active"),
+                );
+                let i = 0;
+                document.getElementById(steps[i]).classList.add("active");
+                loadingTimer = setInterval(() => {
+                    if (i < steps.length - 1) {
+                        i++;
+                        steps.forEach((id) =>
+                            document
+                                .getElementById(id)
+                                .classList.remove("active"),
+                        );
+                        document
+                            .getElementById(steps[i])
+                            .classList.add("active");
+                    }
+                }, 2200);
+            }
+            function stopLoading() {
+                clearInterval(loadingTimer);
+            }
 
-function badgeFor(ref) {
-  if (!ref) return 'Bylaw';
-  const m = ref.match(/(?:No\.?\s*)?(\d+)/i);
-  return m ? `No. ${m[1]}` : 'Bylaw';
-}
+            /* ── Render results ───────────────────────────────────────────── */
+            function render(data, analyzedSections) {
+                const { icon, label, cls } = statusConfig(
+                    data.compliance_status,
+                );
+                let h = "";
 
-/* ── Loading animation ────────────────────────────────────────── */
-let loadingTimer;
-function startLoading() {
-  const steps = ['ls1','ls2','ls3','ls4','ls5'];
-  steps.forEach(id => document.getElementById(id).classList.remove('active'));
-  let i = 0;
-  document.getElementById(steps[i]).classList.add('active');
-  loadingTimer = setInterval(() => {
-    if (i < steps.length - 1) {
-      i++;
-      steps.forEach(id => document.getElementById(id).classList.remove('active'));
-      document.getElementById(steps[i]).classList.add('active');
-    }
-  }, 2200);
-}
-function stopLoading() { clearInterval(loadingTimer); }
-
-/* ── Render results ───────────────────────────────────────────── */
-function render(data, analyzedSections) {
-  const { icon, label, cls } = statusConfig(data.compliance_status);
-  let h = '';
-
-  // Analyzed sections bar
-  h += `<div class="analyzed-bar">
+                // Analyzed sections bar
+                h += `<div class="analyzed-bar">
     <span class="analyzed-label">Analyzed against:</span>
     <div class="analyzed-badges">
       <span class="analyzed-badge lub"><span class="analyzed-badge-icon">📋</span> LUB No. 355</span>`;
-  if (analyzedSections && analyzedSections.length) {
-    for (const s of analyzedSections) {
-      h += `<span class="analyzed-badge"><span class="analyzed-badge-icon">${s.icon}</span> ${esc(s.label)}</span>`;
-    }
-  }
-  h += `</div></div>`;
+                if (analyzedSections && analyzedSections.length) {
+                    for (const s of analyzedSections) {
+                        h += `<span class="analyzed-badge"><span class="analyzed-badge-icon">${s.icon}</span> ${esc(s.label)}</span>`;
+                    }
+                }
+                h += `</div></div>`;
 
-  // Status banner
-  h += `<div class="banner ${cls}">
+                // Status banner
+                h += `<div class="banner ${cls}">
     <div class="banner-icon">${icon}</div>
     <div class="banner-body">
       <h2>${label}</h2>
@@ -1249,10 +1792,16 @@ function render(data, analyzedSections) {
     </div>
   </div>`;
 
-  // Relevant bylaws — accordion
-  if (data.relevant_bylaws?.length) {
-    h += card('📚', 'ci-green', 'Relevant Bylaws &amp; Regulations', () => {
-      return data.relevant_bylaws.map((b, i) => `
+                // Relevant bylaws — accordion
+                if (data.relevant_bylaws?.length) {
+                    h += card(
+                        "📚",
+                        "ci-green",
+                        "Relevant Bylaws &amp; Regulations",
+                        () => {
+                            return data.relevant_bylaws
+                                .map(
+                                    (b, i) => `
         <div class="bylaw-item open" id="bi${i}">
           <div class="bylaw-trigger" onclick="toggle('bi${i}')">
             <div class="bylaw-left">
@@ -1267,42 +1816,62 @@ function render(data, analyzedSections) {
           <div class="bylaw-panel">
             <div class="bylaw-desc">${esc(b.detail)}</div>
           </div>
-        </div>`).join('');
-    });
-  }
+        </div>`,
+                                )
+                                .join("");
+                        },
+                    );
+                }
 
-  // Recommendations
-  if (data.recommendations?.length) {
-    h += card('💼', 'ci-blue', 'Recommendations', () =>
-      `<div class="pill-list">${data.recommendations.map(r =>
-        `<div class="rec-pill"><span class="rec-arrow">→</span><span>${esc(r)}</span></div>`
-      ).join('')}</div>`
-    );
-  }
+                // Recommendations
+                if (data.recommendations?.length) {
+                    h += card(
+                        "💼",
+                        "ci-blue",
+                        "Recommendations",
+                        () =>
+                            `<div class="pill-list">${data.recommendations
+                                .map(
+                                    (r) =>
+                                        `<div class="rec-pill"><span class="rec-arrow">→</span><span>${esc(r)}</span></div>`,
+                                )
+                                .join("")}</div>`,
+                    );
+                }
 
-  // Next steps — numbered timeline
-  if (data.next_steps?.length) {
-    h += card('🗺️', 'ci-green', 'Next Steps', () =>
-      data.next_steps.map((s, i) =>
-        `<div class="step-item">
-          <div class="step-num">${i+1}</div>
+                // Next steps — numbered timeline
+                if (data.next_steps?.length) {
+                    h += card("🗺️", "ci-green", "Next Steps", () =>
+                        data.next_steps
+                            .map(
+                                (s, i) =>
+                                    `<div class="step-item">
+          <div class="step-num">${i + 1}</div>
           <div class="step-text">${esc(s)}</div>
-        </div>`
-      ).join('')
-    );
-  }
+        </div>`,
+                            )
+                            .join(""),
+                    );
+                }
 
-  // Warnings
-  if (data.warnings?.length) {
-    h += card('⚠️', 'ci-amber', 'Important Warnings', () =>
-      `<div class="pill-list">${data.warnings.map(w =>
-        `<div class="warn-item"><span>⚠️</span><span>${esc(w)}</span></div>`
-      ).join('')}</div>`
-    );
-  }
+                // Warnings
+                if (data.warnings?.length) {
+                    h += card(
+                        "⚠️",
+                        "ci-amber",
+                        "Important Warnings",
+                        () =>
+                            `<div class="pill-list">${data.warnings
+                                .map(
+                                    (w) =>
+                                        `<div class="warn-item"><span>⚠️</span><span>${esc(w)}</span></div>`,
+                                )
+                                .join("")}</div>`,
+                    );
+                }
 
-  // Disclaimer
-  h += `<div class="disclaimer">
+                // Disclaimer
+                h += `<div class="disclaimer">
     <span>ℹ️</span>
     <div>
       <strong>For informational purposes only.</strong>
@@ -1315,8 +1884,8 @@ function render(data, analyzedSections) {
     </div>
   </div>`;
 
-  // Action buttons
-  h += `<div class="reset-row">
+                // Action buttons
+                h += `<div class="reset-row">
     <button class="btn btn-secondary" onclick="resetQuery()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
       Check Another Query
@@ -1327,448 +1896,572 @@ function render(data, analyzedSections) {
     </button>
   </div>`;
 
-  return h;
-}
+                return h;
+            }
 
-/* ── Utilities ────────────────────────────────────────────────── */
-function card(icon, iconCls, title, contentFn) {
-  return `<div class="card">
+            /* ── Utilities ────────────────────────────────────────────────── */
+            function card(icon, iconCls, title, contentFn) {
+                return `<div class="card">
     <div class="card-head">
       <div class="card-icon ${iconCls}">${icon}</div>
       <h3>${title}</h3>
     </div>
     <div class="card-body">${contentFn()}</div>
   </div>`;
-}
+            }
 
-function esc(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
-}
+            function esc(str) {
+                if (!str) return "";
+                return String(str)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;");
+            }
 
-function toggle(id) {
-  document.getElementById(id).classList.toggle('open');
-}
+            function toggle(id) {
+                document.getElementById(id).classList.toggle("open");
+            }
 
-/* ── Main fetch ───────────────────────────────────────────────── */
-async function checkCompliance() {
-  const query = document.getElementById('queryInput').value.trim();
-  if (!query) return alert('Please describe your project before checking compliance.');
-  if (query.length < 10) return alert('Please provide more detail about your project for an accurate analysis.');
+            /* ── Main fetch ───────────────────────────────────────────────── */
+            async function checkCompliance() {
+                const query = document
+                    .getElementById("queryInput")
+                    .value.trim();
+                if (!query)
+                    return alert(
+                        "Please describe your project before checking compliance.",
+                    );
+                if (query.length < 10)
+                    return alert(
+                        "Please provide more detail about your project for an accurate analysis.",
+                    );
 
-  const btn = document.getElementById('checkBtn');
-  const loadEl = document.getElementById('loading');
-  const resEl  = document.getElementById('results');
+                const btn = document.getElementById("checkBtn");
+                const loadEl = document.getElementById("loading");
+                const resEl = document.getElementById("results");
 
-  btn.disabled = true;
-  resEl.classList.remove('show');
-  resEl.innerHTML = '';
-  loadEl.classList.add('show');
-  loadEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  startLoading();
+                btn.disabled = true;
+                resEl.classList.remove("show");
+                resEl.innerHTML = "";
+                loadEl.classList.add("show");
+                loadEl.scrollIntoView({ behavior: "smooth", block: "center" });
+                startLoading();
 
-  try {
-    const resp = await fetch('/api/query', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query }),
-    });
+                try {
+                    const resp = await fetch("/api/query", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ query }),
+                    });
 
-    const json = await resp.json();
+                    const json = await resp.json();
 
-    if (!json.success) {
-      throw new Error(json.error || `Server error ${resp.status}`);
-    }
+                    if (!json.success) {
+                        throw new Error(
+                            json.error || `Server error ${resp.status}`,
+                        );
+                    }
 
-    lastResultData = json.data;
-    lastAnalyzedSections = json.analyzed_sections || [];
-    lastQuery = query;
+                    lastResultData = json.data;
+                    lastAnalyzedSections = json.analyzed_sections || [];
+                    lastQuery = query;
 
-    resEl.innerHTML = render(json.data, lastAnalyzedSections);
-    resEl.classList.add('show');
-    setTimeout(() => resEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
-
-  } catch (err) {
-    resEl.innerHTML = `<div class="error-card">
+                    resEl.innerHTML = render(json.data, lastAnalyzedSections);
+                    resEl.classList.add("show");
+                    setTimeout(
+                        () =>
+                            resEl.scrollIntoView({
+                                behavior: "smooth",
+                                block: "start",
+                            }),
+                        80,
+                    );
+                } catch (err) {
+                    resEl.innerHTML = `<div class="error-card">
       <span>❌</span>
-      <div><strong>Error:</strong> ${esc(err.message || 'Something went wrong. Please try again.')}</div>
+      <div><strong>Error:</strong> ${esc(err.message || "Something went wrong. Please try again.")}</div>
     </div>`;
-    resEl.classList.add('show');
-  } finally {
-    stopLoading();
-    loadEl.classList.remove('show');
-    btn.disabled = false;
-  }
-}
+                    resEl.classList.add("show");
+                } finally {
+                    stopLoading();
+                    loadEl.classList.remove("show");
+                    btn.disabled = false;
+                }
+            }
 
-function resetQuery() {
-  document.getElementById('results').classList.remove('show');
-  document.getElementById('results').innerHTML = '';
-  document.getElementById('queryInput').value = '';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  setTimeout(() => document.getElementById('queryInput').focus(), 500);
-}
+            function resetQuery() {
+                document.getElementById("results").classList.remove("show");
+                document.getElementById("results").innerHTML = "";
+                document.getElementById("queryInput").value = "";
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                setTimeout(
+                    () => document.getElementById("queryInput").focus(),
+                    500,
+                );
+            }
 
-/* Example chips — fill textarea and auto-submit */
-document.querySelectorAll('.example-chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    document.getElementById('queryInput').value = chip.dataset.q;
-    checkCompliance();
-  });
-});
+            /* Example chips — fill textarea and auto-submit */
+            document.querySelectorAll(".example-chip").forEach((chip) => {
+                chip.addEventListener("click", () => {
+                    document.getElementById("queryInput").value =
+                        chip.dataset.q;
+                    checkCompliance();
+                });
+            });
 
-/* Keyboard shortcut */
-document.getElementById('queryInput').addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') checkCompliance();
-});
+            /* Keyboard shortcut */
+            document
+                .getElementById("queryInput")
+                .addEventListener("keydown", (e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key === "Enter")
+                        checkCompliance();
+                });
 
-/* ── PDF Report Generation ───────────────────────────────────── */
-function downloadPDF() {
-  if (!lastResultData) return alert('No results to export.');
+            /* ── PDF Report Generation ───────────────────────────────────── */
+            function downloadPDF() {
+                if (!lastResultData) return alert("No results to export.");
 
-  if (!window.jspdf) {
-    return alert('PDF library is still loading. Please wait a moment and try again.');
-  }
+                if (!window.jspdf) {
+                    return alert(
+                        "PDF library is still loading. Please wait a moment and try again.",
+                    );
+                }
 
-  try {
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF({ unit: "mm", format: "a4" });
+                    const pw = 210; // page width
+                    const ph = 297; // page height
+                    const ml = 20; // margin left
+                    const mr = 20; // margin right
+                    const cw = pw - ml - mr; // content width
+                    let y = 0; // current Y position
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-  const pw = 210;   // page width
-  const ph = 297;   // page height
-  const ml = 20;    // margin left
-  const mr = 20;    // margin right
-  const cw = pw - ml - mr; // content width
-  let y = 0;        // current Y position
+                    // ── Color palette ──
+                    const forest = [14, 43, 26];
+                    const green9 = [27, 67, 50];
+                    const green7 = [45, 106, 79];
+                    const green5 = [64, 145, 108];
+                    const green1 = [216, 243, 220];
+                    const amber7 = [146, 64, 14];
+                    const amber1 = [254, 243, 199];
+                    const red7 = [153, 27, 27];
+                    const red1 = [254, 226, 226];
+                    const blue7 = [30, 58, 138];
+                    const blue1 = [219, 234, 254];
+                    const gray9 = [17, 24, 39];
+                    const gray6 = [75, 85, 99];
+                    const gray4 = [156, 163, 175];
+                    const gray2 = [229, 231, 235];
+                    const white = [255, 255, 255];
 
-  // ── Color palette ──
-  const forest  = [14, 43, 26];
-  const green9  = [27, 67, 50];
-  const green7  = [45, 106, 79];
-  const green5  = [64, 145, 108];
-  const green1  = [216, 243, 220];
-  const amber7  = [146, 64, 14];
-  const amber1  = [254, 243, 199];
-  const red7    = [153, 27, 27];
-  const red1    = [254, 226, 226];
-  const blue7   = [30, 58, 138];
-  const blue1   = [219, 234, 254];
-  const gray9   = [17, 24, 39];
-  const gray6   = [75, 85, 99];
-  const gray4   = [156, 163, 175];
-  const gray2   = [229, 231, 235];
-  const white   = [255, 255, 255];
+                    // ── Helpers ──
+                    function checkPage(needed) {
+                        if (y + needed > ph - 25) {
+                            addFooter();
+                            doc.addPage();
+                            y = 20;
+                        }
+                    }
 
-  // ── Helpers ──
-  function checkPage(needed) {
-    if (y + needed > ph - 25) {
-      addFooter();
-      doc.addPage();
-      y = 20;
-    }
-  }
+                    function addFooter() {
+                        doc.setFontSize(7);
+                        doc.setTextColor(...gray4);
+                        doc.text(
+                            "For informational purposes only. Not legal or planning advice. Always verify with Islands Trust staff.",
+                            pw / 2,
+                            ph - 10,
+                            { align: "center" },
+                        );
+                        doc.text(
+                            "Generated by Salt Spring Island Bylaw Compliance Checker",
+                            pw / 2,
+                            ph - 6,
+                            { align: "center" },
+                        );
+                    }
 
-  function addFooter() {
-    doc.setFontSize(7);
-    doc.setTextColor(...gray4);
-    doc.text('For informational purposes only. Not legal or planning advice. Always verify with Islands Trust staff.', pw / 2, ph - 10, { align: 'center' });
-    doc.text('Generated by Salt Spring Island Bylaw Compliance Checker', pw / 2, ph - 6, { align: 'center' });
-  }
+                    function drawRect(x, yPos, w, h, color, rx, ry) {
+                        doc.setFillColor(...color);
+                        if (doc.roundedRect) {
+                            doc.roundedRect(
+                                x,
+                                yPos,
+                                w,
+                                h,
+                                rx || 2,
+                                ry || 2,
+                                "F",
+                            );
+                        } else {
+                            doc.rect(x, yPos, w, h, "F");
+                        }
+                    }
+                    function drawRoundedRect(x, yPos, w, h, rx, ry, style) {
+                        if (doc.roundedRect) {
+                            doc.roundedRect(x, yPos, w, h, rx, ry, style);
+                        } else {
+                            doc.rect(x, yPos, w, h, style);
+                        }
+                    }
 
-  function drawRect(x, yPos, w, h, color, rx, ry) {
-    doc.setFillColor(...color);
-    if (doc.roundedRect) {
-      doc.roundedRect(x, yPos, w, h, rx || 2, ry || 2, 'F');
-    } else {
-      doc.rect(x, yPos, w, h, 'F');
-    }
-  }
-  function drawRoundedRect(x, yPos, w, h, rx, ry, style) {
-    if (doc.roundedRect) {
-      doc.roundedRect(x, yPos, w, h, rx, ry, style);
-    } else {
-      doc.rect(x, yPos, w, h, style);
-    }
-  }
+                    function drawLine(x1, yPos, x2, color) {
+                        doc.setDrawColor(...color);
+                        doc.setLineWidth(0.3);
+                        doc.line(x1, yPos, x2, yPos);
+                    }
 
-  function drawLine(x1, yPos, x2, color) {
-    doc.setDrawColor(...color);
-    doc.setLineWidth(0.3);
-    doc.line(x1, yPos, x2, yPos);
-  }
+                    function wrappedText(
+                        text,
+                        x,
+                        yPos,
+                        maxW,
+                        fontSize,
+                        color,
+                        fontStyle,
+                    ) {
+                        doc.setFontSize(fontSize);
+                        doc.setTextColor(...color);
+                        doc.setFont("helvetica", fontStyle || "normal");
+                        const lines = doc.splitTextToSize(text || "", maxW);
+                        const lineH = fontSize * 0.45;
+                        for (const line of lines) {
+                            checkPage(lineH + 2);
+                            doc.text(line, x, y);
+                            y += lineH;
+                        }
+                        return lines.length;
+                    }
 
-  function wrappedText(text, x, yPos, maxW, fontSize, color, fontStyle) {
-    doc.setFontSize(fontSize);
-    doc.setTextColor(...color);
-    doc.setFont('helvetica', fontStyle || 'normal');
-    const lines = doc.splitTextToSize(text || '', maxW);
-    const lineH = fontSize * 0.45;
-    for (const line of lines) {
-      checkPage(lineH + 2);
-      doc.text(line, x, y);
-      y += lineH;
-    }
-    return lines.length;
-  }
+                    // ──────────────────────────────────────────────────
+                    // HEADER BANNER
+                    // ──────────────────────────────────────────────────
+                    drawRect(0, 0, pw, 42, forest);
+                    // Accent stripe
+                    doc.setFillColor(...green7);
+                    doc.rect(0, 38, pw, 4, "F");
 
-  // ──────────────────────────────────────────────────
-  // HEADER BANNER
-  // ──────────────────────────────────────────────────
-  drawRect(0, 0, pw, 42, forest);
-  // Accent stripe
-  doc.setFillColor(...green7);
-  doc.rect(0, 38, pw, 4, 'F');
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(18);
+                    doc.setTextColor(...white);
+                    doc.text("Bylaw Compliance Report", ml, 17);
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(18);
-  doc.setTextColor(...white);
-  doc.text('Bylaw Compliance Report', ml, 17);
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(9);
+                    doc.setTextColor(200, 220, 210);
+                    doc.text(
+                        "Salt Spring Island  |  Land Use Bylaw No. 355 & OCP No. 434",
+                        ml,
+                        25,
+                    );
 
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(200, 220, 210);
-  doc.text('Salt Spring Island  |  Land Use Bylaw No. 355 & OCP No. 434', ml, 25);
+                    const today = new Date().toLocaleDateString("en-CA", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                    });
+                    doc.setFontSize(8);
+                    doc.setTextColor(180, 200, 190);
+                    doc.text(today, pw - mr, 25, { align: "right" });
 
-  const today = new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
-  doc.setFontSize(8);
-  doc.setTextColor(180, 200, 190);
-  doc.text(today, pw - mr, 25, { align: 'right' });
+                    y = 50;
 
-  y = 50;
+                    // ──────────────────────────────────────────────────
+                    // QUERY SECTION
+                    // ──────────────────────────────────────────────────
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(10);
+                    doc.setTextColor(...green9);
+                    doc.text("YOUR QUERY", ml, y);
+                    y += 5;
+                    drawLine(ml, y, ml + cw, gray2);
+                    y += 4;
 
-  // ──────────────────────────────────────────────────
-  // QUERY SECTION
-  // ──────────────────────────────────────────────────
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
-  doc.setTextColor(...green9);
-  doc.text('YOUR QUERY', ml, y);
-  y += 5;
-  drawLine(ml, y, ml + cw, gray2);
-  y += 4;
+                    drawRect(ml, y, cw, 1, white); // spacing
+                    doc.setFillColor(248, 250, 246);
+                    const queryLines = doc.splitTextToSize(lastQuery, cw - 12);
+                    const queryBoxH = Math.max(12, queryLines.length * 4.2 + 8);
+                    drawRoundedRect(ml, y, cw, queryBoxH, 2, 2, "F");
+                    doc.setDrawColor(...gray2);
+                    drawRoundedRect(ml, y, cw, queryBoxH, 2, 2, "S");
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(9);
+                    doc.setTextColor(...gray9);
+                    doc.text(queryLines, ml + 6, y + 6);
+                    y += queryBoxH + 6;
 
-  drawRect(ml, y, cw, 1, white); // spacing
-  doc.setFillColor(248, 250, 246);
-  const queryLines = doc.splitTextToSize(lastQuery, cw - 12);
-  const queryBoxH = Math.max(12, queryLines.length * 4.2 + 8);
-  drawRoundedRect(ml, y, cw, queryBoxH, 2, 2, 'F');
-  doc.setDrawColor(...gray2);
-  drawRoundedRect(ml, y, cw, queryBoxH, 2, 2, 'S');
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(...gray9);
-  doc.text(queryLines, ml + 6, y + 6);
-  y += queryBoxH + 6;
+                    // ── Analyzed sections tags ──
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(7);
+                    doc.setTextColor(...gray4);
+                    let sectionsText = "Analyzed against: LUB No. 355";
+                    if (lastAnalyzedSections.length) {
+                        sectionsText +=
+                            ", " +
+                            lastAnalyzedSections.map((s) => s.label).join(", ");
+                    }
+                    doc.text(sectionsText, ml, y);
+                    y += 8;
 
-  // ── Analyzed sections tags ──
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7);
-  doc.setTextColor(...gray4);
-  let sectionsText = 'Analyzed against: LUB No. 355';
-  if (lastAnalyzedSections.length) {
-    sectionsText += ', ' + lastAnalyzedSections.map(s => s.label).join(', ');
-  }
-  doc.text(sectionsText, ml, y);
-  y += 8;
+                    // ──────────────────────────────────────────────────
+                    // COMPLIANCE STATUS
+                    // ──────────────────────────────────────────────────
+                    const data = lastResultData;
+                    const statusMap = {
+                        likely_compliant: {
+                            label: "LIKELY COMPLIANT",
+                            bg: green1,
+                            fg: green9,
+                            accent: green5,
+                        },
+                        likely_non_compliant: {
+                            label: "LIKELY NON-COMPLIANT",
+                            bg: red1,
+                            fg: red7,
+                            accent: [239, 68, 68],
+                        },
+                        needs_review: {
+                            label: "NEEDS FURTHER REVIEW",
+                            bg: amber1,
+                            fg: amber7,
+                            accent: [245, 158, 11],
+                        },
+                        insufficient_info: {
+                            label: "MORE INFO NEEDED",
+                            bg: blue1,
+                            fg: blue7,
+                            accent: [59, 130, 246],
+                        },
+                    };
+                    const st =
+                        statusMap[data.compliance_status] ||
+                        statusMap.needs_review;
 
-  // ──────────────────────────────────────────────────
-  // COMPLIANCE STATUS
-  // ──────────────────────────────────────────────────
-  const data = lastResultData;
-  const statusMap = {
-    likely_compliant:     { label: 'LIKELY COMPLIANT',       bg: green1, fg: green9, accent: green5 },
-    likely_non_compliant: { label: 'LIKELY NON-COMPLIANT',   bg: red1,   fg: red7,   accent: [239,68,68] },
-    needs_review:         { label: 'NEEDS FURTHER REVIEW',   bg: amber1, fg: amber7, accent: [245,158,11] },
-    insufficient_info:    { label: 'MORE INFO NEEDED',       bg: blue1,  fg: blue7,  accent: [59,130,246] },
-  };
-  const st = statusMap[data.compliance_status] || statusMap.needs_review;
+                    // Measure summary lines first to size the box
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(8.5);
+                    const summaryLines = doc.splitTextToSize(
+                        data.summary || "",
+                        cw - 16,
+                    );
+                    const statusBoxH = Math.max(
+                        22,
+                        12 + summaryLines.length * 4,
+                    );
 
-  // Measure summary lines first to size the box
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  const summaryLines = doc.splitTextToSize(data.summary || '', cw - 16);
-  const statusBoxH = Math.max(22, 12 + summaryLines.length * 4);
+                    checkPage(statusBoxH + 4);
+                    // Status box
+                    drawRect(ml, y, cw, statusBoxH, st.bg);
+                    // Left accent bar
+                    doc.setFillColor(...st.accent);
+                    doc.rect(ml, y, 3, statusBoxH, "F");
 
-  checkPage(statusBoxH + 4);
-  // Status box
-  drawRect(ml, y, cw, statusBoxH, st.bg);
-  // Left accent bar
-  doc.setFillColor(...st.accent);
-  doc.rect(ml, y, 3, statusBoxH, 'F');
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(11);
+                    doc.setTextColor(...st.fg);
+                    doc.text(st.label, ml + 8, y + 8);
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(11);
-  doc.setTextColor(...st.fg);
-  doc.text(st.label, ml + 8, y + 8);
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(8.5);
+                    doc.setTextColor(...st.fg);
+                    doc.text(summaryLines, ml + 8, y + 14);
+                    y += statusBoxH + 5;
 
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.setTextColor(...st.fg);
-  doc.text(summaryLines, ml + 8, y + 14);
-  y += statusBoxH + 5;
+                    // ──────────────────────────────────────────────────
+                    // RELEVANT BYLAWS
+                    // ──────────────────────────────────────────────────
+                    if (data.relevant_bylaws && data.relevant_bylaws.length) {
+                        checkPage(16);
+                        doc.setFont("helvetica", "bold");
+                        doc.setFontSize(10);
+                        doc.setTextColor(...green9);
+                        doc.text("RELEVANT BYLAWS & REGULATIONS", ml, y);
+                        y += 5;
+                        drawLine(ml, y, ml + cw, gray2);
+                        y += 5;
 
-  // ──────────────────────────────────────────────────
-  // RELEVANT BYLAWS
-  // ──────────────────────────────────────────────────
-  if (data.relevant_bylaws && data.relevant_bylaws.length) {
-    checkPage(16);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.setTextColor(...green9);
-    doc.text('RELEVANT BYLAWS & REGULATIONS', ml, y);
-    y += 5;
-    drawLine(ml, y, ml + cw, gray2);
-    y += 5;
+                        for (const b of data.relevant_bylaws) {
+                            checkPage(20);
+                            // Reference badge — set font BEFORE measuring width
+                            const refText = b.reference || "Bylaw";
+                            doc.setFont("helvetica", "bold");
+                            doc.setFontSize(6.5);
+                            const refW = Math.min(
+                                doc.getTextWidth(refText) + 6,
+                                cw - 4,
+                            );
+                            doc.setFillColor(...green9);
+                            drawRoundedRect(ml, y, refW, 5, 1.5, 1.5, "F");
+                            doc.setTextColor(...white);
+                            doc.text(refText, ml + 3, y + 3.5);
+                            y += 8;
 
-    for (const b of data.relevant_bylaws) {
-      checkPage(20);
-      // Reference badge — set font BEFORE measuring width
-      const refText = b.reference || 'Bylaw';
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(6.5);
-      const refW = Math.min(doc.getTextWidth(refText) + 6, cw - 4);
-      doc.setFillColor(...green9);
-      drawRoundedRect(ml, y, refW, 5, 1.5, 1.5, 'F');
-      doc.setTextColor(...white);
-      doc.text(refText, ml + 3, y + 3.5);
-      y += 8;
+                            // Title
+                            doc.setFont("helvetica", "bold");
+                            doc.setFontSize(9);
+                            doc.setTextColor(...gray9);
+                            doc.text(b.title || "", ml + 2, y);
+                            y += 5;
 
-      // Title
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      doc.setTextColor(...gray9);
-      doc.text(b.title || '', ml + 2, y);
-      y += 5;
+                            // Detail
+                            wrappedText(
+                                b.detail || "",
+                                ml + 2,
+                                y,
+                                cw - 4,
+                                8.5,
+                                gray6,
+                                "normal",
+                            );
+                            y += 2;
 
-      // Detail
-      wrappedText(b.detail || '', ml + 2, y, cw - 4, 8.5, gray6, 'normal');
-      y += 2;
+                            // Separator
+                            drawLine(ml + 2, y, ml + cw - 2, [240, 240, 240]);
+                            y += 4;
+                        }
+                        y += 2;
+                    }
 
-      // Separator
-      drawLine(ml + 2, y, ml + cw - 2, [240, 240, 240]);
-      y += 4;
-    }
-    y += 2;
-  }
+                    // ──────────────────────────────────────────────────
+                    // RECOMMENDATIONS
+                    // ──────────────────────────────────────────────────
+                    if (data.recommendations && data.recommendations.length) {
+                        checkPage(14);
+                        doc.setFont("helvetica", "bold");
+                        doc.setFontSize(10);
+                        doc.setTextColor(...green9);
+                        doc.text("RECOMMENDATIONS", ml, y);
+                        y += 5;
+                        drawLine(ml, y, ml + cw, gray2);
+                        y += 5;
 
-  // ──────────────────────────────────────────────────
-  // RECOMMENDATIONS
-  // ──────────────────────────────────────────────────
-  if (data.recommendations && data.recommendations.length) {
-    checkPage(14);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.setTextColor(...green9);
-    doc.text('RECOMMENDATIONS', ml, y);
-    y += 5;
-    drawLine(ml, y, ml + cw, gray2);
-    y += 5;
+                        for (const rec of data.recommendations) {
+                            checkPage(10);
+                            doc.setFillColor(...green5);
+                            doc.circle(ml + 3, y - 1, 1, "F");
+                            wrappedText(
+                                rec,
+                                ml + 8,
+                                y,
+                                cw - 10,
+                                8.5,
+                                gray9,
+                                "normal",
+                            );
+                            y += 2;
+                        }
+                        y += 3;
+                    }
 
-    for (const rec of data.recommendations) {
-      checkPage(10);
-      doc.setFillColor(...green5);
-      doc.circle(ml + 3, y - 1, 1, 'F');
-      wrappedText(rec, ml + 8, y, cw - 10, 8.5, gray9, 'normal');
-      y += 2;
-    }
-    y += 3;
-  }
+                    // ──────────────────────────────────────────────────
+                    // NEXT STEPS
+                    // ──────────────────────────────────────────────────
+                    if (data.next_steps && data.next_steps.length) {
+                        checkPage(14);
+                        doc.setFont("helvetica", "bold");
+                        doc.setFontSize(10);
+                        doc.setTextColor(...green9);
+                        doc.text("NEXT STEPS", ml, y);
+                        y += 5;
+                        drawLine(ml, y, ml + cw, gray2);
+                        y += 6;
 
-  // ──────────────────────────────────────────────────
-  // NEXT STEPS
-  // ──────────────────────────────────────────────────
-  if (data.next_steps && data.next_steps.length) {
-    checkPage(14);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.setTextColor(...green9);
-    doc.text('NEXT STEPS', ml, y);
-    y += 5;
-    drawLine(ml, y, ml + cw, gray2);
-    y += 6;
+                        data.next_steps.forEach((step, i) => {
+                            checkPage(12);
+                            // Styled number
+                            doc.setFont("times", "bold");
+                            doc.setFontSize(14);
+                            doc.setTextColor(...green5);
+                            doc.text(String(i + 1), ml + 2, y + 1);
 
-    data.next_steps.forEach((step, i) => {
-      checkPage(12);
-      // Styled number
-      doc.setFont('times', 'bold');
-      doc.setFontSize(14);
-      doc.setTextColor(...green5);
-      doc.text(String(i + 1), ml + 2, y + 1);
+                            wrappedText(
+                                step,
+                                ml + 10,
+                                y,
+                                cw - 12,
+                                8.5,
+                                gray9,
+                                "normal",
+                            );
+                            y += 2;
+                        });
+                        y += 3;
+                    }
 
-      wrappedText(step, ml + 10, y, cw - 12, 8.5, gray9, 'normal');
-      y += 2;
-    });
-    y += 3;
-  }
+                    // ──────────────────────────────────────────────────
+                    // WARNINGS
+                    // ──────────────────────────────────────────────────
+                    if (data.warnings && data.warnings.length) {
+                        checkPage(14);
+                        doc.setFont("helvetica", "bold");
+                        doc.setFontSize(10);
+                        doc.setTextColor(...amber7);
+                        doc.text("IMPORTANT WARNINGS", ml, y);
+                        y += 5;
+                        drawLine(ml, y, ml + cw, gray2);
+                        y += 5;
 
-  // ──────────────────────────────────────────────────
-  // WARNINGS
-  // ──────────────────────────────────────────────────
-  if (data.warnings && data.warnings.length) {
-    checkPage(14);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.setTextColor(...amber7);
-    doc.text('IMPORTANT WARNINGS', ml, y);
-    y += 5;
-    drawLine(ml, y, ml + cw, gray2);
-    y += 5;
+                        for (const warn of data.warnings) {
+                            checkPage(14);
+                            const warnLines = doc.splitTextToSize(
+                                warn || "",
+                                cw - 14,
+                            );
+                            const warnH = Math.max(
+                                10,
+                                warnLines.length * 3.8 + 6,
+                            );
+                            drawRect(ml, y - 3, cw, warnH, amber1);
+                            // Left accent
+                            doc.setFillColor(245, 158, 11);
+                            doc.rect(ml, y - 3, 2, warnH, "F");
+                            doc.setFont("helvetica", "normal");
+                            doc.setFontSize(8.5);
+                            doc.setTextColor(...amber7);
+                            doc.text(warnLines, ml + 7, y + 1);
+                            y += warnH + 3;
+                        }
+                        y += 2;
+                    }
 
-    for (const warn of data.warnings) {
-      checkPage(14);
-      const warnLines = doc.splitTextToSize(warn || '', cw - 14);
-      const warnH = Math.max(10, warnLines.length * 3.8 + 6);
-      drawRect(ml, y - 3, cw, warnH, amber1);
-      // Left accent
-      doc.setFillColor(245, 158, 11);
-      doc.rect(ml, y - 3, 2, warnH, 'F');
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8.5);
-      doc.setTextColor(...amber7);
-      doc.text(warnLines, ml + 7, y + 1);
-      y += warnH + 3;
-    }
-    y += 2;
-  }
+                    // ──────────────────────────────────────────────────
+                    // DISCLAIMER
+                    // ──────────────────────────────────────────────────
+                    checkPage(20);
+                    y += 2;
+                    drawLine(ml, y, ml + cw, gray2);
+                    y += 5;
+                    drawRect(ml, y, cw, 16, [243, 244, 246]);
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(7);
+                    doc.setTextColor(...gray6);
+                    doc.text("DISCLAIMER", ml + 4, y + 5);
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(7);
+                    const discLines = doc.splitTextToSize(
+                        "This analysis is for informational purposes only and is based on Land Use Bylaw No. 355 (March 2025) and OCP No. 434. " +
+                            "It is not a substitute for professional planning advice. Bylaws can be amended and individual circumstances vary. " +
+                            "Always verify with Islands Trust planning staff or a qualified planner before proceeding.",
+                        cw - 8,
+                    );
+                    doc.text(discLines, ml + 4, y + 9);
 
-  // ──────────────────────────────────────────────────
-  // DISCLAIMER
-  // ──────────────────────────────────────────────────
-  checkPage(20);
-  y += 2;
-  drawLine(ml, y, ml + cw, gray2);
-  y += 5;
-  drawRect(ml, y, cw, 16, [243, 244, 246]);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(7);
-  doc.setTextColor(...gray6);
-  doc.text('DISCLAIMER', ml + 4, y + 5);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7);
-  const discLines = doc.splitTextToSize(
-    'This analysis is for informational purposes only and is based on Land Use Bylaw No. 355 (March 2025) and OCP No. 434. ' +
-    'It is not a substitute for professional planning advice. Bylaws can be amended and individual circumstances vary. ' +
-    'Always verify with Islands Trust planning staff or a qualified planner before proceeding.',
-    cw - 8
-  );
-  doc.text(discLines, ml + 4, y + 9);
+                    // Footer on last page
+                    addFooter();
 
-  // Footer on last page
-  addFooter();
-
-  // ── Save ──
-  const dateStr = new Date().toISOString().slice(0, 10);
-  doc.save(`SSI-Compliance-Report-${dateStr}.pdf`);
-
-  } catch (err) {
-    console.error('PDF generation error:', err);
-    alert('Error generating PDF: ' + (err.message || 'Unknown error. Check the browser console for details.'));
-  }
-}
-</script>
-</body>
+                    // ── Save ──
+                    const dateStr = new Date().toISOString().slice(0, 10);
+                    doc.save(`SSI-Compliance-Report-${dateStr}.pdf`);
+                } catch (err) {
+                    console.error("PDF generation error:", err);
+                    alert(
+                        "Error generating PDF: " +
+                            (err.message ||
+                                "Unknown error. Check the browser console for details."),
+                    );
+                }
+            }
+        </script>
+    </body>
 </html>
