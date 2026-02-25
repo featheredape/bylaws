@@ -351,38 +351,11 @@ Section 4.7 — MEASUREMENTS OF SETBACKS:
   (2) Steps, eaves, sunlight control projections, canopies, balconies, decks, porches: max 1.3 m projection into front/rear/exterior side setback; max 0.6 m into interior side setback.
 `,
 
-// ── lub_zones_residential: Zone summary + detailed R1-R12 ──
+// ── lub_zones_residential: Detailed R1-R12 Residential Zones (Section 9.9) ──
 lub_zones_residential: `
 ═══════════════════════════════════════
-LUB 355 — ZONE REGULATIONS: RESIDENTIAL & OTHER ZONES
+LUB 355 — SECTION 9.9: RESIDENTIAL ZONES (R1-R12)
 ═══════════════════════════════════════
-
-AGRICULTURAL ZONES (Part 9.1):
-• A1 – Agricultural 1: Lot coverage 5%, height 10.7m, setbacks F:7.5m R:7.5m S:3.0m, min lot 2 ha. Permitted: agricultural operations, farm buildings, one single-family dwelling, farmworker dwelling, home-based business (conditional).
-• A2 – Agricultural 2: Same as A1 plus farm-related tourism (conditional).
-
-COMMERCIAL ZONES (Part 9.2):
-• C1 – Commercial 1: Lot coverage 50%, height 10.7m, setbacks F:4.5m R:7.5m S:1.5m, min lot 0.4 ha. Permitted: retail, offices, restaurants, personal services, entertainment.
-• C2 – Commercial 2: Lot coverage 45%, height 10.7m, setbacks F:7.5m R:7.5m S:3.0m, min lot 0.5 ha. Permitted: retail, restaurants, offices, automotive service.
-
-COMMERCIAL ACCOMMODATION ZONES (Part 9.3):
-• CA1 – Commercial Accommodation 1: Lot coverage 30%, height 10.7m, setbacks F:7.5m R:7.5m S:3.0m, min lot 0.4 ha. Permitted: hotel, B&B, guest accommodation, campground.
-• CA2 – Commercial Accommodation 2: Lot coverage 25%, height 10.7m, setbacks F:10m R:10m S:5m, min lot 0.8 ha. Permitted: resort, campground, recreation.
-
-FORESTRY ZONES (Part 9.6):
-• F1 – Forestry 1: Height 10.7m, min lot 8 ha. Permitted: forestry, single-family dwelling.
-• F2 – Forestry 2: Height 10.7m, min lot 8 ha. Permitted: forestry, potential second dwelling.
-
-GENERAL EMPLOYMENT ZONES (Part 9.7):
-• GE1 – General Employment 1: Lot coverage 75%, height 10.7m, setbacks F:4.5m R:6m S:6m ES:6m, min lot 0.6 ha. Permitted: light industrial, warehousing, workshops.
-• GE2 – General Employment 2: Lot coverage 66%, height 10.7m, setbacks F:4.5m R:6m S:6m ES:7.5m, min lot 0.6 ha. Permitted: general employment, outdoor storage.
-• GE3 – General Employment 3: Lot coverage 33%, height 11m, setbacks F:4.5m R:7.5m S:7.5m ES:7.5m, min lot 0.6 ha. Permitted: marine-related employment.
-
-PARKS AND RESERVES (Part 9.8):
-• PR1: Lot coverage 33%. Permitted: active parks, recreation.
-• PR2: Lot coverage 5%. Permitted: nature reserves, passive recreation.
-
-RESIDENTIAL ZONES (Part 9.9):
 
 Section 9.9.1 — Permitted Uses of Land, Buildings and Structures:
 (♦ = permitted in zone. Uses are IN ADDITION to those in Subsections 3.1.1 and 3.16.1.)
@@ -490,6 +463,329 @@ ZONE-SPECIFIC SUMMARIES FOR QUICK REFERENCE:
   - R12(a) variation: seniors' supportive housing + service club, dental/medical offices (max 12), max 50 dwelling units, 13m height for 3-storey building.
 `,
 
+// ── lub_zones_agricultural: Section 9.1 Agricultural Zones (A1, A2) ──
+lub_zones_agricultural: `
+═══════════════════════════════════════
+LUB 355 — SECTION 9.1: AGRICULTURAL ZONES (A1, A2)
+═══════════════════════════════════════
+
+Section 9.1.1 — Permitted Uses (♦ = permitted):
+PRINCIPAL USES:                                          A1    A2
+Agriculture                                               ♦     ♦
+Single-family dwellings                                   ♦     ♦
+Farmworker's dwelling units (one per lot)                 ♦     ♦
+Elementary schools, pre-schools, child day care centres   ♦     ♦
+Public health clinics                                     ♦
+Community halls                                           ♦
+Veterinarian clinics and animal hospitals                 ♦
+Abattoirs                                                 ♦
+Farm-related light industry                               ♦     ♦
+Commercial composting                                     ♦     ♦
+Kennels                                                   ♦
+Churches and cemeteries                                   ♦
+Active outdoor non-commercial recreation (excl golf)      ♦
+Public service uses                                       ♦     ♦
+ACCESSORY USES:
+Commercial guest accommodation (max 4 units/lot)          ♦     ♦
+Indoor retail sales (farm products) max 25 sqm            ♦     ♦
+Home-based business use (Section 3.13)                    ♦     ♦
+Seasonal cottages (Section 3.14)                          ♦     ♦
+
+Section 9.1.2 — Size, Siting and Density:
+Lot Coverage:                                            A1    A2
+• Max lot coverage excl greenhouses (%)                  35    35
+• Max lot coverage incl greenhouses (%)                  75    75
+Setbacks (metres):
+• Rear lot line                                          4.5   4.5
+(* = Section 4.3 default applies for front, side, exterior side)
+Number of Units:
+• Max dwelling units per lot                             1     1
+• Max farmworker dwelling units per lot                  1     1
+• Minimum lot area for day care centre (ha)              2     2
+• Minimum lot area for kennel (ha)                       4     N/A
+• Minimum lot area for abattoir (ha)                     8     N/A
+
+Section 9.1.3 — Subdivision Requirements:
+• Min water supply: adequate supply of potable water (both zones)
+• Min sewage: individual on-site sewage treatment per lot (both zones)
+• Min area individual lot (ha):                          8     8
+• Min average area of lots in subdivision (ha):          8     8
+
+Section 9.1.4 — Zone Variations:
+• A1(a): Max lot coverage 10% excluding greenhouses. Min lot area by subdivision reduced to 2 ha with min avg of 2.8 ha. Lot coverage 10% excl greenhouses. One additional dwelling unit permitted per lot (max 2 total).
+• A1(b): One additional dwelling unit permitted.
+• A1(c): Additional permitted: commercial guest accommodation (max 9 rooms, 400 sqm floor area), restaurant, retail sales/services to max 200 sqm.
+• A1(d): Despite Section 9.1.1, home-based business use not permitted. Max lot coverage 10% excl greenhouses.
+• A1(e): Despite Section 9.1.1, one additional dwelling unit permitted. Max 2 dwelling units per lot.
+• A1(f): Min lot area by subdivision 0.6 ha (on-site sewage + potable water).
+• A2(a): Max commercial guest accommodation units is 20.
+• A2(b): Notwithstanding Section 9.1.1, max 9 commercial guest accommodation units, max 400 sqm total floor area for guest accommodation. Restaurant and retail sales/services max 200 sqm.
+`,
+
+// ── lub_zones_commercial: Sections 9.2 Commercial + 9.3 Commercial Accommodation ──
+lub_zones_commercial: `
+═══════════════════════════════════════
+LUB 355 — SECTIONS 9.2 & 9.3: COMMERCIAL & COMMERCIAL ACCOMMODATION ZONES
+═══════════════════════════════════════
+
+SECTION 9.2 — COMMERCIAL ZONES (C1, C2, C3, C4):
+
+Section 9.2.1 — Permitted Uses (♦ = permitted):
+PRINCIPAL USES:                                    C1    C2    C3    C4
+Single-family dwellings                            ♦     ♦
+Duplexes constructed before July 31, 1990          ♦
+Multi-family dwellings                             ♦
+Indoor retail sales use                            ♦     ♦           ♦
+Outdoor retail sales use                                 ♦
+Indoor retail services                             ♦     ♦
+Personal services                                  ♦     ♦
+Offices                                            ♦     ♦           ♦
+Banks and credit unions                            ♦     ♦
+Restaurants                                        ♦     ♦           ♦
+Pubs                                               ♦     ♦
+Theatres and cinemas                               ♦
+Hotels                                             ♦
+Community halls                                    ♦     ♦
+Elementary schools, pre-schools, day care          ♦     ♦
+Hospitals and public health care facilities              ♦
+Churches                                           ♦     ♦
+Public service uses                                ♦     ♦     ♦     ♦
+Public utility uses                                ♦     ♦           ♦
+Automobile service stations                              ♦
+Automobile rentals (max 5 vehicles)                      ♦
+ACCESSORY USES:
+Indoor retail sales accessory to another use       ♦     ♦           ♦
+Seasonal cottages (Section 3.14)                   ♦
+Home-based business use (Section 3.13)             ♦     ♦
+
+Section 9.2.2 — Size, Siting and Density:
+                                                   C1    C2    C3    C4
+Max lot coverage (%)                               75    75    33    33
+Max dwelling units per lot                         N/A   N/A   N/A   N/A
+Max height (m)                                     *     11    *     *
+(* = Section 3.8 default of 10.7m applies)
+Setbacks (all zones: * = Section 4.3 defaults apply)
+
+Section 9.2.3 — Subdivision Requirements:
+Min area individual lot (ha):                      C1    C2    C3    C4
+  On-site sewage + potable water                   0.2   0.2   0.2   0.2
+  Community sewage + community water               0.1   0.1   0.1   0.1
+Min avg area lots in subdivision (ha):
+  On-site sewage + potable water                   0.2   0.2   0.2   0.2
+  Community sewage + community water               0.1   0.1   0.1   0.1
+
+Section 9.2.4 — Zone Variations:
+• C1(a): Additional permitted: gasoline sales, automobile rentals (max 5), automobile service station. 6m landscape screen between C1(a) and any residential zone.
+• C1(b): Additional permitted: automobile service stations.
+• C1(c): Additional: gasoline sales, auto rentals (max 5).
+• C1(d): Additional: gasoline sales, auto service station, auto rentals (max 5). Outdoor storage up to 15% lot coverage permitted.
+• C1(e): Additional: gasoline sales, auto service station, auto rentals (max 5), drive-in restaurant.
+• C1(f): Max lot coverage for buildings used as restaurants is 5%. Max floor area 190 sqm.
+• C1(g): Despite other regulations, only permitted: single-family dwellings, indoor retail sales, indoor retail services, personal services, offices, restaurants, pubs, community halls, public service uses. Max lot coverage 33%. Front setback 4.5m. Max 1 dwelling unit per lot.
+• C2(a): Additional: laundromat.
+• C2(b): Additional: drive-in restaurant.
+• C4(a): Max lot coverage 10%.
+
+═══════════════════════════════════════
+SECTION 9.3 — COMMERCIAL ACCOMMODATION ZONES (CA1-CA5):
+
+Section 9.3.1 — Permitted Uses (♦ = permitted):
+PRINCIPAL USES:                                    CA1   CA2   CA3   CA4   CA5
+Commercial guest accommodation                     ♦     ♦     ♦     ♦     ♦
+Single-family dwellings                            ♦     ♦     ♦     ♦     ♦
+Restaurants                                        ♦     ♦     ♦
+Indoor recreation facilities                       ♦     ♦     ♦
+Outdoor active recreation                          ♦     ♦     ♦     ♦
+Indoor retail sales accessory to guest accomm      ♦     ♦     ♦     ♦
+Public service uses                                ♦     ♦     ♦     ♦     ♦
+Campgrounds                                                          ♦     ♦
+ACCESSORY USES:
+Home-based business use (Section 3.13)             ♦     ♦     ♦     ♦     ♦
+Seasonal cottages (Section 3.14)                   ♦     ♦     ♦
+
+Section 9.3.2 — Size, Siting and Density:
+                                              CA1   CA2   CA3   CA4   CA5
+Max lot coverage (%)                          33    33    33    20    5
+Max commercial guest accommodation units/lot  50    50    50    50    50
+Min setback between CA-zoned lots (m)         15    15    15    15    15
+Max height (m)                                *     *     *     *     *
+(* = Section 3.8 default of 10.7m)
+
+Section 9.3.3 — Subdivision Requirements:
+Min avg area of lots in subdivision (ha):     2     2     2     2     2
+Min water supply: adequate potable water (all zones)
+Min sewage: individual on-site sewage treatment per lot (all zones)
+
+Section 9.3.4 — Zone Variations:
+• CA1(a): Max 10 commercial guest accommodation units.
+• CA1(b): Max 6 units. No restaurant/retail.
+• CA1(c): Max 24 cabins + 100 campsites. Additional: outdoor recreation, campground.
+• CA1(d): Max 38 units. 1 restaurant (max 100 seats). Indoor pool and tennis permitted.
+• CA1(e): Max 50 units + 100 campsites. Must maintain 50% natural landscape.
+• CA1(f): Max 5 units. No restaurant.
+• CA1(g): Max 3 units.
+• CA2(a): Max 27 units.
+• CA2(b): Max 12 cabins + campground (100 campsites max).
+• CA3(a): Max 12 units.
+• CA5(a): Max 60 campsites. No buildings except accessory to campground (max 100 sqm).
+`,
+
+// ── lub_zones_other: Sections 9.4 (CF), 9.5 (CD), 9.6 (F), 9.7 (GE), 9.8 (PR) ──
+lub_zones_other: `
+═══════════════════════════════════════
+LUB 355 — SECTIONS 9.4-9.8: CF, CD, FORESTRY, EMPLOYMENT & PARKS ZONES
+═══════════════════════════════════════
+
+SECTION 9.4 — COMMUNITY FACILITIES ZONES (CF1, CF2):
+Permitted principal uses:
+• CF1: Public hospitals/clinics, public schools/pre-schools/day care, community halls, performing/visual arts centres, public indoor/outdoor recreation, churches, cemeteries, public service uses.
+• CF2: Public hospitals/clinics, public schools/pre-schools/day care, performing/visual arts centres, public service uses.
+Accessory uses: Indoor retail sales accessory, dwelling units accessory to permitted use.
+Size/Siting: Max lot coverage 25% (both zones). Setbacks per Section 4.3.
+Subdivision: Min lot area 1 ha (on-site sewage + potable water) or 0.2 ha (community services).
+Zone Variations:
+• CF1(a): Same as CF1 with vegetation screen requirements between property and ALR lands.
+• CF1(b): Libraries are a prohibited use.
+• CF1(c): Agriculture is a permitted principal use.
+• CF1(d): Only permitted: public hospitals/clinics/health care, public schools/pre-schools/day care, performing/visual arts centres, public service uses. Accessory: indoor retail sales, dwelling units accessory to and located above another permitted use. Vegetation screen ≥ 7.5m between property and ALR.
+
+SECTION 9.5 — COMPREHENSIVE DEVELOPMENT ZONES (CD1, CD2, CD3):
+Permitted principal uses:                          CD1   CD2   CD3
+Single-family dwellings                            ♦     ♦     ♦
+Duplexes (pre-July 31, 1990)                       ♦     ♦
+Multi-family dwellings                             ♦     ♦
+Elementary schools, pre-schools, day care          ♦     ♦
+Public health clinics                              ♦
+Community halls                                    ♦
+Outdoor/indoor recreation                          ♦
+Indoor retail sales/services                             ♦
+Offices, banks, restaurants                              ♦
+Auto rentals (max 5 vehicles)                            ♦
+Public service uses                                ♦     ♦     ♦
+Accessory: seasonal cottages (CD3 only), home-based business (CD1, CD2, CD3).
+
+Size/Siting:                                       CD1   CD2   CD3
+Max lot coverage (%)                               33    33    10
+Max dwelling units per ha                          12.3  12.3  N/A
+Max floor area non-residential (sqm)               N/A   139   N/A
+Min front lot line setback (m)                     3.0   4.5   *
+Min rear lot line setback (m)                      3.0   4.5   *
+Min exterior side lot line setback (m)             3.0   4.5   *
+Max height (m)                                     §     11.0  §
+Max storeys                                        §     3     §
+(* = Section 4.3, § = Section 3.8 defaults apply)
+
+Subdivision:                                       CD1   CD2   CD3
+Min individual lot (ha)                            0.08  0.08  1.2
+Min avg area lots (ha)                             0.08  0.08  4.6
+Water supply: community water system (CD1, CD2); adequate potable water (CD3).
+Sewage: community sewage collection (CD1, CD2); individual on-site (CD3).
+CD3 special: min avg area may be reduced to 4.2 ha if community recreational ballpark facility provided or equivalent funds contributed.
+
+SECTION 9.6 — FORESTRY ZONES (F1, F2):
+Permitted principal uses:                          F1    F2
+Forestry production/harvesting                     ♦     ♦
+Single-family dwellings                            ♦     ♦
+Duplexes (pre-July 31, 1990)                       ♦
+Forestry research and education                    ♦     ♦
+Agriculture                                        ♦     ♦
+Public service uses                                ♦
+Accessory: home-based business (F1, F2), seasonal cottages (F1 only).
+Size/Siting: Max lot coverage 10% (both zones).
+Subdivision: Min individual lot 8 ha (both zones), with on-site sewage + adequate potable water.
+Zone Variations:
+• F1(a): Min avg area by subdivision 2 ha, min individual lot 0.6 ha (with on-site sewage + potable water).
+• F1(z): Max lots in all lands zoned F1(z), F2(z), F1(a)(z), R(z) and RU1(z) combined ≤ 72.
+• F2(a): Second dwelling unit permitted (max 111.48 sqm / 1200 sq ft). No dwelling within 20m of southern interior side lot line.
+• F2(z): Max lots in all lands zoned F1(z), F2(z), F1(a)(z), R(z) and RU1(z) combined ≤ 72.
+
+SECTION 9.7 — GENERAL EMPLOYMENT ZONES (GE1, GE2, GE3):
+Info Note: In ALR, uses only permitted if also permitted by Agricultural Land Commission.
+Permitted principal uses:                          GE1   GE2   GE3
+Boat building, servicing, repairs                  ♦     ♦     ♦
+Car wash                                                 ♦     ♦
+Car wash accessory to vehicle sales/rental/repair  ♦     ♦     ♦
+Collection of recyclable materials                 ♦     ♦     ♦
+Commercial composting facility                     ♦     ♦     ♦
+Contractor's shop                                  ♦     ♦     ♦
+Creative industry                                  ♦     ♦     ♦
+Farm-related light industry                        ♦     ♦     ♦
+Food processing (incl off-farm)                    ♦     ♦     ♦
+Funeral homes                                      ♦     ♦     ♦
+Indoor storage                                     ♦     ♦     ♦
+Light industry                                     ♦     ♦     ♦
+Public service uses                                ♦     ♦     ♦
+Public utility uses                                ♦     ♦     ♦
+Equipment rental/repair/sales                      ♦     ♦     ♦
+Building supplies/appliances/furniture sales       ♦     ♦     ♦
+Veterinarian clinics, animal hospitals             ♦     ♦     ♦
+Wholesale sales                                    ♦     ♦     ♦
+Agriculture                                              ♦
+Abattoir                                                 ♦     ♦
+Cement factory                                                 ♦
+Heavy equipment rental/sales/service                     ♦     ♦
+Outdoor storage (goods/vehicles excl derelict)           ♦     ♦
+Outdoor storage of commercial trucks/bulk fuel                 ♦
+Processing/sorting construction aggregates                     ♦
+Processing/sorting/storage timber & wood products              ♦
+Waste materials storage (related to principal uses)            ♦
+Vehicle/metal dismantling and recycling                        ♦
+Accessory: retail sales, one dwelling unit, office use — all accessory to a permitted principal use.
+
+Size/Siting:                                       GE1   GE2   GE3
+Max lot coverage (%)                               75    66    33
+Max floor area accessory dwelling (sqm)            185   185   185
+Min front lot line setback (m)                     *     *     *
+Min rear setback abutting non-GE zone (m)          6     6     7.5
+Min rear setback abutting GE zone (m)              3     3     3
+Min interior side abutting non-GE zone (m)         6     6     7.5
+Min interior side abutting GE zone (m)             3     3     3
+Min exterior side lot line (m)                     6     7.5   7.5
+Commercial composting setback from all lot lines   30    30    30
+Max height (m)                                     *     *     11
+(* = Section 3.8 default of 10.7m applies)
+Stormwater: If impervious surface ≥ 280 sqm, no further impervious surface without engineer's stormwater design.
+Subdivision: Min individual lot 0.6 ha (on-site sewage + potable water) or 0.2 ha (community services), all zones.
+
+Zone Variations:
+• GE1(a): Only permitted uses: light industry, funeral homes, building supplies/furniture sales, storage (no derelict/waste), public service uses, farm-related light industry, offices, personal services, dwelling unit in Strata Lot 4 Plan VIS4561, creative industry, food processing. Water consumption max 1000 litres/day. Accessory: indoor retail sales only.
+• GE1(b): Additional: storage of goods/vehicles (no derelict/waste).
+• GE1(c): Additional: laundromat.
+• GE1(d): Additional: processing/sorting/storage timber and wood products, sawmills and planing mills.
+• GE2(a): Additional: indoor/outdoor retail/wholesale sales of building/garden supplies/appliances/furniture with accessory outdoor sales/storage. Also outdoor storage of commercial trucks/bulk fuel, and processing/sorting construction aggregates. Lot coverage max 20%. Individual buildings max 3,250 sqm. 15m setback when abutting ALR.
+• GE2(b): Additional: agriculture, farm buildings/structures, agriculture and food research/education.
+• GE2(c): Additional: outdoor storage of commercial trucks/bulk fuel, processing/sorting aggregates, vehicle/metal dismantling and recycling. All additional uses set back 60m from water body.
+• GE2(d): Additional: laundromat.
+• GE2(f): Additional: outdoor storage of derelict vehicles, waste materials storage related to principal uses.
+• GE3(a): All uses must be marine-dependent. Minimum rear lot line setback is 10m.
+
+SECTION 9.8 — PARK AND RESERVES ZONES (PR1-PR6):
+Permitted principal uses:                     PR1   PR2   PR3   PR4   PR5   PR6
+Park administration offices                   ♦     ♦
+Passive outdoor recreation                    ♦     ♦     ♦           ♦     ♦
+Active outdoor recreation (excl golfing)      ♦     ♦           ♦
+Golf course including practice areas                            ♦
+Golf club house                                                 ♦
+Accessory: retail sales and restaurant (PR4 only), caretaker's dwelling unit (PR1, PR2, PR4, PR5).
+
+Size/Siting:                                  PR1   PR2   PR3   PR4   PR5   PR6
+Max lot coverage (%)                          33    5     5     5     1     N/A
+Min lot area for accessory dwelling (ha)      4     4     4     4     4     N/A
+Max floor area accessory dwelling (sqm)       95    95    N/A   95    95    N/A
+Max floor area golf clubhouse + accessory
+  buildings incl retail/restaurant (sqm)      N/A   N/A   1675  N/A   N/A   N/A
+Subdivision: Min individual lot 65 ha (PR1, PR2, PR4, PR5) or 20 ha (PR3) or 65 ha (PR6), with on-site sewage + potable water.
+
+Zone Variations:
+• PR2(a): Additional: campground.
+• PR3(a): Additional: two indoor tennis courts or similar sports facilities, indoor squash court. Max 3 buildings, max tennis court building height 8.5m.
+• PR4(a): Additional: accessory intermittent outdoor retail sales to max 25% lot coverage.
+• PR4(b): Additional: commercial parking lot, marina administration offices and services.
+• PR5(a): Additional: pre-schools and child day care centres, community halls.
+• PR5(b): Additional: campground.
+• PR5(c): Additional: telecommunication facilities serving the general region.
+`,
+
 // ── lub_zones_rural: Rural, Upland, Watershed, Shoreline zones ──
 lub_zones_rural: `
 ═══════════════════════════════════════
@@ -586,9 +882,56 @@ ZONE QUICK REFERENCE – RURAL / UPLAND / WATERSHED / ISLAND:
 • RW2 (Rural Watershed 2): Lot coverage 33%, min lot 12 ha. Agriculture permitted (excluding intensive). 15m setback from water bodies. Home-based business permitted. Activities must comply with water protection legislation.
 • Ri (Rural Island): Lot coverage 10%, min lot 2 ha avg (0.4-0.6 ha individual). Lighthouse stations permitted. Agriculture, public services, seasonal cottages, home-based business permitted.
 
-SHORELINE ZONES (Part 9.11):
-• S1 – Shoreline 1: Lot coverage 10%, height 7.5m (reduced!), setbacks F:15m(from water) R:7.5m S:3m, min lot 0.5 ha. Permitted: dwelling, dock, boathouse, water-dependent uses.
-• S2 – Shoreline 2: Lot coverage 20%, height 10.7m, setbacks F:10m(from water) R:10m S:5m, min lot 0.8 ha. Permitted: commercial accommodation, resort, recreation, restaurants.
+SHORELINE ZONES (Section 9.11):
+Info Note: Shoreline zoning covers entire SSI Local Trust Area (except Piers Island and Crown foreshore within 300m of Vancouver Island). Buildings must not be within 10m of eelgrass (Zostera marina) indicated on Schedule K, or within 125m of clam beds on OCP Map 10.
+
+Section 9.11.1 — Permitted Uses (♦ = permitted):
+PRINCIPAL USES:                                    S1    S2    S3    S4    S5    S6    S7    S8
+Navigational uses                                  ♦     ♦     ♦     ♦     ♦     ♦     ♦     ♦
+Geothermal heating (in tidal waters only)          ♦     ♦     ♦     ♦     ♦     ♦     ♦
+Private floats/buoys (non-commercial moorage)                  ♦     ♦     ♦     ♦     ♦
+Private docks/floats for non-commercial use                    ♦     ♦     ♦     ♦
+  accessory to permitted use on adjacent upland
+Aquaculture (excl fin fish)                                                ♦
+Public ferry wharves                                           ♦
+Docks for temporary commercial wharfage            ♦     ♦           ♦
+Docks for private boat club wharfage                                       ♦
+Commercial moorage/wharfage of resident boats      ♦     ♦           ♦
+Marine fuelling services                           ♦     ♦
+Retail sales of boating accessories                ♦
+Commercial sea plane docks                         ♦
+Sporting equipment sales/rental (excl watercraft)  ♦     ♦
+Boat sales, rentals, servicing businesses          ♦     ♦
+Commercial boat building and repair                ♦
+Barge loading/unloading piers                      ♦           ♦
+Log sorting and storage                            ♦
+ACCESSORY USES:
+Docks/floats/wharves for aquaculture                                       ♦
+Docks/floats/walkways/ramps/breakwaters            ♦     ♦     ♦     ♦     ♦
+  accessory to permitted use
+Breakwaters/seawalls accessory to maintenance      ♦
+  of a principal permitted use
+Dwelling unit for aquaculture owner/operator                               ♦
+Accessory buildings to house a permitted use       ♦
+  (excl boat shelters)
+
+Section 9.11.2 — Size, Siting and Density:
+                                                   S1    S2    S3    S4    S5    S6    S7    S8
+Max float area non-commercial moorage (sqm)        N/A   N/A   N/A   N/A   N/A   35    35    N/A
+Max float area for private docks (sqm)             N/A   N/A   N/A   N/A   N/A   35    N/A   N/A
+Max dwelling units                                 N/A   N/A   N/A   N/A   1     N/A   N/A   N/A
+Max dwelling unit floor area (sqm)                 N/A   N/A   N/A   N/A   60    N/A   N/A   N/A
+Max building size (sqm)                            60    N/A   N/A   N/A   N/A   N/A   N/A   N/A
+Max height of buildings/structures (m)             4.5   4.5   10    4.5   4.5   4.5   4.5   4.5
+
+Section 9.11.3 — Zone Variations:
+• S1(a): Log sorting and storage NOT permitted. Marina defined to include marine sewage pump-out and public boat ramp.
+• S2(a): Min 87 linear metres of wharfage for temporary/transient boats.
+• S5(a): Additional: growing/cultivation of fin fish; fin fish pens and structures.
+• S6(a): Additional: non-commercial private yacht club moorage (max 43m berth length), total float area max 190 sqm. Min parking: 1 space per 20m of non-commercial moorage.
+• S6(b): Additional accessory: floating breakwaters. Total float area max 65 sqm.
+• S8(a): Additional: storage of inert marine equipment, accessory floats and mooring buoys. Max float 35 sqm. Max 33% of S8(a) zone occupied by moored floats.
+• S8(a) [BL503]: Additional: private buoys for non-commercial boat moorage.
 `,
 
 // ── lub_additional: ALR, DPA, TUP, Variances ──
@@ -1183,22 +1526,67 @@ const SECTION_KEYWORDS: Record<string, { keywords: string[]; label: string; icon
   },
 
   lub_zones_residential: {
-    label: "LUB 355: Residential & Other Zone Regulations",
+    label: "LUB 355: Residential Zone Regulations (R1-R12)",
     icon: "🏘️",
     keywords: [
       "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11", "r12",
-      "residential zone", "residential 1", "residential 2",
-      "a1", "a2", "agricultural zone",
-      "c1", "c2", "commercial zone",
-      "ca1", "ca2", "commercial accommodation",
-      "ge1", "ge2", "ge3", "general employment",
-      "pr1", "pr2", "parks and reserves",
+      "residential zone", "residential 1", "residential 2", "residential 3",
+      "residential 4", "residential 5", "residential 6", "residential 7",
+      "residential 8", "residential 9", "residential 10", "residential 11", "residential 12",
       "multi-family", "multifamily", "mobile home park",
       "affordable housing", "seniors", "supportive housing",
       "cluster housing", "compact",
       "zone variation", "schedule a",
-      "subdivision requirement", "servicing requirement",
-      "community water", "community sewage",
+      "residential subdivision", "residential servicing",
+    ],
+  },
+
+  lub_zones_agricultural: {
+    label: "LUB 355: Agricultural Zone Regulations (A1, A2)",
+    icon: "🌾",
+    keywords: [
+      "a1", "a2", "agricultural zone", "agricultural 1", "agricultural 2",
+      "agriculture zone", "farm zone",
+      "farmworker dwelling", "farmworker's dwelling",
+      "abattoir", "kennel", "commercial composting",
+      "farm-related light industry",
+      "commercial guest accommodation",
+      "greenhouse", "lot coverage greenhouse",
+    ],
+  },
+
+  lub_zones_commercial: {
+    label: "LUB 355: Commercial & Accommodation Zones (C1-C4, CA1-CA5)",
+    icon: "🏢",
+    keywords: [
+      "c1", "c2", "c3", "c4", "commercial zone", "commercial 1", "commercial 2",
+      "commercial 3", "commercial 4",
+      "ca1", "ca2", "ca3", "ca4", "ca5",
+      "commercial accommodation", "commercial accommodation zone",
+      "hotel zone", "resort zone", "campground zone",
+      "guest accommodation", "guest house",
+      "automobile service station", "gasoline sales",
+      "retail zone", "office zone", "restaurant zone",
+      "pub", "theatre", "cinema",
+    ],
+  },
+
+  lub_zones_other: {
+    label: "LUB 355: CF, CD, Forestry, Employment & Parks Zones",
+    icon: "🏛️",
+    keywords: [
+      "cf1", "cf2", "community facilities", "community facilities zone",
+      "cd1", "cd2", "cd3", "comprehensive development",
+      "f1", "f2", "forestry zone", "forestry 1", "forestry 2",
+      "ge1", "ge2", "ge3", "general employment", "general employment zone",
+      "pr1", "pr2", "pr3", "pr4", "pr5", "pr6", "parks and reserves",
+      "park zone", "parks zone",
+      "light industry", "contractor's shop", "creative industry",
+      "boat building", "wholesale", "cement factory",
+      "golf course", "golf club",
+      "funeral home",
+      "stormwater management",
+      "marine-dependent",
     ],
   },
 
@@ -1209,13 +1597,18 @@ const SECTION_KEYWORDS: Record<string, { keywords: string[]; label: string; icon
       "rural", "upland", "watershed",
       "ru1", "ru2", "ru3", "rw1", "rw2", "ri",
       "rural zone", "rural upland", "rural island",
-      "f1", "f2", "forestry zone", "forestry",
-      "s1", "s2", "shoreline zone", "shoreline",
+      "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8",
+      "shoreline zone", "shoreline",
       "retreat centre", "meditation",
       "plant nursery", "native wildlife",
       "lighthouse", "boathouse",
       "rural water protection",
       "8 ha", "32 ha", "12 ha",
+      "navigational", "moorage", "wharfage",
+      "aquaculture", "fin fish",
+      "eelgrass", "clam bed",
+      "float", "dock", "pier",
+      "sea plane", "barge",
     ],
   },
 
@@ -1234,7 +1627,7 @@ const SECTION_KEYWORDS: Record<string, { keywords: string[]; label: string; icon
 };
 
 // LUB section keys (lub_core always included, never scored)
-const LUB_SECTION_KEYS = ["lub_definitions", "lub_general_regulations", "lub_siting", "lub_zones_residential", "lub_zones_rural", "lub_additional"];
+const LUB_SECTION_KEYS = ["lub_definitions", "lub_general_regulations", "lub_siting", "lub_zones_residential", "lub_zones_agricultural", "lub_zones_commercial", "lub_zones_other", "lub_zones_rural", "lub_additional"];
 const OCP_SECTION_KEYS = ["goals_environment", "residential", "commercial", "community", "villages", "agricultural", "parks", "conservation", "infrastructure", "dpa"];
 
 interface SectionSelection {
@@ -1249,12 +1642,16 @@ function detectZoneReferences(query: string): string[] {
 
   // Residential zones R1-R12
   if (/\bR(?:1[0-2]?|[2-9])\b/.test(q)) sections.add("lub_zones_residential");
-  // Agricultural, Commercial, Commercial Accommodation, General Employment, Parks
-  if (/\b(?:A[12]|C[12]|CA[12]|GE[123]|PR[12])\b/.test(q)) sections.add("lub_zones_residential");
+  // Agricultural zones A1, A2
+  if (/\bA[12]\b/.test(q)) sections.add("lub_zones_agricultural");
+  // Commercial zones C1-C4, Commercial Accommodation CA1-CA5
+  if (/\b(?:C[1-4]|CA[1-5])\b/.test(q)) sections.add("lub_zones_commercial");
+  // Community Facilities CF1-CF2, Comprehensive Development CD1-CD3, Forestry F1-F2, General Employment GE1-GE3, Parks PR1-PR6
+  if (/\b(?:CF[12]|CD[1-3]|F[12]|GE[1-3]|PR[1-6])\b/.test(q)) sections.add("lub_zones_other");
   // Rural/Upland/Watershed zones
   if (/\b(?:RU[123]|RW[12]|Ri)\b/i.test(q)) sections.add("lub_zones_rural");
-  // Forestry, Shoreline
-  if (/\b(?:F[12]|S[12])\b/.test(q)) sections.add("lub_zones_rural");
+  // Shoreline zones S1-S8
+  if (/\bS[1-8]\b/.test(q)) sections.add("lub_zones_rural");
 
   return Array.from(sections);
 }
