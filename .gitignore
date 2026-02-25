@@ -6,6 +6,9 @@ dist/
 *.local
 .DS_Store
 .vite/
+datasets/
+Bylaws/
+bylaw-docs_full/
 
 # Raw source datasets (large — only the converted JSON in public/data/ is deployed)
 datasets/
