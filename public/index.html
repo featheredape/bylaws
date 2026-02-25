@@ -47,12 +47,42 @@
         <main class="page">
             <!-- Query card -->
             <div class="query-card" id="queryCard">
-                <!-- PID Lookup -->
+                <!-- Property Lookup -->
                 <div class="pid-section">
                     <p class="pid-section-label">
                         Look up a property (optional)
                     </p>
-                    <div class="pid-row">
+                    <div class="search-mode-toggle">
+                        <button class="search-mode-btn active" id="modeAddress" onclick="setSearchMode('address')">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Civic Address
+                        </button>
+                        <button class="search-mode-btn" id="modePID" onclick="setSearchMode('pid')">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/></svg>
+                            PID Number
+                        </button>
+                    </div>
+                    <!-- Address search row (default visible) -->
+                    <div class="pid-row" id="addressSearchRow">
+                        <input
+                            type="text"
+                            class="pid-input address-input"
+                            id="addressInput"
+                            placeholder="e.g. 123 Rainbow Road"
+                            maxlength="120"
+                            autocomplete="off"
+                        />
+                        <button
+                            class="btn-pid"
+                            id="addressBtn"
+                            onclick="lookupAddress()"
+                        >
+                            <span class="btn-pid-label">Look up</span>
+                            <div class="pid-spinner"></div>
+                        </button>
+                    </div>
+                    <!-- PID search row (hidden by default) -->
+                    <div class="pid-row" id="pidSearchRow" style="display: none;">
                         <input
                             type="text"
                             class="pid-input"

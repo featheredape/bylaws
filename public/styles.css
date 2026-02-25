@@ -907,7 +907,7 @@ footer a:hover {
     cursor: not-allowed;
 }
 
-/* ─── PID Lookup ─────────────────────────────────────────── */
+/* ─── PID / Address Lookup ────────────────────────────────── */
 .pid-section {
     margin-bottom: 22px;
     padding-bottom: 22px;
@@ -920,6 +920,57 @@ footer a:hover {
     letter-spacing: 0.7px;
     color: var(--muted-foreground);
     margin-bottom: 8px;
+}
+
+/* Search mode toggle */
+.search-mode-toggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 10px;
+    background: var(--secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+    width: fit-content;
+}
+.search-mode-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border: none;
+    border-radius: calc(var(--radius-sm) - 2px);
+    font-family: "DM Sans", sans-serif;
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: var(--muted-foreground);
+    background: transparent;
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+}
+.search-mode-btn:hover:not(.active) {
+    color: var(--foreground);
+    background: hsla(0, 0%, 100%, 0.5);
+}
+.search-mode-btn.active {
+    background: var(--card);
+    color: var(--primary);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+}
+.search-mode-btn svg {
+    flex-shrink: 0;
+}
+
+/* Address input overrides */
+.address-input {
+    font-family: "DM Sans", sans-serif;
+    letter-spacing: normal;
+}
+.address-input::placeholder {
+    font-family: "DM Sans", sans-serif;
+    letter-spacing: normal;
 }
 .pid-row {
     display: flex;

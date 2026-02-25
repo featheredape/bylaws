@@ -11,6 +11,8 @@ let lastAnalyzedSections = [];
 let lastQuery = "";
 let lastPIDData = null;
 let pidLookupInFlight = false;
+let addressLookupInFlight = false;
+let currentSearchMode = "address"; // "address" or "pid"
 
 /* ── PID Formatting ────────────────────────────────────────────── */
 function formatPID(raw) {
@@ -27,7 +29,7 @@ function formatPID(raw) {
     );
 }
 
-// Auto-format PID as user types
+// Auto-format PID as user types + address Enter key
 document.addEventListener("DOMContentLoaded", () => {
     const pidIn = document.getElementById("pidInput");
     pidIn.addEventListener("input", () => {
@@ -40,7 +42,217 @@ document.addEventListener("DOMContentLoaded", () => {
     pidIn.addEventListener("keydown", (e) => {
         if (e.key === "Enter") lookupPID();
     });
+
+    const addrIn = document.getElementById("addressInput");
+    if (addrIn) {
+        addrIn.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") lookupAddress();
+        });
+    }
 });
+
+/* ── Search Mode Toggle ───────────────────────────────────────── */
+function setSearchMode(mode) {
+    currentSearchMode = mode;
+    var pidRow = document.getElementById("pidSearchRow");
+    var addrRow = document.getElementById("addressSearchRow");
+    var modePID = document.getElementById("modePID");
+    var modeAddr = document.getElementById("modeAddress");
+    var resultEl = document.getElementById("pidResult");
+
+    if (mode === "address") {
+        pidRow.style.display = "none";
+        addrRow.style.display = "flex";
+        modePID.classList.remove("active");
+        modeAddr.classList.add("active");
+        document.getElementById("addressInput").focus();
+    } else {
+        pidRow.style.display = "flex";
+        addrRow.style.display = "none";
+        modePID.classList.add("active");
+        modeAddr.classList.remove("active");
+        document.getElementById("pidInput").focus();
+    }
+
+    // Clear previous results when switching modes
+    resultEl.className = "pid-result";
+    resultEl.innerHTML = "";
+    lastPIDData = null;
+}
+
+/* ── Address Lookup ───────────────────────────────────────────── */
+async function lookupAddress() {
+    if (addressLookupInFlight) return;
+
+    var addrIn = document.getElementById("addressInput");
+    var btn = document.getElementById("addressBtn");
+    var resultEl = document.getElementById("pidResult");
+    var address = addrIn.value.trim();
+
+    if (!address || address.length < 3) {
+        resultEl.className = "pid-result show error";
+        resultEl.innerHTML = '<div class="pid-result-title">Invalid Address</div>' +
+            '<p class="pid-error-msg">Please enter a street address (e.g. 123 Rainbow Road)</p>';
+        return;
+    }
+
+    addressLookupInFlight = true;
+    btn.disabled = true;
+    btn.classList.add("loading");
+    resultEl.className = "pid-result";
+    resultEl.innerHTML = "";
+
+    try {
+        var resp = await fetch("/api/address-lookup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ address: address }),
+        });
+
+        var json = await resp.json();
+
+        if (!json.success) {
+            resultEl.className = "pid-result show error";
+            resultEl.innerHTML = '<div class="pid-result-title">' + esc(json.error) + '</div>' +
+                (json.geocoded_address ? '<p class="pid-error-msg">Geocoded to: ' + esc(json.geocoded_address) + '</p>' : '');
+            lastPIDData = null;
+            return;
+        }
+
+        // Use the same lastPIDData format so useProperty() works
+        lastPIDData = json.data;
+        var d = json.data;
+
+        // Build matched address display
+        var addrHtml = '<div class="pid-address-match">' +
+            '<div class="pid-prop-label">Matched Address</div>' +
+            '<div class="pid-prop-value">' + esc(d.matched_address) + '</div>' +
+            '</div>';
+
+        // Build zone highlight (same as PID lookup)
+        var zoneHtml = "";
+        if (d.zone_code) {
+            var zCode = esc(d.lub_zone_code || d.zone_code);
+            var zName = esc(d.lub_zone_name || d.zone_desc || "");
+            zoneHtml = '<div class="pid-zone-highlight">' +
+                '<div class="pid-zone-code">' + zCode + '</div>' +
+                '<div class="pid-zone-name">' + zName + '</div>' +
+                '<div class="pid-zone-bylaw">Land Use Bylaw 355 &middot; Islands Trust</div>' +
+                '</div>';
+        } else {
+            zoneHtml = '<div class="pid-zone-highlight pid-zone-not-found">' +
+                '<div class="pid-zone-code">Zone Not Found</div>' +
+                '<div class="pid-zone-name">Parcel may be outside zoned area</div>' +
+                '</div>';
+        }
+
+        // Build DPA list (same as PID lookup)
+        var dpaHtml = "";
+        if (d.dpas && d.dpas.length > 0) {
+            dpaHtml = d.dpas.map(function(dpa) {
+                var shouldShowDesc = dpa.number === 6 || (dpa.description && !dpa.name.includes(dpa.description));
+                var descHtml = shouldShowDesc && dpa.description
+                    ? '<div class="dpa-subtype">' + esc(dpa.description) + '</div>'
+                    : '';
+                return '<div class="pid-dpa-badge dpa-confirmed">' +
+                    '<span class="dpa-confidence-tag">Confirmed</span>' +
+                    '<span><span class="dpa-name">' + esc(dpa.name) + '</span>' + descHtml + '</span>' +
+                    '</div>';
+            }).join("");
+        } else {
+            dpaHtml = '<span class="pid-dpa-none">No Development Permit Areas apply to this parcel</span>';
+        }
+
+        // Build neighbouring DPAs section
+        var neighbourHtml = "";
+        if (d.neighbouring_dpas && d.neighbouring_dpas.length > 0) {
+            var badges = d.neighbouring_dpas.map(function(dpa) {
+                var pidList = dpa.neighbouring_pids && dpa.neighbouring_pids.length > 0
+                    ? '<span class="dpa-source-tag">from ' + dpa.neighbouring_pids.map(esc).join(", ") + '</span>'
+                    : '';
+                var shouldShowDesc = dpa.number === 6 || (dpa.description && !dpa.name.includes(dpa.description));
+                var descHtml = shouldShowDesc && dpa.description
+                    ? '<div class="dpa-subtype">' + esc(dpa.description) + '</div>'
+                    : '';
+                return '<div class="pid-dpa-badge dpa-neighbour">' +
+                    '<span class="dpa-confidence-tag">Neighbour</span>' +
+                    '<span><span class="dpa-name">' + esc(dpa.name) + '</span>' + descHtml + pidList + '</span>' +
+                    '</div>';
+            }).join("");
+            neighbourHtml =
+                '<div class="pid-neighbouring-section">' +
+                '<div class="pid-prop-label pid-neighbouring-label">Neighbouring DPAs &mdash; For Consideration</div>' +
+                '<div class="pid-neighbouring-note">These DPAs apply to adjacent properties and may affect your application.</div>' +
+                '<div class="pid-dpa-list">' + badges + '</div>' +
+                '</div>';
+        }
+
+        // Build adjacent parcels section
+        var adjacentHtml = "";
+        if (d.adjacent_parcels && d.adjacent_parcels.length > 0) {
+            var rows = d.adjacent_parcels.map(function(ap) {
+                var zoneTag = ap.zone_code
+                    ? '<span class="adj-zone-code">' + esc(ap.zone_code) + '</span>' +
+                      '<span class="adj-zone-name">' + esc(ap.zone_name || "") + '</span>'
+                    : '<span class="adj-zone-name adj-zone-unknown">Zone not determined</span>';
+                var dpaTags = "";
+                if (ap.dpas && ap.dpas.length > 0) {
+                    dpaTags = ap.dpas.map(function(dpa) {
+                        return '<span class="adj-dpa-pill">DPA ' + dpa.number + '</span>';
+                    }).join("");
+                }
+                return '<div class="adj-parcel-row">' +
+                    '<span class="adj-pid">' + esc(ap.pid) + '</span>' +
+                    '<span class="adj-zone">' + zoneTag + '</span>' +
+                    (dpaTags ? '<span class="adj-dpas">' + dpaTags + '</span>' : '') +
+                    '</div>';
+            }).join("");
+            adjacentHtml =
+                '<div class="pid-adjacent-section">' +
+                '<div class="pid-prop-label pid-adjacent-label">Adjacent Properties (' + d.adjacent_parcels.length + ')</div>' +
+                '<div class="adj-parcel-list">' + rows + '</div>' +
+                '</div>';
+        }
+
+        // Auto-incorporate property into query
+        useProperty();
+
+        resultEl.className = "pid-result show";
+        resultEl.innerHTML =
+            '<div class="pid-result-header">' +
+            '<div class="pid-result-title">Property Found</div>' +
+            '</div>' +
+            addrHtml +
+            zoneHtml +
+            '<div class="pid-props">' +
+            '<div class="pid-prop">' +
+            '<div class="pid-prop-label">PID</div>' +
+            '<div class="pid-prop-value">' + esc(d.pid) + '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="pid-dpas-section">' +
+            '<div class="pid-prop-label pid-dpas-label">Development Permit Areas (OCP 434)</div>' +
+            '<div class="pid-dpa-list">' + dpaHtml + '</div>' +
+            '</div>' +
+            neighbourHtml +
+            adjacentHtml +
+            (d.debug_map_link
+                ? '<div class="pid-map-link"><a href="' + esc(d.debug_map_link) + '" target="_blank" rel="noopener">Verify location on Google Maps &rarr;</a></div>'
+                : "") +
+            '<div class="pid-context-note">' +
+            'This property information will be incorporated into your request.' +
+            '</div>';
+    } catch (err) {
+        resultEl.className = "pid-result show error";
+        resultEl.innerHTML = '<div class="pid-result-title">Connection Error</div>' +
+            '<p class="pid-error-msg">Could not reach the address lookup service. Please try again.</p>';
+        lastPIDData = null;
+    } finally {
+        btn.disabled = false;
+        btn.classList.remove("loading");
+        addressLookupInFlight = false;
+    }
+}
 
 /* ── Character counter & inline validation ─────────────────────── */
 function updateCharCount() {
