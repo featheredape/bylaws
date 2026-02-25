@@ -155,6 +155,7 @@ async function geocodeAddress(address: string): Promise<GeocoderResult[]> {
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
+  const cors = corsHeaders(request);
 
   let body: { address: string };
   try {
@@ -162,7 +163,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   } catch {
     return Response.json(
       { success: false, error: "Invalid request body" },
-      { status: 400, headers: corsHeaders() }
+      { status: 400, headers: cors }
     );
   }
 
@@ -170,7 +171,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   if (!address || address.length < 3) {
     return Response.json(
       { success: false, error: "Please enter a street address (e.g. 123 Rainbow Road)" },
-      { status: 400, headers: corsHeaders() }
+      { status: 400, headers: cors }
     );
   }
 
@@ -181,7 +182,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     if (results.length === 0) {
       return Response.json(
         { success: false, error: "No matching addresses found on Salt Spring Island. Please check the address and try again." },
-        { status: 404, headers: corsHeaders() }
+        { status: 404, headers: cors }
       );
     }
 
@@ -196,7 +197,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     if (!bestMatch.lon || !bestMatch.lat) {
       return Response.json(
         { success: false, error: "Could not determine coordinates for that address." },
-        { status: 404, headers: corsHeaders() }
+        { status: 404, headers: cors }
       );
     }
 
@@ -218,7 +219,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           geocoded_address: bestMatch.fullAddress,
           coordinates: { lon: bestMatch.lon, lat: bestMatch.lat },
         },
-        { status: 404, headers: corsHeaders() }
+        { status: 404, headers: cors }
       );
     }
 
@@ -288,7 +289,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         })),
         source: "bc_geocoder + local_datasets",
       },
-      { headers: corsHeaders() }
+      { headers: cors }
     );
   } catch (err: any) {
     console.error("Address lookup error:", err);
@@ -301,18 +302,26 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           ? "Could not reach the BC Address Geocoder service. Please try again in a moment."
           : "Something went wrong looking up that address. Please try again.",
       },
-      { status: 500, headers: corsHeaders() }
+      { status: 500, headers: cors }
     );
   }
 };
 
-export const onRequestOptions: PagesFunction = async () => {
-  return new Response(null, { status: 204, headers: corsHeaders() });
+export const onRequestOptions: PagesFunction = async (context) => {
+  return new Response(null, { status: 204, headers: corsHeaders(context.request) });
 };
 
-function corsHeaders(): Record<string, string> {
+const ALLOWED_ORIGINS = [
+  "https://bylaws.saltspring.info",
+  "http://localhost:8788",
+  "http://127.0.0.1:8788",
+];
+
+function corsHeaders(request?: Request): Record<string, string> {
+  const origin = request?.headers?.get("Origin") || "";
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
-    "Access-Control-Allow-Origin": "https://bylaws.saltspring.info",
+    "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Content-Type": "application/json",

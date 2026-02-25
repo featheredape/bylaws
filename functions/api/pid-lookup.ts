@@ -135,6 +135,7 @@ async function loadDPAs(env: Env, url: string): Promise<DPAPolygon[]> {
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
+  const cors = corsHeaders(request);
 
   let body: { pid: string };
   try {
@@ -142,14 +143,14 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   } catch {
     return Response.json(
       { success: false, error: "Invalid request body" },
-      { status: 400, headers: corsHeaders() }
+      { status: 400, headers: cors }
     );
   }
 
   if (!body.pid || body.pid.trim().length < 3) {
     return Response.json(
       { success: false, error: "Please provide a PID (9-digit parcel identification number)" },
-      { status: 400, headers: corsHeaders() }
+      { status: 400, headers: cors }
     );
   }
 
@@ -157,7 +158,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   if (!pid) {
     return Response.json(
       { success: false, error: "Invalid PID format. Please enter a 9-digit number (e.g. 009-123-456)" },
-      { status: 400, headers: corsHeaders() }
+      { status: 400, headers: cors }
     );
   }
 
@@ -175,7 +176,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     if (!parcel) {
       return Response.json(
         { success: false, error: `No property found for PID ${pid.dashed}. Please verify the number and try again.` },
-        { status: 404, headers: corsHeaders() }
+        { status: 404, headers: cors }
       );
     }
 
@@ -248,24 +249,32 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         },
         source: "local_datasets",
       },
-      { headers: corsHeaders() }
+      { headers: cors }
     );
   } catch (err: any) {
     console.error("PID lookup error:", err);
     return Response.json(
       { success: false, error: "Something went wrong looking up that property. Please try again." },
-      { status: 500, headers: corsHeaders() }
+      { status: 500, headers: cors }
     );
   }
 };
 
-export const onRequestOptions: PagesFunction = async () => {
-  return new Response(null, { status: 204, headers: corsHeaders() });
+export const onRequestOptions: PagesFunction = async (context) => {
+  return new Response(null, { status: 204, headers: corsHeaders(context.request) });
 };
 
-function corsHeaders(): Record<string, string> {
+const ALLOWED_ORIGINS = [
+  "https://bylaws.saltspring.info",
+  "http://localhost:8788",
+  "http://127.0.0.1:8788",
+];
+
+function corsHeaders(request?: Request): Record<string, string> {
+  const origin = request?.headers?.get("Origin") || "";
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
-    "Access-Control-Allow-Origin": "https://bylaws.saltspring.info",
+    "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Content-Type": "application/json",
