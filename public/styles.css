@@ -271,6 +271,83 @@ textarea::placeholder {
     flex-shrink: 0;
 }
 
+/* Property context bar (shown above textarea after lookup) */
+.property-context {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--sage-50);
+    border: 1px solid var(--sage-200);
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+    animation: fadeIn 0.25s ease;
+}
+.ctx-label {
+    font-size: var(--text-2xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.ctx-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    flex: 1;
+}
+.ctx-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 9px;
+    border-radius: var(--radius-pill);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    white-space: nowrap;
+}
+.ctx-zone {
+    background: var(--sage-100);
+    border: 1px solid var(--sage-300);
+    color: var(--sage-800);
+    font-family: "JetBrains Mono", monospace;
+    font-size: var(--text-2xs);
+    letter-spacing: 0.5px;
+}
+.ctx-dpa {
+    background: hsl(38, 40%, 94%);
+    border: 1px solid hsl(38, 30%, 82%);
+    color: hsl(38, 40%, 22%);
+}
+.ctx-none {
+    opacity: 0.6;
+    font-weight: 500;
+    font-family: "DM Sans", sans-serif;
+    letter-spacing: normal;
+}
+.ctx-clear {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--muted-foreground);
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all var(--transition);
+    line-height: 1;
+    padding: 0;
+}
+.ctx-clear:hover {
+    background: var(--sage-200);
+    color: var(--foreground);
+}
+
 /* Example prompts */
 .examples-label {
     font-size: var(--text-2xs);
@@ -1222,7 +1299,7 @@ footer a:hover {
     font-family: "JetBrains Mono", monospace;
 }
 
-/* ─── Adjacent parcels section ───────────────────────────── */
+/* ─── Adjacent parcels section (accordion) ───────────────── */
 .pid-adjacent-section {
     margin-top: 14px;
     padding-top: 12px;
@@ -1230,6 +1307,34 @@ footer a:hover {
 }
 .pid-adjacent-label {
     margin-bottom: 6px;
+}
+.adj-accordion-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    padding: 4px 0;
+    transition: color var(--transition);
+}
+.adj-accordion-trigger:hover {
+    color: var(--sage-700);
+}
+.adj-accordion-chevron {
+    font-size: var(--text-2xs);
+    color: var(--muted-foreground);
+    transition: transform var(--transition);
+    flex-shrink: 0;
+}
+.adj-accordion.open .adj-accordion-chevron {
+    transform: rotate(180deg);
+}
+.adj-accordion-panel {
+    display: none;
+}
+.adj-accordion.open .adj-accordion-panel {
+    display: block;
+    animation: fadeIn 0.2s ease;
 }
 .adj-parcel-list {
     display: flex;

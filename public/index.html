@@ -53,12 +53,52 @@
                         Look up a property (optional)
                     </p>
                     <div class="search-mode-toggle">
-                        <button class="search-mode-btn active" id="modeAddress" onclick="setSearchMode('address')">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <button
+                            class="search-mode-btn active"
+                            id="modeAddress"
+                            onclick="setSearchMode('address')"
+                        >
+                            <svg
+                                width="13"
+                                height="13"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path
+                                    d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                                />
+                                <circle cx="12" cy="10" r="3" />
+                            </svg>
                             Civic Address
                         </button>
-                        <button class="search-mode-btn" id="modePID" onclick="setSearchMode('pid')">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/></svg>
+                        <button
+                            class="search-mode-btn"
+                            id="modePID"
+                            onclick="setSearchMode('pid')"
+                        >
+                            <svg
+                                width="13"
+                                height="13"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <rect
+                                    x="2"
+                                    y="3"
+                                    width="20"
+                                    height="18"
+                                    rx="2"
+                                />
+                                <line x1="2" y1="9" x2="22" y2="9" />
+                            </svg>
                             PID Number
                         </button>
                     </div>
@@ -82,7 +122,11 @@
                         </button>
                     </div>
                     <!-- PID search row (hidden by default) -->
-                    <div class="pid-row" id="pidSearchRow" style="display: none;">
+                    <div
+                        class="pid-row"
+                        id="pidSearchRow"
+                        style="display: none"
+                    >
                         <input
                             type="text"
                             class="pid-input"
@@ -105,19 +149,23 @@
 
                 <p class="query-label">What are you planning to do?</p>
                 <p class="query-hint">
-                    Tell us what you want to do on your property. If you didn't
-                    enter your PID information, provide as much information as
-                    you can in your request; relevant land-use zoning and DPA
-                    zone information will help yield better results
+                    In natural language, provide the system here with details
+                    about what you are trying to do on your property. You can
+                    also ask general questions about what is permissible in your
+                    land use zone or DPA zone.
                 </p>
+
+                <div id="propertyContext" class="property-context" style="display: none;"></div>
 
                 <div class="textarea-wrap">
                     <textarea
                         id="queryInput"
-                        placeholder="e.g. I want to add a secondary suite to my single-family home in an R1 zone on a 0.4 ha lot on Salt Spring Island. The suite would be in the basement with a separate entrance, approximately 75 sq m…"
+                        placeholder="e.g. I want to add a secondary suite to my single-family home. The suite would be in the basement with a separate entrance, approximately 75 sq m…"
                         aria-describedby="charCount fieldError"
                     ></textarea>
-                    <div class="char-count" id="charCount" aria-live="polite">0 / 5,000</div>
+                    <div class="char-count" id="charCount" aria-live="polite">
+                        0 / 5,000
+                    </div>
                     <div class="field-error" id="fieldError" role="alert">
                         <span>&#x26A0;&#xFE0F;</span>
                         <span class="field-error-msg"></span>
@@ -139,34 +187,46 @@
                 <p class="examples-label">Try an example</p>
                 <div class="examples">
                     <span
-                        class="example-chip" role="button" tabindex="0"
+                        class="example-chip"
+                        role="button"
+                        tabindex="0"
                         data-q="I want to build a two-storey house on my R1 residential lot with a secondary suite"
-                        ><span class="example-chip-icon">&#x1F3E0;</span> House + suite
-                        in R1</span
+                        ><span class="example-chip-icon">&#x1F3E0;</span> House
+                        + suite in R1</span
                     >
                     <span
-                        class="example-chip" role="button" tabindex="0"
+                        class="example-chip"
+                        role="button"
+                        tabindex="0"
                         data-q="Can I open a small coffee shop on my C1 commercial property?"
-                        ><span class="example-chip-icon">&#x2615;</span> Coffee shop
-                        in C1</span
+                        ><span class="example-chip-icon">&#x2615;</span> Coffee
+                        shop in C1</span
                     >
                     <span
-                        class="example-chip" role="button" tabindex="0"
+                        class="example-chip"
+                        role="button"
+                        tabindex="0"
                         data-q="I want to build an accessory dwelling unit on my 5 acre rural property in RU1"
-                        ><span class="example-chip-icon">&#x1F3E1;</span> ADU on rural
-                        land</span
+                        ><span class="example-chip-icon">&#x1F3E1;</span> ADU on
+                        rural land</span
                     >
                     <span
-                        class="example-chip" role="button" tabindex="0"
+                        class="example-chip"
+                        role="button"
+                        tabindex="0"
                         data-q="Can I operate a bed and breakfast from my residential property?"
-                        ><span class="example-chip-icon">&#x1F6CF;&#xFE0F;</span> B&amp;B in
-                        residential</span
+                        ><span class="example-chip-icon"
+                            >&#x1F6CF;&#xFE0F;</span
+                        >
+                        B&amp;B in residential</span
                     >
                     <span
-                        class="example-chip" role="button" tabindex="0"
+                        class="example-chip"
+                        role="button"
+                        tabindex="0"
                         data-q="I want to build a workshop and storage building on my GE1 industrial lot"
-                        ><span class="example-chip-icon">&#x1F527;</span> Workshop in
-                        GE1</span
+                        ><span class="example-chip-icon">&#x1F527;</span>
+                        Workshop in GE1</span
                     >
                 </div>
 

@@ -74,10 +74,10 @@ function setSearchMode(mode) {
         document.getElementById("pidInput").focus();
     }
 
-    // Clear previous results when switching modes
+    // Clear previous results and context when switching modes
     resultEl.className = "pid-result";
     resultEl.innerHTML = "";
-    lastPIDData = null;
+    clearPropertyContext();
 }
 
 /* ── Address Lookup ───────────────────────────────────────────── */
@@ -208,9 +208,14 @@ async function lookupAddress() {
                     '</div>';
             }).join("");
             adjacentHtml =
-                '<div class="pid-adjacent-section">' +
-                '<div class="pid-prop-label pid-adjacent-label">Adjacent Properties (' + d.adjacent_parcels.length + ')</div>' +
+                '<div class="pid-adjacent-section adj-accordion" id="adjAccordionAddr">' +
+                '<div class="pid-prop-label pid-adjacent-label adj-accordion-trigger" role="button" tabindex="0" aria-expanded="false" onclick="toggleAdjAccordion(\'adjAccordionAddr\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleAdjAccordion(\'adjAccordionAddr\')}">' +
+                'Adjacent Properties (' + d.adjacent_parcels.length + ')' +
+                '<span class="adj-accordion-chevron">&#x25BC;</span>' +
+                '</div>' +
+                '<div class="adj-accordion-panel">' +
                 '<div class="adj-parcel-list">' + rows + '</div>' +
+                '</div>' +
                 '</div>';
         }
 
@@ -239,9 +244,7 @@ async function lookupAddress() {
             (d.debug_map_link
                 ? '<div class="pid-map-link"><a href="' + esc(d.debug_map_link) + '" target="_blank" rel="noopener">Verify location on Google Maps &rarr;</a></div>'
                 : "") +
-            '<div class="pid-context-note">' +
-            'This property information will be incorporated into your request.' +
-            '</div>';
+            '';
     } catch (err) {
         resultEl.className = "pid-result show error";
         resultEl.innerHTML = '<div class="pid-result-title">Connection Error</div>' +
@@ -417,9 +420,14 @@ async function lookupPID() {
             }).join("");
 
             adjacentHtml =
-                '<div class="pid-adjacent-section">' +
-                '<div class="pid-prop-label pid-adjacent-label">Adjacent Properties (' + d.adjacent_parcels.length + ')</div>' +
+                '<div class="pid-adjacent-section adj-accordion" id="adjAccordionPid">' +
+                '<div class="pid-prop-label pid-adjacent-label adj-accordion-trigger" role="button" tabindex="0" aria-expanded="false" onclick="toggleAdjAccordion(\'adjAccordionPid\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleAdjAccordion(\'adjAccordionPid\')}">' +
+                'Adjacent Properties (' + d.adjacent_parcels.length + ')' +
+                '<span class="adj-accordion-chevron">&#x25BC;</span>' +
+                '</div>' +
+                '<div class="adj-accordion-panel">' +
                 '<div class="adj-parcel-list">' + rows + '</div>' +
+                '</div>' +
                 '</div>';
         }
 
@@ -447,9 +455,7 @@ async function lookupPID() {
             (d.debug_map_link
                 ? '<div class="pid-map-link"><a href="' + esc(d.debug_map_link) + '" target="_blank" rel="noopener">Verify location on Google Maps &rarr;</a></div>'
                 : "") +
-            '<div class="pid-context-note">' +
-            'This property information will be incorporated into your request.' +
-            '</div>';
+            '';
     } catch (err) {
         resultEl.className = "pid-result show error";
         resultEl.innerHTML = '<div class="pid-result-title">Connection Error</div>' +
@@ -463,44 +469,62 @@ async function lookupPID() {
 }
 
 function useProperty() {
-    if (!lastPIDData) return;
-    const d = lastPIDData;
-    const textarea = document.getElementById("queryInput");
+    var contextEl = document.getElementById("propertyContext");
+    if (!contextEl) return;
 
-    const lines = [];
-    const zCode = d.lub_zone_code || d.zone_code;
-    const zName = d.lub_zone_name || d.zone_desc;
-    if (zCode) {
-        lines.push("ZONE: " + zCode + " — " + (zName || "Unknown"));
-    } else {
-        lines.push("ZONE: Could not be determined");
+    if (!lastPIDData) {
+        contextEl.style.display = "none";
+        contextEl.innerHTML = "";
+        return;
     }
 
+    var d = lastPIDData;
+    var zCode = d.lub_zone_code || d.zone_code;
+    var zName = d.lub_zone_name || d.zone_desc;
+
+    var zonePart = zCode
+        ? '<span class="ctx-tag ctx-zone">' + esc(zCode) + '</span>'
+        : '<span class="ctx-tag ctx-zone ctx-none">Zone unknown</span>';
+
+    var dpaPart = "";
     if (d.dpas && d.dpas.length > 0) {
-        lines.push(
-            "DPAs: " + d.dpas.map(function(dpa) { return dpa.name; }).join("; ")
-        );
+        dpaPart = d.dpas.map(function(dpa) {
+            return '<span class="ctx-tag ctx-dpa">DPA ' + dpa.number + '</span>';
+        }).join("");
     } else {
-        lines.push("DPAs: None apply to this parcel");
+        dpaPart = '<span class="ctx-tag ctx-dpa ctx-none">No DPAs</span>';
     }
 
-    const context = lines.join("\n");
-    const existing = textarea.value.trim();
-    if (existing) {
-        textarea.value = context + "\n\n" + existing;
-    } else {
-        textarea.value = context + "\n\nI want to ";
-    }
+    contextEl.innerHTML =
+        '<span class="ctx-label">Your query will include:</span>' +
+        '<span class="ctx-tags">' + zonePart + dpaPart + '</span>' +
+        '<button class="ctx-clear" onclick="clearPropertyContext()" title="Remove property context">&times;</button>';
+    contextEl.style.display = "flex";
+}
 
-    textarea.focus();
-    textarea.setSelectionRange(
-        textarea.value.length,
-        textarea.value.length
-    );
-    textarea.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-    });
+function clearPropertyContext() {
+    lastPIDData = null;
+    var contextEl = document.getElementById("propertyContext");
+    if (contextEl) {
+        contextEl.style.display = "none";
+        contextEl.innerHTML = "";
+    }
+}
+
+/** Build the zone/DPA context string to prepend to user query at submit time */
+function buildPropertyContext() {
+    if (!lastPIDData) return "";
+    var d = lastPIDData;
+    var lines = [];
+    var zCode = d.lub_zone_code || d.zone_code;
+    var zName = d.lub_zone_name || d.zone_desc;
+    if (zCode) {
+        lines.push("ZONE: " + zCode + " \u2014 " + (zName || "Unknown"));
+    }
+    if (d.dpas && d.dpas.length > 0) {
+        lines.push("DPAs: " + d.dpas.map(function(dpa) { return dpa.name; }).join("; "));
+    }
+    return lines.length > 0 ? lines.join("\n") : "";
 }
 
 /* ── Helpers ──────────────────────────────────────────────────── */
@@ -691,22 +715,35 @@ function toggle(id) {
     }
 }
 
+function toggleAdjAccordion(id) {
+    var el = document.getElementById(id);
+    el.classList.toggle("open");
+    var trigger = el.querySelector(".adj-accordion-trigger");
+    if (trigger) {
+        trigger.setAttribute("aria-expanded", el.classList.contains("open") ? "true" : "false");
+    }
+}
+
 /* ── Main compliance check ─────────────────────────────────────── */
 async function checkCompliance() {
-    const query = document.getElementById("queryInput").value.trim();
+    const userQuery = document.getElementById("queryInput").value.trim();
     clearValidation();
-    if (!query) {
+    if (!userQuery) {
         showValidation("Please describe your project before checking compliance.");
         return;
     }
-    if (query.length < 10) {
+    if (userQuery.length < 10) {
         showValidation("Please provide more detail about your project for an accurate analysis.");
         return;
     }
-    if (query.length > MAX_QUERY_LENGTH) {
+    if (userQuery.length > MAX_QUERY_LENGTH) {
         showValidation("Your query is too long (max " + MAX_QUERY_LENGTH.toLocaleString() + " characters). Please shorten it.");
         return;
     }
+
+    // Prepend property context (zone/DPA) if a property was looked up
+    const propCtx = buildPropertyContext();
+    const query = propCtx ? propCtx + "\n\n" + userQuery : userQuery;
 
     const btn = document.getElementById("checkBtn");
     const loadEl = document.getElementById("loading");
@@ -758,6 +795,7 @@ function resetQuery() {
     document.getElementById("results").classList.remove("show");
     document.getElementById("results").innerHTML = "";
     document.getElementById("queryInput").value = "";
+    clearPropertyContext();
     window.scrollTo({ top: 0, behavior: "smooth" });
     setTimeout(function() {
         document.getElementById("queryInput").focus();
