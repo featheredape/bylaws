@@ -729,7 +729,7 @@ async function checkCompliance() {
     const userQuery = document.getElementById("queryInput").value.trim();
     clearValidation();
     if (!userQuery) {
-        showValidation("Please describe your project before checking compliance.");
+        showValidation("Please describe your project or question before checking bylaws.");
         return;
     }
     if (userQuery.length < 10) {

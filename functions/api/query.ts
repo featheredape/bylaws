@@ -351,6 +351,165 @@ Section 4.7 — MEASUREMENTS OF SETBACKS:
   (2) Steps, eaves, sunlight control projections, canopies, balconies, decks, porches: max 1.3 m projection into front/rear/exterior side setback; max 0.6 m into interior side setback.
 `,
 
+// ── lub_subdivision: Part 5 — General Regulations (Subdivision) ──
+lub_subdivision: `
+═══════════════════════════════════════
+LUB 355 — PART 5: GENERAL REGULATIONS (SUBDIVISION)
+═══════════════════════════════════════
+
+Section 5.1 — LOT AREA:
+5.1.1 Subdivision applications must comply with the regulations for minimum and minimum average lot area and minimum service levels set out in Part 9 of this Bylaw, except the Approving Officer may approve a subdivision with lots that do not comply in these circumstances:
+  (1) if the subdivision creates a single lot that does not comply, and that lot:
+    (a) is to be used solely for unattended public utilities equipment and the owner grants a covenant under the Land Title Act restricting use to that use; or
+    (b) is to be used solely as a publicly owned park or nature reserve and the owner grants a covenant restricting use to that use; or
+    (c) is to be used solely for an emergency response station or community hall and the owner grants a covenant restricting use to one of those uses.
+  (2) where the subdivision is a boundary adjustment between two existing lots and no lot is created with an area less than 0.4 ha if serviced by a community water service or less than 1 ha if not serviced by a community water service;
+  (3) where the subdivision creates two lots from a lot in the Rural zone that is greater than 2 ha in area and has existed unchanged since February 11, 1976, and provided that neither parcel may be less than 0.4 ha if serviced by a community water service or less than 1 ha if not serviced by a community water service;
+  (4) where the subdivision creates two lots from a lot that was split by a highway on or before January 1, 1980, in such a manner that each portion of the lot is at least 0.3 ha in area, and provided that the two lots are separated by the highway.
+5.1.2 Where land is in the Agricultural Land Reserve, the minimum lot area applies only when land is: (1) approved for subdivision under the authority of the Agricultural Land Commission Act; or (2) exempted by the Agricultural Land Commission Act or regulations thereto.
+5.1.3 (Deleted)
+
+Section 5.2 — BOUNDARY ADJUSTMENTS:
+5.2.1 The Approving Officer must not approve a boundary adjustment that would increase the area of any lot to the point where the new lots created could be subdivided into more lots than would be permitted under this Bylaw without the boundary adjustment.
+5.2.2 The Approving Officer must not approve a boundary adjustment where one of the lots subject to adjustment is of such an area or shape that it does not have a useable building envelope that is at least 7.5 m in width and 7.5 m in depth, given the applicable lot line setbacks.
+
+Section 5.3 — LOT DIMENSIONS:
+5.3.1 The frontage of any lot in a proposed subdivision must be at least 10 per cent of its perimeter, provided that in no case may the frontage be less than 10 m.
+5.3.2 No lot may have a lot depth greater than five times its width.
+5.3.3 Side lot lines of proposed lots must be perpendicular or substantially perpendicular to the highway abutting the lot.
+5.3.4 The lot depth of each lot created by subdivision must be at least 30 m.
+5.3.5 Where a lot being subdivided contains or abuts a water body, each of the new lots being created must provide sufficient area for a building envelope of 280 square metres, an access driveway and on-site sewage treatment system to be constructed outside of the setbacks from each lot line and the water body as required in Part 4.
+5.3.6 Where a lot being subdivided contains a tree bearing the nest of a great blue heron, a bald eagle or an osprey, or where the lot contains land within a 100 m radius of such a tree, then the depth and width of the new lots must provide sufficient area for a building envelope of 280 square metres, given required setbacks, and an access driveway and on-site sewage treatment system to be located on each proposed lot outside of a 100 m radius of the base of that tree.
+Information Note: It is a provincial offence under the Wildlife Act to disturb or destroy the nest of an eagle, peregrine falcon, gyrfalcon, osprey, heron or burrowing owl, or the nest of any bird when occupied by a bird or its egg.
+5.3.7 Where a lot abuts a water body, the area that lies between the water body and a line drawn 30 m from the natural boundary of the water body must not be included in the calculation of lot area for each lot proposed for subdivision for the purpose of determining whether the proposed lot complies with the minimum lot area regulations, except where this provision would decrease the total lot yield for a subdivision.
+
+Section 5.4 — PANHANDLE LOTS:
+5.4.1 No panhandle lot may be created by subdivision of land in a Commercial or General Employment zone or on land where multi-family dwelling units are permitted.
+5.4.2 If a panhandle lot created by subdivision has sufficient area to be further subdivided under this Bylaw, the minimum width of the access strip is 20 m.
+5.4.3 If a panhandle lot created by subdivision has insufficient area to be further subdivided, the minimum width of the access strip is 10 m.
+
+Section 5.5 — POTABLE WATER:
+5.5.1 Each lot in a proposed subdivision must be supplied with potable water in accordance with the service levels specified in Part 9 of this Bylaw.
+5.5.2 Each lot in a proposed subdivision must be supplied with sufficient water to supply all uses, buildings and structures permitted on the lot by this Bylaw according to the standards set out in Table 1. Where more than one use is permitted on a lot, the amount of water to be supplied is the sum of the amounts required for each permitted use, calculated separately.
+TABLE 1 — POTABLE WATER SUPPLY STANDARDS FOR SUBDIVISION:
+  Dwelling unit: 1600 litres/day/lot
+  Secondary Suite: 1200 litres/day/lot
+  Seasonal cottage: 680 litres/day/lot
+  Bed and breakfast home-based business: 225/bedroom
+  Commercial or General Employment use: 900 litres/day/lot
+  Community hall or church: 1590 litres/day/lot
+  School: 50/classroom
+  Commercial guest accommodation units: 450/unit
+  Campground: 225/campsite
+5.5.3 Where water is to be supplied by a community water system, the community water system must provide written confirmation of the amount of water it is able to supply to each lot.
+5.5.4 Where water is to be supplied from a surface water body, the applicant for subdivision must provide proof of a water license issued after November 30, 1994, that permits the withdrawal of the required amount of water.
+5.5.5 Where water is to be supplied by groundwater, the applicant for subdivision must provide written certification under seal of an engineer with experience in groundwater hydrology that there is sufficient available groundwater to provide the required amount of potable water on a continuous basis, and that the extraction from the groundwater table of that amount of water is not reasonably expected to adversely affect the quantity or quality of water obtainable from any existing well or surface water that is used as a source of potable water.
+5.5.6 If the required amount of water cannot be supplied or if the certification, water license or confirmation referred to in 5.5.3, 5.5.4 or 5.5.5 cannot be made, the Approving Officer may nonetheless approve the subdivision if the applicant grants a covenant under the Land Title Act to the Salt Spring Island Local Trust Committee that restricts the development of the subdivision to the buildings, structures and uses for which the required amount of water can be supplied, licensed or certified under 5.5.3, 5.5.4 or 5.5.5.
+5.5.7 For the purposes of the certification referred to in 5.5.5, the engineer must supply supporting documentation of a pump test conducted by the engineer which must indicate that the test was of sufficient duration to establish the long term reliability of the water supply in accordance with generally acceptable hydrological engineering practices.
+5.5.8 Where the water supply is provided through a groundwater well or through a private surface water license, an engineer must also provide a water quality analysis that demonstrates that the surface water or the groundwater from each proposed water supply source or well is potable or can be made potable with a treatment system that is customarily used in a single-family dwelling. The certificate must include a plan of the proposed subdivision indicating each well location where a water sample was taken, and a statement that the water samples upon which the water quality analysis was performed were unadulterated samples taken from the locations indicated on the plan. If the water to be supplied is not potable, but can be made potable with a treatment system customarily used in a single-family dwelling, then the Approving Officer may nonetheless approve the subdivision if the applicant grants a covenant under the Land Title Act to the Salt Spring Island Local Trust Committee that requires on-going treatment of the water to ensure that it is potable before it is used as drinking water.
+
+Section 5.6 — SEWAGE DISPOSAL:
+5.6.1 Each lot proposed to be created by subdivision must be demonstrated by the applicant to contain or be capable of being serviced by an area or areas of sufficient size and appropriate characteristics to satisfy the setback requirements of Subsection 4.5.1 and the requirements of the Vancouver Island Health Authority Subdivision Standards for an on-site sewage treatment system for the buildings, structures and uses that are permitted on the lot by this Bylaw.
+
+Section 5.7 — STORMWATER DRAINAGE:
+5.7.1 Every subdivision must be designed and constructed to maximize the amount of precipitation that percolates into the ground, to minimize direct overland runoff, and to minimize impacts on the quality and quantity of groundwater.
+5.7.2 Every surface drainage system in a subdivision must be designed to provide for the continuity of any existing surface drainage system serving the drainage basin in which the lot to be subdivided is located.
+5.7.3 Every surface drainage system designed for a land subdivision located within 30 m of a fish-bearing water body, including the sea, must be consistent with the Land Development Guidelines.
+5.7.4 No water body may be diverted, altered, or used for surface drainage purposes so as to transfer water between natural surface water watersheds.
+5.7.5 Every surface drainage system must be designed so that the system is capable of conveying the peak rate of runoff from a 20-year storm event for the entire drainage basin within which the subdivision or development is located when such basin is fully developed.
+5.7.6 Every surface drainage system must be designed and constructed to minimize scouring and erosion of ditch banks.
+5.7.7 All drainage works, including ditches and culverts must be located in statutory rights-of-way granted to the Crown, or in dedicated highways, or in the case of a Bare Land Strata subdivision, on common property or an access lot.
+5.7.8 If stormwater is discharged from a surface drainage system to the sea or a watercourse on or adjacent to the land being subdivided or developed, the system must be constructed and designed to retain stormwater for the period of time necessary to allow for settling of silt and other suspended solids.
+5.7.9 Every applicant for subdivision must provide the written certification under seal of an engineer with experience in drainage engineering that the drainage system for the subdivision has been designed in accordance with Subsections 5.7.1 through 5.7.8.
+5.7.10 Every applicant for subdivision must provide written certification under seal of an engineer with experience in drainage engineering that the subdivision has been constructed in accordance with the drainage system design prepared under Subsection 5.7.9 and such certification is to be provided before deposit of the subdivision plan in the Land Title Office.
+
+Section 5.8 — COMPLIANCE WITH MINIMUM AND AVERAGE LOT AREAS:
+5.8.1 Subdivisions must comply with the minimum and average lot area regulations set out in Part 9 of this Bylaw except that a park to be dedicated upon deposit of the subdivision plan need not comply with those regulations. For the purposes of this Bylaw, average lot area in a proposed subdivision is: the sum of the areas of the proposed lots, plus the area of land dedicated for parkland or school use, plus the area of land dedicated for environmental stewardship purposes, divided by the number of proposed lots.
+5.8.2 No lot having an area of less than 8 ha may be subdivided under Section 946 of the Local Government Act to provide a residence for a relative of the owner unless the lot is located entirely within the Agricultural Land Reserve.
+5.8.3 Where a lot proposed that contains or includes a water body, the area of the proposed lot is to be calculated as if it does not include the area of the water body, as measured below the natural boundary.
+
+Section 5.9 — COVENANT AGAINST FURTHER SUBDIVISION AND DEVELOPMENT:
+5.9.1 If a subdivision is proposed that yields the maximum number of lots permitted by the applicable minimum and average lot areas specified by this Bylaw, and one or more of the lots being created has an area equal to or greater than twice the applicable average lot area, the applicant must grant a covenant complying with Section 2.7 of this Bylaw for every such lot, prohibiting further subdivision of the lot.
+5.9.2 If a subdivision is proposed that yields fewer than the maximum number of lots permitted by the applicable minimum and average lot areas specified by this Bylaw, and: (1) one or more of the lots being created has an area equal to or greater than twice the applicable average lot area, and (2) one or more of the lots being created has an area less than the applicable average lot area, then the applicant must grant a covenant complying with Section 2.7 of this Bylaw for every lot referred to in Article 5.9.2(1) prohibiting the subdivision of the lot so as to create a greater total number of lots by subdivision and re-subdivision of the original lot than would have been created had the first subdivision created the maximum number of lots permitted by the applicable minimum and average lot area specified by this Bylaw.
+5.9.3 Where the approval of a bare land strata plan would create common property on which this Bylaw would permit the construction of a residential dwelling unit or seasonal cottage if the common property were a lot, the applicant must grant a covenant complying with Section 2.7 of this Bylaw for the common property prohibiting the further subdivision of the common property, the construction of any residential dwelling unit or seasonal cottage on the common property, and the disposition of the common property separately from the strata lots.
+
+Section 5.10 — LOTS DIVIDED BY A ZONE BOUNDARY:
+5.10.1 If a lot proposed to be subdivided is divided by a zone boundary, a separate calculation of the number of lots permitted must be made for each zone, and no lot may be created that is smaller than the minimum average lot area permitted for the zone in which it is located.
+5.10.2 The creation of a lot lying within two or more zones is to be avoided wherever possible. If lots lying within two or more zones are subdivided, lot boundaries are to correspond with zone boundaries wherever possible.
+
+Section 5.11 — SPLIT LOTS:
+5.11.1 No lot may be created by subdivision, which is divided into two or more portions by a highway, park dedication, common property or other lot.
+
+Section 5.12 — DOUBLE FRONTAGE LOTS:
+5.12.1 No lot having frontage on more than one highway other than a corner lot may be created by subdivision.
+
+Section 5.13 — HIGHWAY ACCESS:
+5.13.1 All lots created through subdivision must have frontage on a highway, or in the case of a strata title subdivision, lots must have frontage on an access route connected to a highway.
+5.13.2 Despite 5.13.1, a lot that is to be used solely for conservation use may be created without frontage on a highway, provided the applicant grants a covenant complying with Section 2.7 of this Bylaw that restricts use of the lot for conservation purposes and prohibits the construction of any structures on the lot.
+
+Section 5.14 — CHARACTERISTICS OF PUBLIC ACCESS TO WATER BODIES:
+5.14.1 Access to permanent water bodies are to be provided at intervals of 200 m where the average area of lots in a subdivision is less than 2.5 ha and at intervals of 400 m where the average area of lots in a subdivision is equal to or greater than 2.5 ha, regardless of whether the highway may be practically developed as a roadway for automobiles.
+5.14.2 Despite 5.14.1, no access to water is required where that access would lead to a section of tidal shoreline that is identified as Environmentally Sensitive Habitat on Map 10 of the Salt Spring Island Official Community Plan, as an Environmentally Sensitive Shoreline Area on Map 11 of the Salt Spring Island Official Community Plan, nor to a freshwater shoreline of a lake that is a water supply for a community water system.
+5.14.3 The Approving Officer may require that highways giving access to the shore of any water body, dedicated to the Crown at the time of subdivision, be consolidated into one or more larger areas and may require that such a highway be located in an area of high recreational value or so as to provide access to such an area, or in an area where the average gradient to the water body does not exceed 30 per cent.
+
+Section 5.15 — HIGHWAY STANDARDS IN RELATION TO THE NATURAL ENVIRONMENT:
+5.15.1 The purpose of the standards set out in 5.15.2 through 5.15.8 is to ensure that the construction of highways in connection with the subdivision of land does not result in the alteration of the land to an extent that is inconsistent with the object of the Islands Trust under the Islands Trust Act, the Islands Trust Policy Statement, or the Salt Spring Island Official Community Plan.
+5.15.2 Highways are not to be provided in a manner that results in a physical division of land in the Parks and Reserves 6 or Parks and Reserves 7 zones; or in a manner such that a farm operation would be interrupted in the Agriculture 1 or Agriculture 2 zone, or a forestry operation would be interrupted in the Forestry 1 or Forestry 2 zone.
+5.15.3 No highway may be constructed or located to connect an island in the Salt Spring Island Local Trust Area with any other island.
+5.15.4 No highway may be located through a wetland identified in Schedule 9 of the Salt Spring Island Official Community Plan. Subdivisions must be laid out to ensure that environmental impacts are minimised in any other environmentally sensitive areas identified on Schedules 9 through 12 of the Salt Spring Island Official Community Plan.
+5.15.5 No highway may be located so as to divert the flow of a surface watercourse or divert or contaminate in any way a groundwater aquifer, but this Subsection does not prohibit the culverting of a surface watercourse for a highway crossing or the construction of a stormwater retention facility provided that such culverting or construction is in accordance with the Land Development Guidelines.
+5.15.6 Where any highway is to cross a water body, the design of the crossing is to be carried out by an engineer in accordance with Section 6 of the Land Development Guidelines.
+5.15.7 The design of highways must to the greatest extent possible follow the natural contours of the land to minimize the extent of cutting and filling required to construct the highway.
+5.15.8 Native vegetation must be reinstated in all portions of the highway not comprising the roadway, following the completion of a highway and any associated utilities.
+
+Section 5.16 — PATHWAYS AND SHOULDER BIKEWAYS:
+5.16.1 Highway right-of-way is to be dedicated and developed as a pathway to provide convenient pedestrian and cyclist access as follows:
+  (1) Where a park, public school, public hospital, crown land or a lot zoned for commercial retail services would be more conveniently or quickly accessed from the proposed lots in a subdivision by a pathway than by a highway.
+  (2) Where a road identified as a cycle route or potential transit route on Schedule 4 or Schedule 5 of the Salt Spring Island Official Community Plan would be more conveniently or quickly accessed from new lots by a pathway than by a highway.
+5.16.2 Where a lot to be subdivided abuts a highway indicated on Schedule 4 of the Salt Spring Island Official Community Plan as a Cycle Route, land sufficient for the construction of shoulder bikeways with a minimum width of 1.5 m is to be dedicated in a manner consistent with the standards set out in the Salt Spring Island Cycle Route Inventory. The Approving Officer may also require the construction of such shoulder bikeways.
+5.16.3 Where a lot is being subdivided into more than four lots, and the lot to be subdivided abuts a highway indicated on Schedule 5 of the Salt Spring Island Official Community Plan as a potential transit route, land sufficient for the construction of a bus stop is to be dedicated. The location of the area dedicated for the bus stop is to correspond to a pathway constructed as described in Article 5.16.1(1) of this Bylaw.
+
+Section 5.17 — DRIVEWAY GUIDELINES:
+5.17.1 Each lot in a proposed subdivision must be of sufficient area and appropriate configuration to permit the construction of an access driveway to a building site on the lot, complying with the guidelines illustrated on Schedule "D". Compliance with these guidelines is to be confirmed by an engineer or a surveyor.
+
+Section 5.18 — SIDEWALK DIMENSIONS:
+5.18.1 Sidewalks with boulevards are to be constructed on or adjacent to all abutting highways when lots are being subdivided in the Ganges Village Core, Fulford Village Core or Channel Ridge Village Core, as designated on Schedule 1 of the Salt Spring Island Official Community Plan.
+5.18.2 Where required, sidewalks and boulevards are to be constructed at the time of subdivision according to the dimensions in Schedule "G".
+Information Note: Construction of sidewalks on a highway right-of-way requires the permission of the Ministry of Transportation and Highways, and may require an agreement regarding on-going maintenance and liability. Where such an agreement is not made, sidewalks are to be constructed on the lot being subdivided.
+`,
+
+// ── lub_signs: Part 6 — Sign Regulations ──
+lub_signs: `
+═══════════════════════════════════════
+LUB 355 — PART 6: SIGN REGULATIONS
+═══════════════════════════════════════
+
+Section 6.1 — STANDARDS FOR SIGNS:
+6.1.1 Every sign permanently positioned on any lot or affixed to the outside of any structure must comply with the provisions pertaining to number of signs and maximum total sign area set out in Table 2 for the zone in which the sign is placed.
+6.1.2 Signs must be located on the lot occupied by the use to which they refer.
+6.1.3 Despite 6.1.2 and the regulations in Table 2 regarding the number and size of signs, a business may locate one un-illuminated sign for directional purposes only that is no more than 0.5 square metres in area beside a highway right-of-way that does not provide driveway access to the business.
+Information Note: Location of a sign within a highway right-of-way requires the permission of the Ministry of Transportation and Highways.
+6.1.4 Any sign that refers or directs attention to a business or service that is no longer in operation must be removed within 30 days after the operation of the business or service ends.
+6.1.5 Any sign that has moving parts or that is lighted, animated or flashing to give the appearance of movement; and any noise-making sign, is prohibited.
+6.1.6 Any light illuminating a sign must be controlled so as not to cast light towards the sky or into the eyes of oncoming motorists.
+6.1.7 Double-faced signs are to be constructed so that the perimeters of both faces are congruent and are parallel and not more than 4 cm apart.
+6.1.8 Nothing in this Bylaw prohibits the erection of a sign by an agency of government for purposes of public health, safety or direction, or by a candidate in a local, provincial, or federal election, during the period prior to the election.
+
+TABLE 2 — SIGN REGULATIONS:
+  Commercial zones, Commercial Accommodation zones, Community Facility zones, Comprehensive Development 2 Zone, General Employment zones:
+    Max signs per principal use: 2
+    Max total sign area: 1.8 square metres per business or use
+  Schools, community halls, hospitals, art centres and public recreation centres with a gross floor area greater than 600 square metres:
+    Max signs per principal use: 2
+    Max total sign area: 1.8 square metres per use, not internally illuminated
+  Shoreline 1 and 2 zones:
+    Max signs per principal use: 2
+    Max total sign area: 3.7 square metres per business or use, un-illuminated
+  All other zones:
+    Max signs: 1 per lot plus 1 per home-based business
+    Max total sign area: 1 square metre per lot, un-illuminated
+`,
+
 // ── lub_zones_residential: Detailed R1-R12 Residential Zones (Section 9.9) ──
 lub_zones_residential: `
 ═══════════════════════════════════════
@@ -468,58 +627,69 @@ lub_zones_agricultural: `
 ═══════════════════════════════════════
 LUB 355 — SECTION 9.1: AGRICULTURAL ZONES (A1, A2)
 ═══════════════════════════════════════
+Info Note: Most land in A1/A2 zones is also in the Agricultural Land Reserve. Where this is the case, accessory uses are permitted only if also approved by the Agricultural Land Commission. Non-farm uses permitted by the ALC are only permitted if also consistent with this bylaw.
 
-Section 9.1.1 — Permitted Uses (♦ = permitted):
-PRINCIPAL USES:                                          A1    A2
-Agriculture                                               ♦     ♦
-Single-family dwellings                                   ♦     ♦
-Farmworker's dwelling units (one per lot)                 ♦     ♦
-Elementary schools, pre-schools, child day care centres   ♦     ♦
-Public health clinics                                     ♦
-Community halls                                           ♦
-Veterinarian clinics and animal hospitals                 ♦
-Abattoirs                                                 ♦
-Farm-related light industry                               ♦     ♦
-Commercial composting                                     ♦     ♦
-Kennels                                                   ♦
-Churches and cemeteries                                   ♦
-Active outdoor non-commercial recreation (excl golf)      ♦
-Public service uses                                       ♦     ♦
+Section 9.1.1 — Permitted Uses (♦ = permitted) [amended BL461, BL492, BL526]:
+PRINCIPAL USES:                                                          A1    A2
+Agriculture, farm buildings and structures                                ♦     ♦
+  (Info Note: "agriculture" includes processing, storage, and sale of
+   farm products produced on that agricultural land, consistent with
+   the Agricultural Land Reserve Use Regulation.)
+Single-family dwellings                                                   ♦     ♦
 ACCESSORY USES:
-Commercial guest accommodation (max 4 units/lot)          ♦     ♦
-Indoor retail sales (farm products) max 25 sqm            ♦     ♦
-Home-based business use (Section 3.13)                    ♦     ♦
-Seasonal cottages (Section 3.14)                          ♦     ♦
+A secondary suite subject to Section 3.16                                 ♦     ♦
+A second accessory dwelling unit, in addition to a secondary suite,       ♦     ♦
+  provided that it is:
+  a) a pre-existing dwelling unit constructed before February 22, 2019; or
+  b) a manufactured home constructed between July 4, 2019 and
+     December 31, 2021; or
+  c) a farmworker's dwelling unit not exceeding:
+     i.  56 sqm floor area on a lot between 1.2 and 2 ha; or
+     ii. 90 sqm floor area on a lot greater than 2 ha; or
+     iii.186 sqm floor area on a lot greater than 40 ha.
+  (Info Note: For lots 40 ha or less where the single-family dwelling
+   exceeds 500 sqm floor area, permission to construct an additional
+   dwelling unit for farm use must be applied for and approved in
+   writing by the Agricultural Land Commission.)
+Home-based business use subject to Section 3.13                           ♦     ♦
+Commercial guest accommodation in a campground on agricultural            ♦
+  land classified as a farm under the Assessment Act
+  (Info Note: requires agri-tourism activity consistent with the
+   Agricultural Land Reserve Use Regulation to be occurring on the lot.)
 
-Section 9.1.2 — Size, Siting and Density:
-Lot Coverage:                                            A1    A2
-• Max lot coverage excl greenhouses (%)                  35    35
-• Max lot coverage incl greenhouses (%)                  75    75
-Setbacks (metres):
-• Rear lot line                                          4.5   4.5
-(* = Section 4.3 default applies for front, side, exterior side)
-Number of Units:
-• Max dwelling units per lot                             1     1
-• Max farmworker dwelling units per lot                  1     1
-• Minimum lot area for day care centre (ha)              2     2
-• Minimum lot area for kennel (ha)                       4     N/A
-• Minimum lot area for abattoir (ha)                     8     N/A
+Section 9.1.2 — Size, Siting and Density [amended BL526]:
+Lot Coverage:                                                    A1    A2
+• Max lot coverage excl greenhouses (%)                          35    35
+• Max lot coverage incl greenhouses (%)                          75    75
+• Max lot coverage campsites in campground (%)                   5     N/A
+Number of Units and Site Areas:
+• Max combined bedrooms for B&B home-based business              10    N/A
+  and campsites on any lot
+  (Info Note: ALC only permits B&B with max 4 bedrooms
+   in principal residence. Campsite only if agri-tourism
+   activity consistent with ALC regulations is occurring.)
+Setbacks:
+• Min rear lot line setback (m) for buildings, structures        4.5   4.5
+  and uses not listed in Sections 4.3.4 through 4.3.9
+  (Despite Article 4.3.1(2))
 
-Section 9.1.3 — Subdivision Requirements:
+Section 9.1.3 — Stormwater and Agricultural Liquid Waste Management Plans:
+Total impervious surface area of farm buildings, structures and pavement must not exceed 3500 sqm or 10% of a lot or contiguous lots, unless constructed in accordance with an engineer's stormwater design ensuring pre- and post-development runoff rate, flow pattern and water quality are similar, consistent with the Land Development Guidelines.
+
+Section 9.1.4 — Subdivision Requirements:
 • Min water supply: adequate supply of potable water (both zones)
 • Min sewage: individual on-site sewage treatment per lot (both zones)
 • Min area individual lot (ha):                          8     8
-• Min average area of lots in subdivision (ha):          8     8
 
-Section 9.1.4 — Zone Variations:
-• A1(a): Max lot coverage 10% excluding greenhouses. Min lot area by subdivision reduced to 2 ha with min avg of 2.8 ha. Lot coverage 10% excl greenhouses. One additional dwelling unit permitted per lot (max 2 total).
-• A1(b): One additional dwelling unit permitted.
-• A1(c): Additional permitted: commercial guest accommodation (max 9 rooms, 400 sqm floor area), restaurant, retail sales/services to max 200 sqm.
-• A1(d): Despite Section 9.1.1, home-based business use not permitted. Max lot coverage 10% excl greenhouses.
-• A1(e): Despite Section 9.1.1, one additional dwelling unit permitted. Max 2 dwelling units per lot.
-• A1(f): Min lot area by subdivision 0.6 ha (on-site sewage + potable water).
-• A2(a): Max commercial guest accommodation units is 20.
-• A2(b): Notwithstanding Section 9.1.1, max 9 commercial guest accommodation units, max 400 sqm total floor area for guest accommodation. Restaurant and retail sales/services max 200 sqm.
+Section 9.1.5 — Zone Variations:
+• A1(a): Additional permitted uses: community hall; processing and storage of farm products produced mainly within the SSI Local Trust Area; museum; outdoor community events.
+• A1(b): Additional permitted use: outdoor children's recreational camp.
+• A1(c): (Deleted — BL490)
+• A1(d): Additional permitted use: a hotel and restaurant, including accessory buildings, occupying no more than 675 sqm of lot coverage.
+• A1(e): Max lots permitted in entire A1(e) area = 1. Min individual lot area by subdivision = 6.7 ha.
+• A1(f) [BL435]: Additional permitted uses: emergency response station; fire training facility. Regulations: (a) no building/structure associated with fire training facility within 8m of interior side lot line; (b) vegetation screen per Section 3.4; (c) no fuel other than propane for fire simulation; (d) fire simulation only on engineered concrete slab with metal burn props; (e) only water for fire extinguishment, contained and separated from contaminants before discharge.
+• A2(a): (a) Despite lot coverage regulations, buildings and structures for residential uses must not exceed 10% of lot area. (b) Despite setback regulations, setback from any lot line must not be less than 7.5 m. (c) Subdivision of lots 48 ha or larger permitted: additional lots may be created (min 1 ha each) with a common lot (no building permitted). For each 8 ha of common lot, one additional lot is permitted (max 6 additional lots plus the common lot). Highway dedication included in common lot calculation. If remainder > 2 ha, one additional lot permitted.
+• A2(b) [BL466]: Despite all other regulations, only the following principal uses are permitted: (a) biodiversity conservation, heritage, wildlife and scenery viewing (max 100 sqm buildings); (b) education and research (max 100 sqm buildings). Single-family dwellings are NOT permitted in A2(b).
 `,
 
 // ── lub_zones_commercial: Sections 9.2 Commercial + 9.3 Commercial Accommodation ──
@@ -528,106 +698,142 @@ lub_zones_commercial: `
 LUB 355 — SECTIONS 9.2 & 9.3: COMMERCIAL & COMMERCIAL ACCOMMODATION ZONES
 ═══════════════════════════════════════
 
-SECTION 9.2 — COMMERCIAL ZONES (C1, C2, C3, C4):
+SECTION 9.2 — COMMERCIAL ZONES (C1, C2, C3, C4) [amended BL489, BL492]:
 
 Section 9.2.1 — Permitted Uses (♦ = permitted):
-PRINCIPAL USES:                                    C1    C2    C3    C4
-Single-family dwellings                            ♦     ♦
-Duplexes constructed before July 31, 1990          ♦
-Multi-family dwellings                             ♦
-Indoor retail sales use                            ♦     ♦           ♦
-Outdoor retail sales use                                 ♦
-Indoor retail services                             ♦     ♦
-Personal services                                  ♦     ♦
-Offices                                            ♦     ♦           ♦
-Banks and credit unions                            ♦     ♦
-Restaurants                                        ♦     ♦           ♦
-Pubs                                               ♦     ♦
-Theatres and cinemas                               ♦
-Hotels                                             ♦
-Community halls                                    ♦     ♦
-Elementary schools, pre-schools, day care          ♦     ♦
-Hospitals and public health care facilities              ♦
-Churches                                           ♦     ♦
-Public service uses                                ♦     ♦     ♦     ♦
-Public utility uses                                ♦     ♦           ♦
-Automobile service stations                              ♦
-Automobile rentals (max 5 vehicles)                      ♦
+PRINCIPAL USES:                                                          C1   C2   C3   C4
+Indoor retail sales and rentals                                           ♦    ♦    ♦
+Indoor retail services, excluding Laundromats                             ♦    ♦    ♦    ♦
+Laundromats                                                               ♦
+Outdoor retail sales of nursery plants and home gardening supplies        ♦    ♦
+Indoor production of food/drink items, clothing, crafts, artwork,         ♦    ♦    ♦
+  jewellery for retail or wholesale sales (with retail outlet on
+  premises, water consumption max 1600 litres/day)
+Offices                                                                   ♦    ♦              ♦
+Banks and credit unions                                                   ♦    ♦
+Indoor commercial recreation and amusement facilities                     ♦    ♦
+Restaurants                                                               ♦    ♦    ♦
+Churches                                                                  ♦    ♦
+Libraries                                                                 ♦    ♦
+Offices for building construction professionals and trades                ♦    ♦
+Automobile service stations                                                    ♦
+Automobile rentals with max 5 vehicles stored on-site                     ♦    ♦
+Veterinarian clinics and animal hospitals                                 ♦    ♦
+Indoor commercial and vocational schools                                  ♦    ♦
+Day care centres for children, seniors, or people with special needs      ♦    ♦
+Multifamily dwelling units                                                          ♦
+Commercial guest accommodation in hotels or guest houses                       ♦
+Collection of recyclable materials, excl outdoor sorting and storage      ♦              ♦
+Public service uses                                                       ♦    ♦    ♦    ♦
 ACCESSORY USES:
-Indoor retail sales accessory to another use       ♦     ♦           ♦
-Seasonal cottages (Section 3.14)                   ♦
-Home-based business use (Section 3.13)             ♦     ♦
+Dwelling units accessory to a commercial use                              ♦    ♦    ♦    ♦
+Home-based businesses accessory to residential use                             ♦
 
-Section 9.2.2 — Size, Siting and Density:
-                                                   C1    C2    C3    C4
-Max lot coverage (%)                               75    75    33    33
-Max dwelling units per lot                         N/A   N/A   N/A   N/A
-Max height (m)                                     *     11    *     *
-(* = Section 3.8 default of 10.7m applies)
-Setbacks (all zones: * = Section 4.3 defaults apply)
+Section 9.2.2 — Size, Siting and Density [amended BL489, BL492]:
+Lot Coverage and Floor Area:                                     C1   C2   C3   C4
+• Max lot coverage (%)                                           75   75   33   33
+• Min size of a dwelling unit (sqm)                              N/A  30   N/A  N/A
+Number of Units:
+• Max multi-family dwelling units per ha                         N/A  37   N/A  N/A
+• Max commercial guest accommodation units per lot/operation     N/A  50   N/A  N/A
+Setbacks and Siting (C1 has specific setbacks; C2/C3/C4 use Section 4.3 defaults *):
+  Despite Subsection 4.3.1, the following apply for C1:
+• Min Front lot line setback (m):                                0.0  *    *    *
+• Min Rear setback abutting non-commercial/non-industrial (m):   6.1  *    *    *
+• Min Rear setback abutting commercial or industrial zone (m):   0.0  *    *    *
+• Min Interior side abutting non-commercial/non-industrial (m):  6.1  *    *    *
+• Min Interior side abutting commercial or industrial zone (m):  0.0  *    *    *
+• Min Exterior side lot line setback (m):                        0.0  *    *    *
+• Dwelling units not permitted in basement or below commercial:  N/A  ♦    N/A  N/A
+(* = Section 4.3 provisions apply)
+Info Note: Ministry of Transportation requires any building be min 4.5m from public road right-of-way unless Ministry setback permit granted.
+Info Note: Vegetation screens required where commercial uses take place outside a building adjacent to non-commercial uses (Section 3.4).
 
-Section 9.2.3 — Subdivision Requirements:
-Min area individual lot (ha):                      C1    C2    C3    C4
-  On-site sewage + potable water                   0.2   0.2   0.2   0.2
-  Community sewage + community water               0.1   0.1   0.1   0.1
-Min avg area lots in subdivision (ha):
-  On-site sewage + potable water                   0.2   0.2   0.2   0.2
-  Community sewage + community water               0.1   0.1   0.1   0.1
+Section 9.2.3 — Subdivision Requirements [amended BL489]:
+Min lot area (ha):                                               C1   C2   C3   C4
+  On-site sewage + potable water                                 1    1    1    1
+  On-site sewage + community water                               1    .4   1    1
+  Community sewage + community water                             .046 .046 .046 .046
 
 Section 9.2.4 — Zone Variations:
-• C1(a): Additional permitted: gasoline sales, automobile rentals (max 5), automobile service station. 6m landscape screen between C1(a) and any residential zone.
-• C1(b): Additional permitted: automobile service stations.
-• C1(c): Additional: gasoline sales, auto rentals (max 5).
-• C1(d): Additional: gasoline sales, auto service station, auto rentals (max 5). Outdoor storage up to 15% lot coverage permitted.
-• C1(e): Additional: gasoline sales, auto service station, auto rentals (max 5), drive-in restaurant.
-• C1(f): Max lot coverage for buildings used as restaurants is 5%. Max floor area 190 sqm.
-• C1(g): Despite other regulations, only permitted: single-family dwellings, indoor retail sales, indoor retail services, personal services, offices, restaurants, pubs, community halls, public service uses. Max lot coverage 33%. Front setback 4.5m. Max 1 dwelling unit per lot.
-• C2(a): Additional: laundromat.
-• C2(b): Additional: drive-in restaurant.
-• C4(a): Max lot coverage 10%.
+• C1(a): Additional permitted uses: retail gasoline sales (max 160 sqm area); a liquor store.
+• C1(b) [BL492]: Additional permitted use: liquor-primary.
+• C1(c): Only the following uses are permitted: marina and marina services; marine fuelling stations; marine related retail stores and offices; boat rentals; marine equipment rentals excluding personal watercraft.
+• C1(d): Additional permitted use: public schools.
+• C1(e): (Deleted — BL444)
+• C1(f) [BL378, BL492]: Notwithstanding Section 9.2.1, the only permitted use is: a parking lot.
+• C1(g) [BL397]: Additional permitted use: a liquor store.
+• C2(a) [BL430]: Additional permitted use: a parking lot.
+• C2(b) [BL464]: Additional permitted use: dwelling units. Despite Subsection 9.2.2, max combined lot coverage of all buildings and structures is 33%.
+• C4(a) [BL452, BL460]: Additional principal uses: indoor retail sales; indoor production of food/drink/clothing/crafts/artwork/jewellery for retail or wholesale sales (with retail outlet, water max 1600 L/day). Additional accessory use: dwelling units.
+• C5(a) [BL489]: Despite Section 4.3, setbacks: 4.5m from front lot line; 1.0m from interior side abutting commercial or GE zone; 3.0m from interior side abutting non-commercial/non-GE zone. Rain collection structure permitted within rear and interior side setbacks. Max 37 dwelling units per ha. No off-street loading required. One parking space per dwelling unit not exceeding 70 sqm floor area. (Zone Variation C6(a) deleted.)
 
 ═══════════════════════════════════════
-SECTION 9.3 — COMMERCIAL ACCOMMODATION ZONES (CA1-CA5):
+SECTION 9.3 — COMMERCIAL ACCOMMODATION ZONES (CA1-CA5) [amended BL492]:
 
 Section 9.3.1 — Permitted Uses (♦ = permitted):
-PRINCIPAL USES:                                    CA1   CA2   CA3   CA4   CA5
-Commercial guest accommodation                     ♦     ♦     ♦     ♦     ♦
-Single-family dwellings                            ♦     ♦     ♦     ♦     ♦
-Restaurants                                        ♦     ♦     ♦
-Indoor recreation facilities                       ♦     ♦     ♦
-Outdoor active recreation                          ♦     ♦     ♦     ♦
-Indoor retail sales accessory to guest accomm      ♦     ♦     ♦     ♦
-Public service uses                                ♦     ♦     ♦     ♦     ♦
-Campgrounds                                                          ♦     ♦
+PRINCIPAL USES:                                                       CA1  CA2  CA3  CA4  CA5
+Commercial guest accommodation units in hotels and motels              ♦    ♦
+Commercial guest accommodation units in cabins                         ♦    ♦    ♦
+Commercial guest accommodation units in guest houses                                  ♦
+Commercial guest accommodation in a tourist hostel                                         ♦
+Liquor-primary                                                         ♦    ♦
+Restaurants                                                            ♦    ♦
+Marina administration and services, incl washrooms/showers/laundry     ♦    ♦
+Boat rentals                                                           ♦    ♦
+Boat accommodation, servicing and maintenance, incl refuelling         ♦
+Campgrounds subject to Schedule "F"                                         ♦              ♦
+Single family dwellings                                                                    ♦
+Public service uses                                                    ♦    ♦    ♦    ♦    ♦
 ACCESSORY USES:
-Home-based business use (Section 3.13)             ♦     ♦     ♦     ♦     ♦
-Seasonal cottages (Section 3.14)                   ♦     ♦     ♦
+Residential use accessory to commercial guest accommodation,           ♦    ♦    ♦
+  restaurant use, or marina administration and service
+Retail sales accessory to commercial guest accommodation or marina     ♦    ♦    ♦
+Retail services accessory to commercial guest accommodation            ♦    ♦    ♦
+Boat rentals accessory to a principal use                                             ♦
+Accessory campground                                                                       ♦
 
 Section 9.3.2 — Size, Siting and Density:
-                                              CA1   CA2   CA3   CA4   CA5
-Max lot coverage (%)                          33    33    33    20    5
-Max commercial guest accommodation units/lot  50    50    50    50    50
-Min setback between CA-zoned lots (m)         15    15    15    15    15
-Max height (m)                                *     *     *     *     *
-(* = Section 3.8 default of 10.7m)
+                                                                  CA1  CA2  CA3  CA4  CA5
+Lot Coverage and Floor Area:
+• Max lot coverage (%)                                            33   33   33   20   5
+• Max floor area per ha of commercial guest accommodation (sqm)   N/A  N/A  600  N/A  N/A
+• Max floor area of a tourist hostel (sqm)                        N/A  N/A  N/A  N/A  450
+• Max combined floor area of accessory retail sales/services (sqm)20   10   10   N/A  N/A
+• Min floor area per bed space, beds not stacked (sqm)            N/A  N/A  N/A  N/A  3.7
+• Min floor area per bed space, beds stacked (sqm)                N/A  N/A  N/A  N/A  2.8
+• Max combined floor area accessory storage buildings (sqm)       70   70   70   70   70
+Number of Units:
+• Max commercial guest accommodation units on one lot             50   50   50   9    N/A
+• Max combined guest accommodation units and campsites per ha     35   15   10   N/A  N/A
+• Max number of guests permitted                                  N/A  N/A  N/A  N/A  40
+• Max number of buildings for tourist hostel accommodation         N/A  N/A  N/A  N/A  3
+• Max number of campsites in a campground                         N/A  N/A  N/A  N/A  4
+• Max dwelling units per lot                                      1    1    1    N/A  1
+Setbacks:
+• Min rear/interior side lot line setback abutting another        15   15   15   15   15
+  lot in a Commercial Accommodation zone (m)
+• Min setback from any lot line not abutting another CA zone (m)  *    *    *    *    10
+(* = Section 4.3 provisions apply)
 
 Section 9.3.3 — Subdivision Requirements:
-Min avg area of lots in subdivision (ha):     2     2     2     2     2
-Min water supply: adequate potable water (all zones)
-Min sewage: individual on-site sewage treatment per lot (all zones)
+Min Lot Areas (ha):                                               CA1  CA2  CA3  CA4  CA5
+• Min average area of lots in a subdivision                       2    2    2    2    2
+• Min individual lot (on-site sewage + potable water)             2    2    2    2    .6
+• Min individual lot (community sewage + community water)         2    2    2    .32  .6
 
 Section 9.3.4 — Zone Variations:
-• CA1(a): Max 10 commercial guest accommodation units.
-• CA1(b): Max 6 units. No restaurant/retail.
-• CA1(c): Max 24 cabins + 100 campsites. Additional: outdoor recreation, campground.
-• CA1(d): Max 38 units. 1 restaurant (max 100 seats). Indoor pool and tennis permitted.
-• CA1(e): Max 50 units + 100 campsites. Must maintain 50% natural landscape.
-• CA1(f): Max 5 units. No restaurant.
-• CA1(g): Max 3 units.
-• CA2(a): Max 27 units.
-• CA2(b): Max 12 cabins + campground (100 campsites max).
-• CA3(a): Max 12 units.
-• CA5(a): Max 60 campsites. No buildings except accessory to campground (max 100 sqm).
+• CA1(a): Additional permitted uses: recreational services; one single-family dwelling per lot; campgrounds subject to Schedule "F". Size/siting: (a) min 9 ha for commercial use; (b) max 4 guest accommodation units per ha; (c) cabins max 116 sqm floor area, max 2 storeys; (d) residential buildings no setback from any lot line; (e) commercial buildings min 7.6m from any lot line; (f) no max site coverage for residential buildings. Subdivision: no min lot area, min avg 0.50 ha (with on-site sewage + potable water), lots with depth < 30m and building envelope < 280 sqm permitted. On Lot 72 Strata Plan 905: max 18 single-family dwelling units (incl manager's), max 750 sqm combined accessory buildings.
+• CA1(b): Only permitted uses: hotel; commercial guest accommodation units in cabins. Size/siting: (a) max lot coverage 10%; (b) cabins max 116 sqm floor area; (c) min 0.5 ha for commercial use; (d) max 20 commercial guest accommodation units per ha.
+• CA1(c): Additional principal uses: boat building/repairs, marine-dependent sales/rentals/services; laundromat; car rentals. Building setbacks from natural boundary of sea do not apply to boat building/repairs/marina buildings. Max combined floor area of guest accommodation units: 700 sqm (on lots > 0.4 ha: one unit per 0.04 ha extra; no unit > 95 sqm; average of additional units max 55 sqm).
+• CA1(d): Additional permitted uses: car rentals. Building setbacks from natural boundary of sea do not apply to boat/marina buildings. Max combined floor area of guest accommodation: 700 sqm (same formula as CA1(c)).
+• CA1(e): Max number of commercial guest accommodation units is 8.
+• CA1(f) [BL384, BL397, BL508]: Despite Article 9.3.2(1), total floor area max 215 sqm may be devoted to accessory liquor store within existing main building. Max 41.5 sqm for accessory retail services within existing main building. Lands zoned CA1(f) permit 55 commercial guest accommodation units and 3 accessory dwelling units (exclusively for hotel employees/families). Buildings sited as shown on Schedule "L".
+• CA1(g) [BL431]: Max 8 commercial guest accommodation units. Max lot coverage 60%. Despite Section 4.3, setbacks from lot lines/road access easements: front 0m, rear 0m, interior side 0m, exterior side 0m.
+• CA2(a): Max combined number of commercial guest accommodation units and campsites is 30.
+• CA2(b) [BL397]: Max combined number of commercial guest accommodation units and campsites is 8. Additional permitted use: accessory liquor store (max 95 sqm floor area).
+• CA3(a): Max combined number of commercial guest accommodation units and campsites is 25, provided that commercial guest accommodation units may not exceed 10 per ha.
+• CA5(a): (a) Campsites may only be occupied by tents; (b) no more than one room in the tourist hostel for construction or cooking; (c) landscaping strip min 10m wide, 3m high along all property lines (except one driveway break and panhandle access strips); (d) fencing/signage to prevent trespassing; (e) no tourist hostel or accessory campground on any lot adjoining a lot occupied by a tourist hostel; (f) two off-site directional signs max 0.25 sqm each permitted.
 `,
 
 // ── lub_zones_other: Sections 9.4 (CF), 9.5 (CD), 9.6 (F), 9.7 (GE), 9.8 (PR) ──
@@ -636,51 +842,101 @@ lub_zones_other: `
 LUB 355 — SECTIONS 9.4-9.8: CF, CD, FORESTRY, EMPLOYMENT & PARKS ZONES
 ═══════════════════════════════════════
 
-SECTION 9.4 — COMMUNITY FACILITIES ZONES (CF1, CF2):
-Permitted principal uses:
-• CF1: Public hospitals/clinics, public schools/pre-schools/day care, community halls, performing/visual arts centres, public indoor/outdoor recreation, churches, cemeteries, public service uses.
-• CF2: Public hospitals/clinics, public schools/pre-schools/day care, performing/visual arts centres, public service uses.
-Accessory uses: Indoor retail sales accessory, dwelling units accessory to permitted use.
-Size/Siting: Max lot coverage 25% (both zones). Setbacks per Section 4.3.
-Subdivision: Min lot area 1 ha (on-site sewage + potable water) or 0.2 ha (community services).
-Zone Variations:
-• CF1(a): Same as CF1 with vegetation screen requirements between property and ALR lands.
-• CF1(b): Libraries are a prohibited use.
-• CF1(c): Agriculture is a permitted principal use.
-• CF1(d): Only permitted: public hospitals/clinics/health care, public schools/pre-schools/day care, performing/visual arts centres, public service uses. Accessory: indoor retail sales, dwelling units accessory to and located above another permitted use. Vegetation screen ≥ 7.5m between property and ALR.
+SECTION 9.4 — COMMUNITY FACILITIES ZONES (CF1, CF2) [amended BL489, BL490]:
 
-SECTION 9.5 — COMPREHENSIVE DEVELOPMENT ZONES (CD1, CD2, CD3):
-Permitted principal uses:                          CD1   CD2   CD3
+Section 9.4.1 — Permitted Uses (♦ = permitted):
+PRINCIPAL USES:                                                    CF1   CF2
+Public schools, pre-schools and child day care centres              ♦
+Libraries                                                          ♦
+Churches                                                            ♦
+Community halls                                                     ♦
+Public hospitals, clinics and health care facilities                ♦
+Non-commercial active outdoor recreation                            ♦
+Non-commercial indoor recreation facilities                         ♦
+Service club buildings                                              ♦
+Performing and visual art centres, including accessory sales        ♦
+Collection of recyclable materials                                  ♦     ♦
+Sorting and temporary storage of recyclable materials                     ♦
+Collection of municipal solid waste                                       ♦
+Sorting and temporary storage of municipal solid waste                    ♦
+Liquid waste treatment                                                    ♦
+Public service uses                                                 ♦     ♦
+ACCESSORY USES:
+Intermittent retail sales and retail services accessory              ♦     ♦
+  to a principal use
+
+Section 9.4.2 — Size, Siting and Density [amended BL489]:
+Lot Coverage:                                                      CF1   CF2
+• Max lot coverage (%)                                             25    25
+Setbacks (despite Subsection 4.3.1):
+• Min rear lot line setback abutting commercial or GE zone (m)     3.0   *
+• Min interior side abutting non-commercial/non-GE zone (m)        7.5   7.5
+• Min interior side abutting commercial or GE zone (m)             *     7.5
+• Min exterior side lot line setback (m)                           *     7.5
+(* = Section 4.3 provisions apply)
+
+Section 9.4.3 — Subdivision:
+• Min individual lot (on-site sewage + potable water) (ha):        1     1
+• Min individual lot (community sewage + community water) (ha):    0.2   0.2
+
+Section 9.4.4 — Zone Variations:
+• CF1(a): Max combined lot coverage of all buildings and structures is 75%.
+• CF1(b) [BL386]: Notwithstanding Section 9.4.1(1), Libraries are a prohibited use.
+• CF1(c) [BL454]: Agriculture is a permitted principal use.
+• CF1(d) [BL456]: Despite all other regulations, only the following principal uses are permitted: (a) public hospitals, clinics and health care facilities; (b) public schools, pre-schools and child day care centres; (c) performing and visual art centres; (d) public service uses. Only accessory uses: (a) indoor retail sales accessory to another permitted use; (b) dwelling units accessory to, and located above, another permitted use. A vegetation screen not less than 7.5m must be provided between property and lands within the Agricultural Land Reserve (unless within BC Hydro right-of-way).
+
+SECTION 9.5 — COMPREHENSIVE DEVELOPMENT ZONES (CD1, CD2, CD3) [amended BL492]:
+
+Section 9.5.1 — Permitted Uses (♦ = permitted):
+PRINCIPAL USES:                                    CD1   CD2   CD3
 Single-family dwellings                            ♦     ♦     ♦
 Duplexes (pre-July 31, 1990)                       ♦     ♦
 Multi-family dwellings                             ♦     ♦
 Elementary schools, pre-schools, day care          ♦     ♦
 Public health clinics                              ♦
 Community halls                                    ♦
-Outdoor/indoor recreation                          ♦
-Indoor retail sales/services                             ♦
-Offices, banks, restaurants                              ♦
-Auto rentals (max 5 vehicles)                            ♦
+Outdoor active recreation                          ♦
+Public indoor recreation facilities                ♦
+Indoor retail sales use                                  ♦
+Indoor retail services                                   ♦
+Offices                                                  ♦
+Banks and credit unions                                  ♦
+Restaurants                                              ♦
+Automobile rentals (max 5 vehicles)                      ♦
 Public service uses                                ♦     ♦     ♦
-Accessory: seasonal cottages (CD3 only), home-based business (CD1, CD2, CD3).
+ACCESSORY USES:
+Seasonal cottages (Section 3.14 and 9.5.2)                           ♦
+Home-based business (Section 3.13)                 ♦     ♦     ♦
 
-Size/Siting:                                       CD1   CD2   CD3
-Max lot coverage (%)                               33    33    10
-Max dwelling units per ha                          12.3  12.3  N/A
-Max floor area non-residential (sqm)               N/A   139   N/A
-Min front lot line setback (m)                     3.0   4.5   *
-Min rear lot line setback (m)                      3.0   4.5   *
-Min exterior side lot line setback (m)             3.0   4.5   *
-Max height (m)                                     §     11.0  §
-Max storeys                                        §     3     §
-(* = Section 4.3, § = Section 3.8 defaults apply)
+Section 9.5.2 — Size, Siting and Density:
+Lot Coverage and Floor Areas:                      CD1   CD2   CD3
+• Max lot coverage (%)                             33    33    10
+• Max floor area per lot of community hall,        930   N/A   N/A
+  church, pre-school, or day care centre (sqm)
+• Max floor area each non-residential use (sqm)    N/A   139   N/A
+• Max number of commercial uses per                N/A   1     N/A
+  two residential uses per lot
+Number of Units and Min Site Areas:
+• Max dwelling units per ha                        12.3  12.3  N/A
+• Min lot area for child day care centre (ha)      1     N/A   N/A
+• Min lot area for multi-family dwelling (ha)      .08   .08   N/A
+• Min lot area for seasonal cottage (ha)           N/A   N/A   2
+Setbacks:
+• Min front lot line setback (m)                   3.0   4.5   *
+• Min rear lot line setback (m)                    3.0   4.5   *
+• Min exterior side lot line setback (m)           3.0   4.5   *
+Height:
+• Max height (m)                                   §     11.0  §
+• Max storeys                                      §     3     §
+(* = Section 4.3 provisions apply, § = Section 3.8 provisions apply)
 
-Subdivision:                                       CD1   CD2   CD3
+Section 9.5.3 — Subdivision:
+                                                   CD1   CD2   CD3
 Min individual lot (ha)                            0.08  0.08  1.2
 Min avg area lots (ha)                             0.08  0.08  4.6
-Water supply: community water system (CD1, CD2); adequate potable water (CD3).
-Sewage: community sewage collection (CD1, CD2); individual on-site (CD3).
-CD3 special: min avg area may be reduced to 4.2 ha if community recreational ballpark facility provided or equivalent funds contributed.
+Water supply: community water system required (CD1, CD2); adequate potable water (CD3).
+Sewage: community sewage collection system (CD1, CD2); individual on-site (CD3).
+CD3 special: min avg area may be reduced to 4.2 ha if: (a) applicant constructs community recreational ballpark facility on CRD land per Schedule "B", or (b) applicant provides funds (min 75% of financial benefit from reduced lot area) to SSI Local Trust Committee for CRD construction of community recreational facility.
 
 SECTION 9.6 — FORESTRY ZONES (F1, F2):
 Permitted principal uses:                          F1    F2
@@ -1525,6 +1781,50 @@ const SECTION_KEYWORDS: Record<string, { keywords: string[]; label: string; icon
     ],
   },
 
+  lub_subdivision: {
+    label: "LUB 355: Subdivision Regulations (Part 5)",
+    icon: "📐",
+    keywords: [
+      "subdivide", "subdivision", "subdividing", "split lot", "split my lot",
+      "divide lot", "divide property", "divide my property", "divide my land",
+      "lot split", "lot division", "create lots", "creating lots", "new lots",
+      "boundary adjustment", "lot line adjustment", "lot consolidation",
+      "lot area", "minimum lot area", "average lot area", "minimum lot size",
+      "lot dimensions", "lot depth", "lot width", "lot frontage", "frontage",
+      "panhandle lot", "panhandle", "access strip",
+      "potable water supply", "water supply for subdivision",
+      "sewage disposal", "septic for subdivision",
+      "stormwater drainage", "drainage system", "drainage engineering",
+      "covenant against subdivision", "further subdivision",
+      "zone boundary lot", "split lots", "double frontage",
+      "highway access", "road access", "access to highway",
+      "public access to water", "water body access",
+      "highway standards", "road standards", "road construction",
+      "pathway", "bikeway", "shoulder bikeway", "cycle route",
+      "driveway", "driveway guidelines",
+      "sidewalk", "boulevard", "village core sidewalk",
+      "building envelope", "280 square metres",
+      "approving officer", "land title office",
+      "eagle nest", "heron nest", "osprey nest",
+      "pump test", "water quality analysis", "groundwater",
+      "water license", "community water system",
+    ],
+  },
+
+  lub_signs: {
+    label: "LUB 355: Sign Regulations (Part 6)",
+    icon: "🪧",
+    keywords: [
+      "sign", "signs", "signage", "business sign", "sign area",
+      "sign size", "sign regulation", "sign permit",
+      "illuminated sign", "lighted sign", "animated sign",
+      "directional sign", "double-faced sign",
+      "sign removal", "sign standards",
+      "how many signs", "how big can a sign be",
+      "table 2",
+    ],
+  },
+
   lub_zones_residential: {
     label: "LUB 355: Residential Zone Regulations (R1-R12)",
     icon: "🏘️",
@@ -1627,7 +1927,7 @@ const SECTION_KEYWORDS: Record<string, { keywords: string[]; label: string; icon
 };
 
 // LUB section keys (lub_core always included, never scored)
-const LUB_SECTION_KEYS = ["lub_definitions", "lub_general_regulations", "lub_siting", "lub_zones_residential", "lub_zones_agricultural", "lub_zones_commercial", "lub_zones_other", "lub_zones_rural", "lub_additional"];
+const LUB_SECTION_KEYS = ["lub_definitions", "lub_general_regulations", "lub_siting", "lub_subdivision", "lub_signs", "lub_zones_residential", "lub_zones_agricultural", "lub_zones_commercial", "lub_zones_other", "lub_zones_rural", "lub_additional"];
 const OCP_SECTION_KEYS = ["goals_environment", "residential", "commercial", "community", "villages", "agricultural", "parks", "conservation", "infrastructure", "dpa"];
 
 interface SectionSelection {
