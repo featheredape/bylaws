@@ -108,7 +108,7 @@
                             type="text"
                             class="pid-input address-input"
                             id="addressInput"
-                            placeholder="e.g. 123 Rainbow Road"
+                            placeholder="e.g. 122 Hereford Ave"
                             maxlength="120"
                             autocomplete="off"
                         />
@@ -177,17 +177,30 @@
                     </div>
                 </div>
 
-                <!-- Covers row -->
-                <div class="covers-row">
-                    <span class="cover-tag"
-                        ><span class="cover-tag-dot"></span> LUB No. 355 —
-                        always included</span
+                <button
+                    class="btn btn-primary"
+                    id="checkBtn"
+                    onclick="checkCompliance()"
+                >
+                    <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
                     >
-                    <span class="cover-tag"
-                        ><span class="cover-tag-dot"></span> OCP No. 434 —
-                        auto-detected sections</span
-                    >
-                </div>
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
+                    Check Bylaws
+                </button>
+
+                <p class="shortcut-hint">
+                    Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to submit
+                </p>
 
                 <p class="examples-label">Try an example</p>
                 <div class="examples">
@@ -232,31 +245,6 @@
                         Farmworker dwelling A1</span
                     >
                 </div>
-
-                <button
-                    class="btn btn-primary"
-                    id="checkBtn"
-                    onclick="checkCompliance()"
-                >
-                    <svg
-                        width="15"
-                        height="15"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="m21 21-4.35-4.35" />
-                    </svg>
-                    Check Bylaws
-                </button>
-
-                <p class="shortcut-hint">
-                    Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to submit
-                </p>
             </div>
 
             <!-- Loading -->

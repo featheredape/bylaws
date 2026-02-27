@@ -244,13 +244,8 @@ textarea::placeholder {
     color: var(--placeholder);
 }
 
-/* Covers row */
-.covers-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin: 14px 0 20px;
-}
+/* Covers row (removed — pills no longer shown) */
+.covers-row { display: none; }
 .cover-tag {
     display: inline-flex;
     align-items: center;
@@ -355,13 +350,15 @@ textarea::placeholder {
     text-transform: uppercase;
     letter-spacing: 0.7px;
     color: var(--muted-foreground);
+    margin-top: 24px;
     margin-bottom: 10px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
 }
 .examples {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-bottom: 22px;
 }
 .example-chip {
     display: inline-flex;
@@ -409,13 +406,14 @@ textarea::placeholder {
 .btn-primary {
     width: 100%;
     padding: 13px 24px;
-    background: var(--primary);
+    margin-top: 14px;
+    background: hsl(165, 40%, 30%);
     color: var(--primary-foreground);
-    box-shadow: 0 1px 3px hsla(155, 40%, 22%, 0.25);
+    box-shadow: 0 1px 3px hsla(165, 40%, 30%, 0.25);
 }
 .btn-primary:hover:not(:disabled) {
-    background: hsl(155, 40%, 18%);
-    box-shadow: 0 3px 12px hsla(155, 40%, 22%, 0.3);
+    background: hsl(165, 40%, 24%);
+    box-shadow: 0 3px 12px hsla(165, 40%, 24%, 0.3);
 }
 .btn-primary:disabled {
     opacity: 0.5;
