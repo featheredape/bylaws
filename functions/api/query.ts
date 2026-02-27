@@ -1,5 +1,19 @@
 interface Env {
   CLAUDE_API_KEY: string;
+  AI?: {
+    run: (model: string, input: { text: string[] }) => Promise<{ data: number[][] }>;
+  };
+}
+
+// ─── Vector math ────────────────────────────────────────────────────
+function cosineSimilarity(a: number[], b: number[]): number {
+  let dot = 0, normA = 0, normB = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
+  }
+  return dot / (Math.sqrt(normA) * Math.sqrt(normB) + 1e-8);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1885,6 +1899,78 @@ const SECTION_KEYWORDS: Record<string, { keywords: string[]; label: string; icon
 const LUB_SECTION_KEYS = ["lub_definitions", "lub_general_regulations", "lub_siting", "lub_subdivision", "lub_signs", "lub_zones_residential", "lub_zones_agricultural", "lub_zones_commercial", "lub_zones_other", "lub_zones_rural", "lub_additional"];
 const OCP_SECTION_KEYS = ["goals_environment", "residential", "commercial", "community", "villages", "agricultural", "parks", "conservation", "infrastructure", "dpa"];
 
+// ─── Section summaries for semantic embedding (bge-small-en-v1.5, 512 token limit) ───
+// These are concise semantic descriptions that capture what each section covers,
+// used for vector similarity reranking. Full section text is too large to embed.
+const SECTION_SUMMARIES: Record<string, string> = {
+  // LUB sections
+  lub_definitions: "Definitions and interpretation of land use bylaw terminology. Accessory use, agriculture, basement, bed and breakfast, boathouse, building, cabin, campground, church, commercial, dwelling unit, floor area, guest accommodation, height, home-based business, hotel, kennel, lot area, lot coverage, manufactured home, marina, natural boundary, principal use, retail, secondary suite, seasonal cottage, setback, sign, structure, subdivision, temporary use, water body, wetland, zone.",
+  lub_general_regulations: "General regulations for permitted and prohibited uses, buildings, and structures. Dwelling unit density, lot coverage limits, building height maximum 10.7 metres, home-based business rules, secondary suites, seasonal cottages, full-time rental requirements, bed and breakfast, accessory buildings, composting, abattoirs, boarding houses, travel trailers, float homes, bare land strata common property.",
+  lub_siting: "Setback and siting regulations. Distance from lot lines, front rear interior exterior side setbacks, water body setbacks 30 metres from lake 15 metres from stream, drinking water well setback 60 metres, septic sewage disposal field distance, visibility triangle at intersections, natural boundary foreshore setback, eaves chimney balcony deck projection allowances, boathouse dock setbacks, kennel animal enclosure distances, campsite setbacks.",
+  lub_subdivision: "Subdivision regulations. Minimum lot area, average lot area, lot dimensions depth width frontage, panhandle lot access strip, potable water supply requirements, sewage disposal septic requirements, stormwater drainage, covenant against further subdivision, zone boundary lots, double frontage lots, parkland dedication, community water and sewer servicing levels, on-site well and septic minimum areas.",
+  lub_signs: "Sign regulations. Permitted sign types, maximum sign area and dimensions, illumination restrictions, setbacks from lot lines, temporary signs, real estate signs, home occupation signs, height limits.",
+  lub_zones_residential: "Residential zone regulations R1 through R12. Single-family dwelling, duplex, multi-family, mobile home, manufactured home, affordable housing, secondary suite, seasonal cottage. Permitted uses, accessory uses, setbacks, lot coverage, building height, floor area ratio, subdivision minimum lot sizes for each residential zone. R1 through R12 specific variations and exceptions.",
+  lub_zones_agricultural: "Agricultural zone regulations A1 and A2. Agriculture, farm buildings, single-family dwelling, secondary suite, second accessory dwelling for farmworker. Stormwater and agricultural liquid waste management. Zone variations: community hall, outdoor events, children's camp, hotel restaurant, emergency response fire training. A2 biodiversity conservation education, 10% lot coverage, setbacks.",
+  lub_zones_commercial: "Commercial zone regulations C1 through C5 and Commercial Accommodation CA1 through CA5. Retail, office, restaurant, liquor store, laundromat, nursery, indoor production, veterinary clinic, day care, multifamily, guest accommodation. Hotels motels cabins guest houses tourist hostels campgrounds. Setbacks, lot coverage, subdivision, floor area per hectare, guest units per hectare, maximum guests, marina services, boat rentals.",
+  lub_zones_other: "Community Facilities CF1 CF2, Comprehensive Development CD1 CD2 CD3, Forestry F1 F2, General Employment GE1 GE2 GE3, Parks and Recreation PR1 through PR6. Schools, churches, libraries, recreation, fire halls, waste management, recycling, liquid waste treatment. Forest harvesting, sawmill, contractor shop, warehouse, light industry. Park trails, nature reserves, cemeteries.",
+  lub_zones_rural: "Rural zones RU1 RU2 RU3, Rural Watershed RW1 RW2, Rural Residential Ri, Shoreline zones S1 through S8. Rural residential, agriculture, forestry, watershed protection, upland rural use. Shoreline and foreshore regulations, marina, dock, wharf, moorage, boat launch, aquaculture, marine conservation. Setbacks from natural boundary, water access, environmental protection.",
+  lub_additional: "Agricultural Land Reserve ALR restrictions, Agricultural Land Commission ALC approvals. Development Permit Areas DPA triggers. Temporary Use Permits TUP process. Board of Variance minor variances hardship applications. Non-conforming uses and structures legal non-conforming status.",
+  // OCP sections
+  goals_environment: "Environmental protection, climate change, natural hazards, heritage conservation. Environmentally sensitive areas ESA, biodiversity, greenhouse gas reduction, renewable energy, flood risk, unstable slopes, wildfire FireSmart, erosion, archaeological sites, First Nations heritage, heritage buildings, ecological reserves, greenways.",
+  residential: "Residential land use policies. Housing density, affordable housing, special needs housing, secondary suites, seasonal cottages, flexible housing, cluster housing, settlement patterns, owner-occupied requirements, rental housing, multi-family strata, neighbourhood character, floor area limits.",
+  commercial: "Commercial, tourism, and general employment policies. Tourist accommodation, hotels, resorts, bed and breakfast, campgrounds, RV parks, home-based business, light manufacturing, industrial, extractive resource, commercial services outside villages, destination resorts.",
+  community: "Community and institutional policies. Schools, education, child care day care, hospital health services, emergency services fire halls, churches, cemeteries, community halls, libraries, cultural facilities, government buildings, recreation facilities.",
+  villages: "Village land use policies. Ganges village, Fulford village, Channel Ridge, village core, commercial village areas, pedestrian-oriented design, three-storey buildings, ferry terminals, harbour, village containment boundaries, village character, mixed use.",
+  agricultural: "Agricultural land policies. Agriculture, ALR Agricultural Land Reserve, farm operations, agri-tourism, food security, farmers markets, Agricultural Land Commission ALC, farm worker housing, non-farm use restrictions, farmland protection.",
+  parks: "Parks and recreation policies. Park dedication, trails, pathways, public open space, Crown land, water access, community greens, sports facilities, recreation areas, park land acquisition, Portlock Park.",
+  conservation: "Conservation and shoreline policies. Watershed protection, marine ecology, wetlands, lakes, streams, foreshore, beach access, dock float regulations, marinas, moorage, aquaculture, fish habitat, ecological reserves, nature reserves, islets, upland conservation.",
+  infrastructure: "Infrastructure and servicing policies. Potable water supply, wells, sewer systems, septic, solid waste, liquid waste, roads, transportation, transit, cycling, pathways, parking, water districts NSSWD, power, telecommunications, ferry service, airstrip, drainage.",
+  dpa: "Development Permit Areas DPA 1 through 7. Riparian areas fish habitat streamside protection SPEA, well capture zones drinking water, shoreline development permits, vegetation removal tree cutting, form and character guidelines, impervious surface limits, buffer zones, environmental professional QEP assessment requirements.",
+};
+
+// ─── Semantic reranking via Workers AI embeddings ───────────────────
+const EMBED_MODEL = "@cf/baai/bge-small-en-v1.5";
+const EMBED_BATCH_SIZE = 100;
+
+async function rerankSections(
+  query: string,
+  candidates: { section: string; score: number; source: "lub" | "ocp" }[],
+  env: Env,
+): Promise<{ section: string; score: number; source: "lub" | "ocp" }[]> {
+  if (!env.AI || candidates.length === 0) return candidates;
+
+  try {
+    // Build texts: [query, summary1, summary2, ...]
+    const texts = [query, ...candidates.map(c => SECTION_SUMMARIES[c.section] || c.section)];
+    const allEmbeddings: number[][] = [];
+
+    for (let i = 0; i < texts.length; i += EMBED_BATCH_SIZE) {
+      const batch = texts.slice(i, i + EMBED_BATCH_SIZE);
+      const result = await env.AI.run(EMBED_MODEL, { text: batch });
+      allEmbeddings.push(...result.data);
+    }
+
+    const queryEmbedding = allEmbeddings[0];
+    const candidateEmbeddings = allEmbeddings.slice(1);
+
+    // Combine keyword score (normalised) with semantic similarity
+    const maxKeyword = Math.max(...candidates.map(c => c.score), 1);
+    const reranked = candidates.map((c, i) => {
+      const semantic = cosineSimilarity(queryEmbedding, candidateEmbeddings[i]);
+      // Blend: 40% keyword, 60% semantic (semantic is the point of this upgrade)
+      const blended = 0.4 * (c.score / maxKeyword) + 0.6 * semantic;
+      return { ...c, score: blended };
+    });
+
+    reranked.sort((a, b) => b.score - a.score);
+    console.log(`[rerank] Semantic reranking applied to ${candidates.length} candidates`);
+    return reranked;
+  } catch (err) {
+    console.error("[rerank] Workers AI failed, falling back to keyword order:", err);
+    return candidates;
+  }
+}
+
 interface SectionSelection {
   lub: string[];
   ocp: string[];
@@ -1911,7 +1997,7 @@ function detectZoneReferences(query: string): string[] {
   return Array.from(sections);
 }
 
-function detectRelevantSections(query: string): SectionSelection {
+async function detectRelevantSections(query: string, env: Env): Promise<SectionSelection> {
   const q = query.toLowerCase();
   const scored: { section: string; score: number; source: "lub" | "ocp" }[] = [];
 
@@ -1947,11 +2033,17 @@ function detectRelevantSections(query: string): SectionSelection {
     }
   }
 
-  // Sort by score descending
+  // Sort by keyword score descending
   scored.sort((a, b) => b.score - a.score);
 
+  // Stage 2: Semantic reranking via Workers AI embeddings
+  // Send all keyword-matched candidates (not just top 7) through embedding reranker.
+  // This lets "can I build near the water?" surface "foreshore setback" even if
+  // keyword overlap is low. Falls back to keyword order if AI unavailable.
+  const reranked = await rerankSections(query, scored, env);
+
   // Select top entries, capped at 7 total (LUB + OCP combined)
-  const selected = scored.slice(0, 7);
+  const selected = reranked.slice(0, 7);
   const lub = selected.filter(s => s.source === "lub").map(s => s.section);
   const ocp = selected.filter(s => s.source === "ocp").map(s => s.section);
 
@@ -2082,7 +2174,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   try {
     // Auto-detect relevant LUB + OCP sections from the query
-    const selection = detectRelevantSections(body.query);
+    const selection = await detectRelevantSections(body.query, env);
     const { cached, dynamic } = buildSystemPrompt(selection);
     const promptSize = cached.length + dynamic.length;
     console.log(`[query] LUB sections: [${selection.lub.join(", ")}] | OCP sections: [${selection.ocp.join(", ")}] | prompt size: ${promptSize} chars`);
