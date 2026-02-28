@@ -4,7 +4,8 @@
   "description": "Salt Spring Island Bylaw Compliance Checker",
   "private": true,
   "scripts": {
-    "dev": "npx wrangler pages dev public --binding CLAUDE_API_KEY=your-key-here",
+    "dev": "npx wrangler pages dev public",
+    "dev:ai": "npx wrangler pages dev public --ai",
     "deploy": "npx wrangler pages deploy public --project-name ssi-bylaw-checker",
     "test": "vitest run",
     "test:watch": "vitest"
