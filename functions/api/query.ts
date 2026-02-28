@@ -2178,6 +2178,7 @@ const SECTION_KEYWORDS: Record<string, { keywords: string[]; label: string; icon
       "fish habitat", "aquaculture", "foreshore", "beach", "swimming",
       "dock", "float", "boat", "marina", "mooring", "ocean",
       "ecological reserve",
+      "bulkhead", "breakwater", "groin", "jetty", "pier", "revetment",
     ],
   },
   infrastructure: {
@@ -2555,6 +2556,15 @@ async function detectRelevantSections(query: string, env: Env): Promise<SectionS
     }
   }
 
+  // If query asks for a definition, boost any OCP section that matched
+  // (OCP sections now contain inline definitions from Bylaw 434)
+  const isDefQuery = /\b(?:definition|define|what is a|what does .+ mean)\b/i.test(query);
+  if (isDefQuery) {
+    for (const entry of scored) {
+      if (entry.source === "ocp") entry.score += 3;
+    }
+  }
+
   // Sort by keyword score descending
   scored.sort((a, b) => b.score - a.score);
 
@@ -2564,10 +2574,14 @@ async function detectRelevantSections(query: string, env: Env): Promise<SectionS
   // keyword overlap is low. Falls back to keyword order if AI unavailable.
   const reranked = await rerankSections(query, scored, env);
 
-  // Select top entries, capped at 7 total (LUB + OCP combined)
-  const selected = reranked.slice(0, 7);
-  const lub = selected.filter(s => s.source === "lub").map(s => s.section);
-  const ocp = selected.filter(s => s.source === "ocp").map(s => s.section);
+  // Split into LUB and OCP candidates, cap each independently
+  // This ensures OCP sections aren't crowded out by LUB matches (or vice versa)
+  const lubCandidates = reranked.filter(s => s.source === "lub");
+  const ocpCandidates = reranked.filter(s => s.source === "ocp");
+
+  // LUB: top 5, OCP: top 4 (9 total — plenty of room in 200K context)
+  const lub = lubCandidates.slice(0, 5).map(s => s.section);
+  const ocp = ocpCandidates.slice(0, 4).map(s => s.section);
 
   // Fallback defaults if nothing matched
   if (lub.length === 0 && ocp.length === 0) {
@@ -2577,14 +2591,15 @@ async function detectRelevantSections(query: string, env: Env): Promise<SectionS
     };
   }
 
-  // If we got LUB matches but no OCP, infer a relevant OCP default
+  // If LUB matched but no OCP keywords hit, infer relevant OCP sections
   if (ocp.length === 0) {
     if (lub.includes("lub_zones_residential")) ocp.push("residential");
     else if (lub.includes("lub_zones_agricultural")) ocp.push("agricultural");
     else if (lub.includes("lub_zones_commercial")) ocp.push("commercial");
-    ocp.push("dpa"); // DPA is lightweight and broadly relevant
+    else ocp.push("goals_environment"); // broad OCP context
+    ocp.push("dpa"); // DPA is broadly relevant
   }
-  // If we got OCP matches but no LUB, add sensible LUB defaults
+  // If OCP matched but no LUB keywords hit, add sensible LUB defaults
   if (lub.length === 0) {
     lub.push("lub_general_regulations", "lub_siting");
   }
