@@ -2521,11 +2521,17 @@ function detectZoneReferences(query: string): string[] {
 }
 
 async function detectRelevantSections(query: string, env: Env): Promise<SectionSelection> {
+  // LUB 355: Always include ALL 11 sections (~31K tokens total, ~15% of context).
+  // This is the enforceable bylaw — every section could be relevant and there's
+  // no reason to risk missing applicable regulations.
+  const lub = [...LUB_SECTION_KEYS];
+
+  // OCP 434: Use keyword scoring + semantic reranking to pick the top 3 most relevant.
   const q = query.toLowerCase();
-  const scored: { section: string; score: number; source: "lub" | "ocp" }[] = [];
+  const ocpScored: { section: string; score: number; source: "lub" | "ocp" }[] = [];
 
   for (const [section, config] of Object.entries(SECTION_KEYWORDS)) {
-    if (section === "lub_core") continue; // always included, skip scoring
+    if (!OCP_SECTION_KEYS.includes(section)) continue; // only score OCP sections
     let score = 0;
     for (const kw of config.keywords) {
       if (q.includes(kw)) {
@@ -2533,26 +2539,7 @@ async function detectRelevantSections(query: string, env: Env): Promise<SectionS
       }
     }
     if (score > 0) {
-      const source = LUB_SECTION_KEYS.includes(section) ? "lub" : "ocp";
-      scored.push({ section, score, source });
-    }
-  }
-
-  // Boost zone sections detected by regex
-  const zoneRefs = detectZoneReferences(query);
-  for (const zoneSection of zoneRefs) {
-    const existing = scored.find(s => s.section === zoneSection);
-    if (existing) {
-      existing.score += 10; // strong boost for explicit zone codes
-    } else {
-      scored.push({ section: zoneSection, score: 10, source: "lub" });
-    }
-    // When a zone is detected, also boost siting (setbacks are almost always relevant)
-    const sitingEntry = scored.find(s => s.section === "lub_siting");
-    if (sitingEntry) {
-      sitingEntry.score += 3;
-    } else {
-      scored.push({ section: "lub_siting", score: 3, source: "lub" });
+      ocpScored.push({ section, score, source: "ocp" });
     }
   }
 
@@ -2560,48 +2547,25 @@ async function detectRelevantSections(query: string, env: Env): Promise<SectionS
   // (OCP sections now contain inline definitions from Bylaw 434)
   const isDefQuery = /\b(?:definition|define|what is a|what does .+ mean)\b/i.test(query);
   if (isDefQuery) {
-    for (const entry of scored) {
-      if (entry.source === "ocp") entry.score += 3;
-    }
+    for (const entry of ocpScored) entry.score += 3;
   }
 
-  // Sort by keyword score descending
-  scored.sort((a, b) => b.score - a.score);
+  // Sort by keyword score, then semantic rerank via Workers AI embeddings
+  ocpScored.sort((a, b) => b.score - a.score);
+  const reranked = await rerankSections(query, ocpScored, env);
 
-  // Stage 2: Semantic reranking via Workers AI embeddings
-  // Send all keyword-matched candidates (not just top 7) through embedding reranker.
-  // This lets "can I build near the water?" surface "foreshore setback" even if
-  // keyword overlap is low. Falls back to keyword order if AI unavailable.
-  const reranked = await rerankSections(query, scored, env);
+  // Take top 3 OCP sections
+  const ocp = reranked.slice(0, 3).map(s => s.section);
 
-  // Split into LUB and OCP candidates, cap each independently
-  // This ensures OCP sections aren't crowded out by LUB matches (or vice versa)
-  const lubCandidates = reranked.filter(s => s.source === "lub");
-  const ocpCandidates = reranked.filter(s => s.source === "ocp");
-
-  // LUB: top 5, OCP: top 4 (9 total — plenty of room in 200K context)
-  const lub = lubCandidates.slice(0, 5).map(s => s.section);
-  const ocp = ocpCandidates.slice(0, 4).map(s => s.section);
-
-  // Fallback defaults if nothing matched
-  if (lub.length === 0 && ocp.length === 0) {
-    return {
-      lub: ["lub_general_regulations", "lub_zones_residential", "lub_siting"],
-      ocp: ["residential", "dpa", "goals_environment"],
-    };
-  }
-
-  // If LUB matched but no OCP keywords hit, infer relevant OCP sections
+  // If no OCP keywords matched, infer from the query context
   if (ocp.length === 0) {
-    if (lub.includes("lub_zones_residential")) ocp.push("residential");
-    else if (lub.includes("lub_zones_agricultural")) ocp.push("agricultural");
-    else if (lub.includes("lub_zones_commercial")) ocp.push("commercial");
+    // Check for zone references to pick a relevant OCP topic
+    const zoneRefs = detectZoneReferences(query);
+    if (zoneRefs.some(z => z === "lub_zones_residential")) ocp.push("residential");
+    else if (zoneRefs.some(z => z === "lub_zones_agricultural")) ocp.push("agricultural");
+    else if (zoneRefs.some(z => z === "lub_zones_commercial")) ocp.push("commercial");
     else ocp.push("goals_environment"); // broad OCP context
     ocp.push("dpa"); // DPA is broadly relevant
-  }
-  // If OCP matched but no LUB keywords hit, add sensible LUB defaults
-  if (lub.length === 0) {
-    lub.push("lub_general_regulations", "lub_siting");
   }
 
   return { lub, ocp };
