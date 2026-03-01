@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 // Build OCP sections from ocp_chunks_v2.json
-// Groups 1,202 chunks into 10 OCP section keys for query.ts
+// Groups 1,202 chunks into 16 OCP section keys for query.ts
+// DPAs are split into individual sections (dpa1-dpa7) for precise routing
 
 import { readFileSync, writeFileSync } from "fs";
 
 const chunks = JSON.parse(readFileSync("datasets/ocp_chunks_v2.json", "utf-8"));
 
-// ─── Map each sectionTitle to one of the 10 OCP keys ───────────────
+// ─── Map each sectionTitle to an OCP key ────────────────────────────
 const TITLE_TO_KEY = {
   // goals_environment
   "Community Objectives": "goals_environment",
@@ -45,14 +46,14 @@ const TITLE_TO_KEY = {
   "Transportation Servicing": "infrastructure",
   "Power and Telecommunications": "infrastructure",
 
-  // dpa
-  "DPA 1: Island Villages": "dpa",
-  "DPA 2: Non-Village Commercial": "dpa",
-  "DPA 3: Shoreline": "dpa",
-  "DPA 4: Lakes, Streams and Wetlands": "dpa",
-  "DPA 5: Community Well Capture Zones": "dpa",
-  "DPA 6: Unstable Slopes and Soil Erosion": "dpa",
-  "DPA 7: Riparian Areas": "dpa",
+  // Individual DPAs
+  "DPA 1: Island Villages": "dpa1",
+  "DPA 2: Non-Village Commercial": "dpa2",
+  "DPA 3: Shoreline": "dpa3",
+  "DPA 4: Lakes, Streams and Wetlands": "dpa4",
+  "DPA 5: Community Well Capture Zones": "dpa5",
+  "DPA 6: Unstable Slopes and Soil Erosion": "dpa6",
+  "DPA 7: Riparian Areas": "dpa7",
 
   // Appendices & admin → skip or put into relevant sections
   "Appendix 2: Shared Residential Zoning": "residential",
@@ -60,9 +61,6 @@ const TITLE_TO_KEY = {
   "Appendix 4: Transfer of Development Potential": "residential",
   "Temporary Use Permits": "commercial",
   "Implementation": "goals_environment",
-
-  // Definitions → distribute to the most relevant section
-  // We'll handle these specially below
 
   // Administrative/structural → skip
   "The Official Community Plan": null,
@@ -97,7 +95,7 @@ const DEFINITION_TO_KEY = {
   "guest house": "commercial",
   "high biodiversity area": "goals_environment",
   "home-based business": "commercial",
-  "impervious surface": "dpa",
+  "impervious surface": "dpa3",
   "industry": "commercial",
   "industry, heavy": "commercial",
   "institutional use": "community",
@@ -125,6 +123,20 @@ const DEFINITION_TO_KEY = {
   "accretion shoreforms": "conservation",
 };
 
+// ─── Per-section character budgets ──────────────────────────────────
+const SECTION_BUDGETS = {
+  // DPAs get generous budgets since they contain specific regulatory guidelines
+  dpa1: 10000,  // Island Villages — largest DPA (39K source), mostly form/character
+  dpa2: 8000,   // Non-Village Commercial (14K source)
+  dpa3: 17000,  // Shoreline — critical, detailed stabilization guidelines (17K source, include all)
+  dpa4: 8000,   // Lakes, Streams, Wetlands (8K source — fits entirely)
+  dpa5: 6000,   // Well Capture Zones (5.5K source — fits entirely)
+  dpa6: 7000,   // Unstable Slopes (7K source — fits entirely)
+  dpa7: 10000,  // Riparian Areas (11K source)
+  // Other OCP sections
+  _default: 6000,
+};
+
 // ─── Group chunks ──────────────────────────────────────────────────
 const groups = {};
 const unmapped = new Set();
@@ -132,7 +144,6 @@ const unmapped = new Set();
 for (const chunk of chunks) {
   let key;
 
-  // Check if it's a definition
   if (chunk.sectionTitle.startsWith("Definition: ")) {
     const term = chunk.sectionTitle.replace("Definition: ", "");
     key = DEFINITION_TO_KEY[term];
@@ -140,14 +151,14 @@ for (const chunk of chunks) {
       unmapped.add(chunk.sectionTitle);
       continue;
     }
-    if (key === null) continue; // skip
+    if (key === null) continue;
   } else {
     key = TITLE_TO_KEY[chunk.sectionTitle];
     if (key === undefined) {
       unmapped.add(chunk.sectionTitle);
       continue;
     }
-    if (key === null) continue; // skip
+    if (key === null) continue;
   }
 
   if (!groups[key]) groups[key] = [];
@@ -159,9 +170,7 @@ if (unmapped.size > 0) {
 }
 
 // ─── Build section content ─────────────────────────────────────────
-// Sort chunks within each group by ID to preserve document order
 const sortById = (a, b) => {
-  // IDs like "A.1", "B.2.3.a" — sort lexicographically by parts
   const pa = a.id.split(".");
   const pb = b.id.split(".");
   for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
@@ -178,7 +187,6 @@ const sortById = (a, b) => {
   return 0;
 };
 
-// Policy-relevance scoring: chunks with regulatory language score higher
 const policyScore = (text) => {
   const t = text.toLowerCase();
   let score = 0;
@@ -191,23 +199,18 @@ const policyScore = (text) => {
   for (const term of policyTerms) {
     if (t.includes(term)) score += 2;
   }
-  // Bonus for specific measurements/numbers
   if (/\d+\s*(?:m|metres|meters|hectares|ha|km|units|%)/i.test(text)) score += 3;
-  // Penalty for very short chunks (likely headers/labels)
   if (text.length < 50) score -= 5;
   return score;
 };
-
-const CHAR_BUDGET = 6000; // per section
 
 const sections = {};
 const stats = [];
 
 for (const [key, groupChunks] of Object.entries(groups)) {
+  const budget = SECTION_BUDGETS[key] || SECTION_BUDGETS._default;
   groupChunks.sort(sortById);
 
-  // Build full content with section headers on title transitions
-  let content = "";
   let lastTitle = "";
   const allParts = [];
 
@@ -223,16 +226,11 @@ for (const [key, groupChunks] of Object.entries(groups)) {
 
   const totalChars = allParts.reduce((s, p) => s + p.len, 0);
 
-  if (totalChars <= CHAR_BUDGET) {
-    // Fits within budget — use everything
-    content = allParts.map(p => p.part).join("");
+  if (totalChars <= budget) {
+    sections[key] = allParts.map(p => p.part).join("").trim();
   } else {
-    // Over budget — prioritize high-scoring chunks
-    // Always include all section title headers
-    // Sort by score descending, take until budget filled
     const indexed = allParts.map((p, i) => ({ ...p, i }));
 
-    // Keep first chunk of each section title group (for context)
     const titleFirsts = new Set();
     let currentTitle = "";
     for (let i = 0; i < groupChunks.length; i++) {
@@ -242,7 +240,6 @@ for (const [key, groupChunks] of Object.entries(groups)) {
       }
     }
 
-    // Score-rank non-first chunks
     const mustInclude = indexed.filter(p => titleFirsts.has(p.i));
     const candidates = indexed.filter(p => !titleFirsts.has(p.i));
     candidates.sort((a, b) => b.score - a.score);
@@ -251,25 +248,24 @@ for (const [key, groupChunks] of Object.entries(groups)) {
     const selected = new Set(mustInclude.map(p => p.i));
 
     for (const c of candidates) {
-      if (used + c.len > CHAR_BUDGET) continue;
+      if (used + c.len > budget) continue;
       selected.add(c.i);
       used += c.len;
     }
 
-    // Reconstruct in original order
-    content = allParts
+    sections[key] = allParts
       .filter((_, i) => selected.has(i))
       .map(p => p.part)
-      .join("");
+      .join("").trim();
   }
 
-  sections[key] = content.trim();
   stats.push({
     key,
     chunks: groupChunks.length,
     totalChars,
     outputChars: sections[key].length,
-    trimmed: totalChars > CHAR_BUDGET,
+    budget,
+    trimmed: totalChars > budget,
   });
 }
 
@@ -280,7 +276,7 @@ console.log("\n=== OCP Section Build Results ===\n");
 let grandTotal = 0;
 for (const s of stats.sort((a, b) => a.key.localeCompare(b.key))) {
   console.log(
-    `${s.key.padEnd(20)} ${String(s.chunks).padStart(4)} chunks  ${String(s.totalChars).padStart(7)} chars → ${String(s.outputChars).padStart(6)} chars${s.trimmed ? " (trimmed)" : ""}`
+    `${s.key.padEnd(20)} ${String(s.chunks).padStart(4)} chunks  ${String(s.totalChars).padStart(7)} chars → ${String(s.outputChars).padStart(6)} chars (budget: ${s.budget})${s.trimmed ? " trimmed" : ""}`
   );
   grandTotal += s.outputChars;
 }
