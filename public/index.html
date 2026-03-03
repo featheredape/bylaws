@@ -10,22 +10,14 @@
             href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
             rel="stylesheet"
         />
+        <link rel="preload" href="/img/ssi-banner.jpg" as="image" />
         <link rel="stylesheet" href="/styles.css" />
     </head>
     <body>
         <!-- ─── Hero ──────────────────────────────────────────────────── -->
         <header class="hero">
             <div class="hero-inner">
-                <h1>
-                    Does Your Project Comply<br />With
-                    <em>Salt Spring Island Bylaws?</em>
-                </h1>
-
-                <p class="hero-sub">
-                    Compliance analysis for Land Use Bylaw No.&nbsp;355 and
-                    OCP&nbsp;434 — with section references, recommendations, and
-                    next steps.
-                </p>
+                <h1>Bylaw Compliance Pre-Check</h1>
             </div>
 
             <div class="hero-wave">
@@ -47,6 +39,10 @@
         <main class="page">
             <!-- Query card -->
             <div class="query-card" id="queryCard">
+                <p class="site-intro">
+                    Bylaw compliance shouldn't cost a fortune to figure out. This free tool checks your project against Salt Spring Island's land use bylaws and official community plan — so you can understand what's likely allowed on your property <em>before</em> hiring a planner or consultant. Information is power; do the homework first.
+                </p>
+
                 <!-- Property Lookup -->
                 <div class="pid-section">
                     <p class="pid-section-label">
@@ -177,26 +173,29 @@
                     </div>
                 </div>
 
-                <button
-                    class="btn btn-primary"
-                    id="checkBtn"
-                    onclick="checkCompliance()"
-                >
-                    <svg
-                        width="15"
-                        height="15"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                <div class="submit-group">
+                    <button
+                        class="submit-btn submit-btn-primary"
+                        id="checkBtn"
+                        onclick="checkCompliance()"
                     >
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="m21 21-4.35-4.35" />
-                    </svg>
-                    Check Bylaws
-                </button>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                        </svg>
+                        Check Bylaws
+                    </button>
+                    <button
+                        class="submit-btn submit-btn-deep"
+                        id="checkBtnDeep"
+                        onclick="checkComplianceDeep()"
+                        title="Uses a more powerful AI model for complex or nuanced questions. Slower but more thorough."
+                    >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                        </svg>
+                        Deep Analysis
+                    </button>
+                </div>
 
                 <p class="shortcut-hint">
                     Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to submit

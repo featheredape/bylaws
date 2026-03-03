@@ -13,6 +13,7 @@ let lastPIDData = null;
 let pidLookupInFlight = false;
 let addressLookupInFlight = false;
 let currentSearchMode = "address"; // "address" or "pid"
+let currentAnalysisMode = "standard"; // "standard" or "deep"
 
 /* ── PID Formatting ────────────────────────────────────────────── */
 function formatPID(raw) {
@@ -78,6 +79,12 @@ function setSearchMode(mode) {
     resultEl.className = "pid-result";
     resultEl.innerHTML = "";
     clearPropertyContext();
+}
+
+/* ── Deep Analysis shortcut ──────────────────────────────────── */
+function checkComplianceDeep() {
+    currentAnalysisMode = "deep";
+    checkCompliance();
 }
 
 /* ── Address Lookup ───────────────────────────────────────────── */
@@ -726,6 +733,8 @@ function toggleAdjAccordion(id) {
 
 /* ── Main compliance check ─────────────────────────────────────── */
 async function checkCompliance() {
+    const mode = currentAnalysisMode;
+    currentAnalysisMode = "standard"; // reset for next query
     const userQuery = document.getElementById("queryInput").value.trim();
     clearValidation();
     if (!userQuery) {
@@ -746,10 +755,12 @@ async function checkCompliance() {
     const query = propCtx ? propCtx + "\n\n" + userQuery : userQuery;
 
     const btn = document.getElementById("checkBtn");
+    const btnDeep = document.getElementById("checkBtnDeep");
     const loadEl = document.getElementById("loading");
     const resEl = document.getElementById("results");
 
     btn.disabled = true;
+    btnDeep.disabled = true;
     resEl.classList.remove("show");
     resEl.innerHTML = "";
     loadEl.classList.add("show");
@@ -760,7 +771,7 @@ async function checkCompliance() {
         const resp = await fetch("/api/query", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query }),
+            body: JSON.stringify({ query, mode }),
         });
 
         const json = await resp.json();
@@ -788,6 +799,7 @@ async function checkCompliance() {
         stopLoading();
         loadEl.classList.remove("show");
         btn.disabled = false;
+        btnDeep.disabled = false;
     }
 }
 

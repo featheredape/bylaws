@@ -2938,6 +2938,7 @@ const SECTION_KEYWORDS: Record<string, { keywords: string[]; label: string; icon
       "development permit", "dpa", "permit area",
       "non-village commercial", "general employment permit",
       "screening", "landscaping requirement", "commercial design",
+      "commercial building", "industrial design", "outside village",
     ],
   },
   dpa3: {
@@ -2979,6 +2980,7 @@ const SECTION_KEYWORDS: Record<string, { keywords: string[]; label: string; icon
       "development permit", "dpa", "permit area",
       "unstable slope", "soil erosion", "geotechnical",
       "landslide", "slope hazard", "steep slope", "retaining wall",
+      "erosion", "bluff", "slope stability",
     ],
   },
   dpa7: {
@@ -2989,6 +2991,7 @@ const SECTION_KEYWORDS: Record<string, { keywords: string[]; label: string; icon
       "riparian", "streamside", "spea", "fish habitat", "fish protection",
       "environmental professional", "qep", "riparian buffer",
       "stream setback", "watercourse",
+      "tree removal", "vegetation removal",
     ],
   },
 
@@ -3377,8 +3380,22 @@ YOUR TASK: Respond with a compliance analysis in this EXACT JSON format (no text
 RULES:
 1. JSON only. No text outside the JSON object.
 2. If no zone specified, assume and note it. Always warn about consulting official sources.
-3. CRITICAL: Use full references like "Bylaw No. 355, Section 9.9.2(a)(i)" — never abbreviated. Include Part numbers. List each subsection as a separate entry.
-4. Reference OCP with actual policy numbers (e.g. "Bylaw No. 434, B.2.2.2.15(g)"). If a relevant section was not loaded, mention in warnings.`;
+3. CRITICAL: Use full references like "Bylaw No. 355, Section 9.9.2(a)(i)". Never abbreviate. Include Part numbers. List each subsection as a separate entry.
+4. Reference OCP with actual policy numbers (e.g. "Bylaw No. 434, B.2.2.2.15(g)"). If a relevant section was not loaded, mention in warnings.
+
+RESPONSE GUIDELINES:
+- Be fact-based. State what the OCP says and cite the policy number. Avoid editorial commentary, rhetorical questions, and speculative interpretation. Let the policies speak for themselves.
+- Be complete but economical. Cover every relevant policy, cross-reference, condition, and exception. Do not omit important details. But use concise language: one clear sentence per point rather than a paragraph of elaboration.
+- Cite specific policy numbers inline (e.g., "B.2.2.2.15 states...").
+- For factual questions ("can I build X?"): lead with a direct answer, then walk through all relevant policies, conditions, DPA requirements, and exceptions. Typically 2-4 paragraphs.
+- For analytical questions ("does the OCP protect Y?"): identify all relevant policies, note the language strength (mandatory vs. discretionary), flag contradictions, and cover related mechanisms. Be thorough in coverage but tight in prose.
+- Note whether policy language is mandatory ("shall," "will," "must") or discretionary ("should," "could," "may consider"). This is a fact about the document, not commentary.
+- Include related policies (DPA requirements, water, heritage, environmental) when they are relevant to the question, even if the user did not specifically ask about them.
+- If the provided excerpts do not fully answer the question, say so and name the OCP sections to consult.
+- Never give legal advice. You are reporting what the OCP says, not how it would be interpreted.
+- Use plain language. Avoid planning jargon.
+- Do not use markdown headings. Use plain prose with bolded policy numbers.
+- Do not use em-dashes. Use periods, commas, semicolons, or start new sentences instead.`;
 
 const EXCLUSION_SHORT_LABELS: Record<string, string> = {
   lub_definitions: "Definitions", lub_general_regulations: "General Regs",
@@ -3440,7 +3457,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     );
   }
 
-  let body: { query: string };
+  let body: { query: string; mode?: "standard" | "deep" };
   try {
     body = await request.json();
   } catch {
@@ -3471,40 +3488,49 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const promptSize = cached.length + dynamic.length;
     console.log(`[query] LUB sections: [${selection.lub.join(", ")}] | OCP sections: [${selection.ocp.join(", ")}] | prompt size: ${promptSize} chars`);
 
-    // Model priority: try Sonnet 4 first, fall back to Haiku 3 if overloaded
-    const MODELS = ["claude-sonnet-4-20250514", "claude-3-haiku-20240307"];
+    // Model configs: P2 (Sonnet 4.5, fast) default, P3 (Opus 4.6, adaptive thinking) deep
+    const MODEL_CONFIGS = {
+      standard: {
+        model: "claude-sonnet-4-5-20250929",
+        max_tokens: 2048,
+        thinking: null,
+      },
+      deep: {
+        model: "claude-opus-4-6",
+        max_tokens: 8192,
+        thinking: { type: "adaptive" } as { type: "adaptive" },
+      },
+    };
+
+    const mode = body.mode === "deep" ? "deep" : "standard";
+    const config = MODEL_CONFIGS[mode];
+    console.log(`[query] Mode: ${mode}, model: ${config.model}`);
 
     const callClaude = async (): Promise<globalThis.Response> => {
-      for (let i = 0; i < MODELS.length; i++) {
-        const model = MODELS[i];
-        console.log(`[query] Trying model: ${model}`);
-        const resp = await fetch("https://api.anthropic.com/v1/messages", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": env.CLAUDE_API_KEY,
-            "anthropic-version": "2023-06-01",
-            "anthropic-beta": "prompt-caching-2024-07-31",
-          },
-          body: JSON.stringify({
-            model,
-            max_tokens: 2048,
-            system: [
-              { type: "text", text: cached, cache_control: { type: "ephemeral" } },
-              { type: "text", text: dynamic },
-            ],
-            messages: [{ role: "user", content: body.query }],
-          }),
-        });
-        // If overloaded/rate-limited and we have a fallback model, try it
-        if ((resp.status === 429 || resp.status === 529) && i < MODELS.length - 1) {
-          console.log(`[query] ${model} returned ${resp.status}, falling back to ${MODELS[i + 1]}`);
-          continue;
-        }
-        return resp;
+      const requestBody: Record<string, unknown> = {
+        model: config.model,
+        max_tokens: config.max_tokens,
+        system: [
+          { type: "text", text: cached, cache_control: { type: "ephemeral" } },
+          { type: "text", text: dynamic },
+        ],
+        messages: [{ role: "user", content: body.query }],
+      };
+      if (config.thinking) {
+        requestBody.thinking = config.thinking;
       }
-      // Shouldn't reach here, but TypeScript wants a return
-      throw new Error("All models failed");
+
+      const resp = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": env.CLAUDE_API_KEY,
+          "anthropic-version": "2023-06-01",
+          "anthropic-beta": "prompt-caching-2024-07-31",
+        },
+        body: JSON.stringify(requestBody),
+      });
+      return resp;
     };
 
     const response = await callClaude();
@@ -3526,7 +3552,16 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     }
 
     const data: any = await response.json();
-    const text = data.content?.[0]?.text ?? "";
+    // With adaptive thinking (P3/deep), response contains thinking blocks then text blocks.
+    // Always extract the last text block to get the actual answer.
+    const textBlocks = (data.content || []).filter((b: any) => b.type === "text");
+    const text = textBlocks.length > 0 ? textBlocks[textBlocks.length - 1].text : "";
+
+    // Log token usage for monitoring
+    if (data.usage) {
+      const u = data.usage;
+      console.log(`[query] tokens — input: ${u.input_tokens}, output: ${u.output_tokens}, cache_creation: ${u.cache_creation_input_tokens || 0}, cache_read: ${u.cache_read_input_tokens || 0}`);
+    }
 
     // Parse the JSON from Claude's response
     let analysis;

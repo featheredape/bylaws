@@ -115,6 +115,7 @@ System Prompt = SYSTEM_PREFIX (cached) + LUB sections + OCP sections + exclusion
 3. [x] Split DPA into 7 individual sections with keywords and summaries
 4. [x] Update OCP_SECTION_KEYS, SECTION_KEYWORDS, SECTION_SUMMARIES
 5. [x] Remove LUB cap — always include all 11 sections
-6. [x] Verify build (282.5KB) and tests (107 pass)
-7. [ ] Deploy and monitor token usage in production
-8. [ ] Test with real user queries across all DPA types
+6. [x] Verify build (282.9KB) and tests (107 pass)
+7. [x] Add token usage logging (input, output, cache_creation, cache_read tokens per request)
+8. [x] Create routing test suite (`scripts/test-routing.mjs`) — 20/20 tests passing across all DPA types
+9. [ ] Deploy to production (`npm run deploy`) and monitor token usage via Cloudflare logs
